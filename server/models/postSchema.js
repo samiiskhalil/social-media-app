@@ -29,9 +29,8 @@ pictures:{
     type:[String]
 },
 likes:{
-    required:true,
     likersId:{
-        type:[mongoose.SchemaTypes.ObjectId],
+        type:[{type:mongoose.SchemaTypes.ObjectId,ref:'User'}],
     },
     likesCount:Number,
     default:0
