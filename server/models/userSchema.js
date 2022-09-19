@@ -12,7 +12,7 @@ const userSchema= new mongoose.Schema({
        ants:[mongoose.SchemaTypes.ObjectId],
 
     },
-    secondName:{
+    lastName:{
         required:true,
         type:String
     },
@@ -46,10 +46,18 @@ const userSchema= new mongoose.Schema({
         },
         other:String
     },
-},
+    },
+  
 pagesLiked:[mongoose.SchemaTypes.ObjectId],
 joinedGroupes:[mongoose.SchemaTypes.ObjectId],
 hobbies:[String],
 photos:[String],
+email:{
+    type:String,
+
+},phoneNumber:{
+    type:Number
+}
+
 })
-module.exports=mongoose.model('userModel',userSchema)
+module.exports=mongoose.model('User',userSchema)
