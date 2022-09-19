@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const commentsSchema=new mongoose.Schema({
-         commentatorsId:[{type:mongoose.SchemaTypes.ObjectId,ref:'User'}],
+         commentatoresId:[{type:mongoose.SchemaTypes.ObjectId,ref:'User'}],
          commentsCount:Number,
          relpies:{
             repliersId:[{type:mongoose.SchemaTypes.ObjectId,ref:'User'}],
@@ -36,6 +36,8 @@ likes:{
     likesCount:Number,
     default:0
 },
+comments:commentsSchema
+,
 shares:{
         sharesCount:Number,
         required:true,
@@ -46,28 +48,17 @@ shares:{
     type:Date
 }
 })
-//  postSchema.methods.getLikers= function(User){
-// let likers=[]
-// this.likes.likersId.forEach(id=>{
-// const {firstName,lastName,profilePicture}=  User.findById(id)
-// likers.push({firstName,lastName,profilePicture})
-// })
-//  postSchema.methods.getCommentators= function(User){
-// let Commentators=[]
-// this.comments.commentatorsId.forEach(id=>{
-// const {firstName,lastName,profilePicture}=  User.findById(id)
-// commentators.push({firstName,lastName,profilePicture})
-// })
-// return commentators
-// }}
 
-//middleware that runs pre save()
 postSchema.pre('save',function(next){
-
     this.comments.commentsCount=this.comments.commentatorsId.length
     this.likes.likesCount=this.likes.likersId.length
     this.shares.sharesCount=this.shares.sharersId.length
     this.updatedAt=Date.now()
     next()
+})
+
+postSchema.pre('save',function(next){
+    this.populate('comments.commentatoresId')
+    this.populate('comments.relies.repliresId')
 })
 module.exports=mongoose.model('postModel',postSchema)
