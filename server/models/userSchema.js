@@ -3,6 +3,9 @@ const userSchema= new mongoose.Schema({
     firstName:{
         required:true,
         type:String
+    },age:{
+        type:Number,
+        required:true
     },
     familyMemebers:{
        father:mongoose.SchemaTypes.ObjectId,
@@ -24,7 +27,6 @@ const userSchema= new mongoose.Schema({
     },
     wallpaperPicture:String
     ,birthDate:{
-        required:true,
         type:Date
     },
     friends:[mongoose.SchemaTypes.ObjectId],

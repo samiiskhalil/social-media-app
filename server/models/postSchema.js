@@ -13,8 +13,7 @@ const commentsSchema=new mongoose.Schema({
 
 const postSchema=new mongoose.Schema({
     puplisherId:{
-        required:true,
-        type:mongoose.SchemaTypes.ObjectId
+        type:mongoose.SchemaTypes.ObjectId,ref:'User'
     }
     ,
     tags:{
@@ -38,10 +37,11 @@ likes:{
 comments:commentsSchema
 ,
 shares:{
-        sharesCount:Number,
-        required:true,
+    sharesCount:{
+            type:Number
+        },
         type:Number,
-        sharersId:[mongoose.SchemaTypes.ObjectId]
+        sharersId:[{type:mongoose.SchemaTypes.ObjectId,ref:'User'}]
   }
    ,updatedAt:{
     type:Date
@@ -49,15 +49,13 @@ shares:{
 })
 
 postSchema.pre('save',function(next){
-    this.comments.commentsCount=this.comments.commentatorsId.length
+    this.comments.commentsCount=this.comments.commentatoresId.length
     this.likes.likesCount=this.likes.likersId.length
-    this.shares.sharesCount=this.shares.sharersId.length
+    this.shares.sharersCount=this.shares.sharersId.length
     this.updatedAt=Date.now()
+    
     next()
+
 })
 
-postSchema.pre('save',function(next){
-    this.populate('comments.commentatoresId')
-    this.populate('comments.relies.repliresId')
-})
-module.exports=mongoose.model('postModel',postSchema)
+module.exports=mongoose.model('Post',postSchema)
