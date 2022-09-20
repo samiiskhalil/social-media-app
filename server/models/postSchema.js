@@ -53,7 +53,7 @@ postSchema.pre('save',function(next){
     this.likes.likesCount=this.likes.likersId.length
     this.shares.sharersCount=this.shares.sharersId.length
     this.updatedAt=Date.now()
-    
+
     next()
 
 })
