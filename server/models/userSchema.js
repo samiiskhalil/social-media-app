@@ -1,22 +1,11 @@
 const mongoose = require('mongoose')
 const userSchema= new mongoose.Schema({
     firstName:{
-        required:true,
         type:String
     },age:{
         type:Number,
-        required:true
-    },
-    familyMemebers:{
-       father:mongoose.SchemaTypes.ObjectId,
-       mother:mongoose.SchemaTypes.ObjectId,
-       siblings:[mongoose.SchemaTypes.ObjectId],
-       uncles:[mongoose.SchemaTypes.ObjectId],
-       ants:[mongoose.SchemaTypes.ObjectId],
-
     },
     lastName:{
-        required:true,
         type:String
     },
     middleName:{ 
@@ -29,7 +18,7 @@ const userSchema= new mongoose.Schema({
     ,birthDate:{
         type:Date
     },
-    friends:[mongoose.SchemaTypes.ObjectId],
+    friends:[{type:mongoose.SchemaTypes.ObjectId,ref:'User'}],
     address:{
         country:String,
         city:String,
@@ -39,7 +28,7 @@ const userSchema= new mongoose.Schema({
     job:String,
    education:{
        educationLevel:String,
-    studiedAt:{
+    studyPlace:{
         school:String,
         college:{
             name:String,
@@ -50,8 +39,8 @@ const userSchema= new mongoose.Schema({
     },
     },
   
-pagesLiked:[mongoose.SchemaTypes.ObjectId],
-joinedGroupes:[mongoose.SchemaTypes.ObjectId],
+pagesLiked:[{type:mongoose.SchemaTypes.ObjectId,ref:'Page'}],
+joinedGroupes:[{type:mongoose.SchemaTypes.ObjectId,ref:'Group'}],
 hobbies:[String],
 photos:[String],
 email:{
