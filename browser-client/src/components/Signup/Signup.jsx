@@ -9,20 +9,20 @@ setTimeout(()=>{
 },7000)
 return (
 <>
+<div className="bg-neutral-300 w-screen h-screen  flex justify-center align-top ">
 {showPopup? <>
-<div className="hidden">
-  <h2>give us premisson to use your location</h2>
+<div className="hidden ">
+  <h2>please accept cookies for optimal experience !</h2>
   <div className="">
-    <button className=''>approve</button>
-    <button className=''>disapprove</button>
+    <button className=''>accept cookies</button>
+    <button className=''>deny</button>
   </div>
 </div>
 </>:null}
-<div className="container">
-<form  >
-<div className="insCont">
+<form className='p-10 flex border p border-indigo-600  mt-10' >
+<div className="boder">
 <div className="inpCont">
-<input placeholder='first name' type="text" name='firstName' id='firstName' required />
+<input className='border border-indigo-700 ' placeholder='first name' type="text" name='firstName' id='firstName' required />
 </div>
 <div className="inpcont">
 <input placeholder='last name' type="text" name='lastName' id='lastName' required/>
@@ -38,7 +38,7 @@ return (
 <input type="date" name='birthDate' id='birthDate' required />
 </div>
 </div>
-<div className="insCont">
+<div className="boder">
 <div className="inpcont">
 <input placeholder='email' type="email" name='email' id='email' />
 </div>
