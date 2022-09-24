@@ -1,0 +1,17 @@
+/* 
+.container{
+width: 100vw;
+height: 100vh;
+display: flex;
+justify-content: center;
+align-items: center;
+padding-bottom: 50vh;
+}
+form{
+    border: 2px black solid;
+    display: flex;
+    
+}
+.insCont{
+    border: 4px black solid;
+} */

@@ -1,12 +1,24 @@
 import React from 'react'
-import {NavLink} from 'react-router-dom'
+import {useLocation,NavLink,Outlet} from 'react-router-dom'
 const NavBar = () => {
-  return (
-<>
+  let location=useLocation()
+  console.log(location.pathname)
+  return (<>
+
+
+
 <nav className='nav-bar' >
-<ul></ul>
+<ul>
+  <li>NavBar</li>
+</ul>
 
 </nav>
+<Outlet/>
+
+
+
+
+
 </>
     )
 }
