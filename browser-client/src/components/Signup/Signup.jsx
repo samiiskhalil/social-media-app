@@ -1,70 +1,87 @@
 import React from 'react'
-import { Button,FormControlLabel,InputLabel,Select,MenuItem,TextField,Container } from '@mui/material'
-import {useState,useMemo,useEffect } from 'react'
-import './style.css'
+import axios from 'axios'
+import { useEffect,useState } from 'react'
+import { height } from '@mui/system'
+
+
 const Signup = () => {
-  // const [firstName,setFirstName]=useState('')
-  // const [lastName,setLastName]=useState('')
-  // const [middleName,setMiddleName]=useState('')
-  // const [age,setAge]=useState('')
-  // const [date,setDate]=useState('')
+  const [showToggle,setShowToggle]=useState(false)
   const [countries,setCountries]=useState([])
-  // const [country,setCountry]=useState('')
-  // const [city,setCity]=useState('')
-  // const [neighborhood,setNeighborhood]=useState('')
-  const [user,setUser]=useState({})
-  useEffect(()=>{
-fetch('https://restcountries.com/v3.1/all',{
-  method:'GET'
-}).then(data=>{
-  if(data.ok)
-  return data.json()
-else
-console.log('err')
-})
-.then(response=>{
-  response.forEach(country=>
-    setCountries(preState=>
-      [... preState,{name:country.name.common,flag:country.flags.png}] )  )
-})
-},[])
-const getCntryInfo=useMemo(()=>countries.map((country,id)=>
-  <MenuItem key={id} value={country.name}> <img height='20' width='30' src={country.flag} alt='flag'></img> {country.name}</MenuItem>
-  ),[countries])
-  const handleChange=e=>setUser(prevUser=>{return{... prevUser,
-    [e.target.id] : e.target.value}})
-return (
-
-<>
-<div className='form-signup-container' >
-  <form className='signup-form' >
-    <div className="input-container">
-
-<TextField id='firstName' value={user.firstName} required onChange={handleChange} variant='outlined' label="first name" />
-<TextField id='lastName' required value={user.lastName} onChange={handleChange} variant='outlined' label="last name" />
-<TextField id='middleName' value={user.middleName} onChange={handleChange}  variant='outlined' label="middle name (optional)" />
-    </div>
-    <div className="input-container">
-
-<TextField id='age' required value={user.age} type='number' min='0' max='130' variant='outlined' label="age" />
-<TextField type='Date' id='birthDate' value={user.birthDate} required name='birth date'  />
-<InputLabel id='country'>country</InputLabel>
-<Select sx={{ minWidth:200 }} labelId='country' value={user.country} label='country' id='country' onChange={handleChange} >
-  {
-    getCntryInfo
+  useEffect( ()=>
+  async ()=>{
+    
+  try{
+      
+const response= await axios.get('https://restcountries.com/v3.1/all')
+if(response.status!==200)
+console.log('no')
+const countriesNames=response.data.map(country=>{return{country.name.common,country.flags.common}})
+setCountries(countriesNames.sort())
+}catch(err){
+  console.log(err)
 }
-  </Select  >   
-    </div>
-    <div className="input-container">
+}
+,[])
 
-  <TextField id='city' onChange={handleChange} value={user.city} label='city' />
-  <TextField id='neighborhood' onChange={handleChange} value={user.neighborhood} label='neighborhood' />
+return (
+<>
+<div className="container">
+  <form >
+    <input type="text" name="c" id="c" onKeyDownCapture={()=>setShowToggle(true)}  />
+    {showToggle?(<>
+    <div className="items-container" style={{overflow:'scroll',width:'auto',height:'400px',border:'2px black solid'}}>
+        {countries.map(country=><div 
+        style={{ width:'inherit',height:'50px'
+      }} >
+        country
+      </div>)}
+
     </div>
-  <Button type='submit' >submitt</Button>
-  </form>
-  </div>
+  
+    </>):null}
+    <div className="form-floating  m-3">
+
+    <input placeholder='first name' required type="text" className="form-control" name='first-name' id='first-name' />
+    <label htmlFor="first-name">first name</label>
+    </div>
+    <div className="form-floating m-3">
+
+    <input placeholder='last name' required type="text" className="form-control" name='last-name' id='last-name' />
+    <label htmlFor="last-name">last name</label>
+    </div>
+    <div className="form-floating m-3">
+
+    <input placeholder='middle name'  type="text" className="form-control" name='middle-name' id='middle-name' />
+    <label htmlFor="middle-name">middle name</label>
+    </div>
+    <div className="form-floating m-3">
+
+    <input placeholder='age'  type="number" className="form-control" name='middle-name' id='middle-name' />
+    <label htmlFor="age">age</label>
+    </div>
+    <div className="form-floating m-3">
+
+    <select  className='form-select ' name="country" id="country">{countries.map((country,index)=>
+      
+      <option key={index} style={{ backgroundImage:'url(lagcdn.com/w320/gt.png)' }} value={country.name}>
+        
+       {country}  </option>
+      
+      )}</select>
+    <label htmlFor="country">country </label>
+    </div>
+    <div className="form-floating m-3">
+      <input type="text" className='form-control' placeholder='city' name='city' id='city' />
+      <label htmlFor="city">city</label>
+    </div>
+    <div className="form-floating m-3">
+      <input placeholder='steet' className='form-control' type="text" name="street" id="street" />
+      <label htmlFor="street">street</label>
+    </div>
+    </form>
+</div>
 </>
-  )
+    )
 }
 
 export default Signup

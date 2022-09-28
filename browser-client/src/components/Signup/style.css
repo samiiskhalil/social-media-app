@@ -1,9 +1,0 @@
-.form-signup-container{
-width: 100vw;
-height: 100vh;
-background-color: hsla(360, 0%, 86%, 1);
-}
-.signup-form{
-    background-color: white;
-    display: flex;
-}
