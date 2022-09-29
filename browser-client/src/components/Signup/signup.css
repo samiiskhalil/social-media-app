@@ -1,0 +1,18 @@
+.item-btn{
+width: 100%;
+display: flex;
+flex-wrap: nowrap;
+justify-content: space-between;
+margin: 0 3px;
+font-size: 15px;
+align-items: center;
+border: none;
+border-bottom: 1px darkgrey solid;
+
+}
+.item-btn:hover{
+    background-color:aliceblue;
+}
+.item-btn:focus{
+    background-color:lightblue;
+}

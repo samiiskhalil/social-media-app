@@ -1,12 +1,14 @@
 import React from 'react'
 import axios from 'axios'
-import { useEffect,useState } from 'react'
+import { useRef,useEffect,useState } from 'react'
 import { height } from '@mui/system'
-
+import './signup.css'
 
 const Signup = () => {
+  const [countryList,setCountryList]=useState([])
   const [showToggle,setShowToggle]=useState(false)
   const [countries,setCountries]=useState([])
+  const countrySearch=useRef(null)
   useEffect( ()=>
   async ()=>{
     
@@ -15,30 +17,25 @@ const Signup = () => {
 const response= await axios.get('https://restcountries.com/v3.1/all')
 if(response.status!==200)
 console.log('no')
-const countriesNames=response.data.map(country=>{return{country.name.common,country.flags.common}})
-setCountries(countriesNames.sort())
+console.log('data arrived')
+const {data}=response
+const temp=data.map(country=>{
+const {name:{common:name},flags:{png:flag}}=country
+return {name,flag}
+})
+setCountries(temp)
+
 }catch(err){
   console.log(err)
 }
 }
 ,[])
-
+let tempList=[]
 return (
 <>
 <div className="container">
   <form >
-    <input type="text" name="c" id="c" onKeyDownCapture={()=>setShowToggle(true)}  />
-    {showToggle?(<>
-    <div className="items-container" style={{overflow:'scroll',width:'auto',height:'400px',border:'2px black solid'}}>
-        {countries.map(country=><div 
-        style={{ width:'inherit',height:'50px'
-      }} >
-        country
-      </div>)}
-
-    </div>
-  
-    </>):null}
+    
     <div className="form-floating  m-3">
 
     <input placeholder='first name' required type="text" className="form-control" name='first-name' id='first-name' />
@@ -61,13 +58,40 @@ return (
     </div>
     <div className="form-floating m-3">
 
-    <select  className='form-select ' name="country" id="country">{countries.map((country,index)=>
-      
-      <option key={index} style={{ backgroundImage:'url(lagcdn.com/w320/gt.png)' }} value={country.name}>
-        
-       {country}  </option>
-      
-      )}</select>
+    <input type="text" ref={countrySearch} className='form-control' name="country" id="country"
+    onKeyUpCapture=
+    {(e)=>{setShowToggle(true)
+      setCountryList([])
+      countries.forEach(country=>
+        {
+          if(country.name.slice(0,e.target.value.length).toLowerCase()===e.target.value.toLowerCase())
+           
+            setCountryList(pre=>[...pre,country])
+            
+          }
+          )
+          console.log(e.target.value)
+
+        }
+    }  />
+
+{console.log(countryList)}
+    {showToggle?(<>
+    <div className="items-container"
+     style={{overflow:'scroll',height:'400px',width:'auto'
+     ,border:'2px black solid'}}>
+        {countryList.map((country,index)=>
+        <button onClickCapture={
+          country.name=countrySearch.current.value    
+        } key={index} className='item-btn' 
+         >
+         <span>{country.name}</span> <img height='20' width='30' src={country.flag} alt="falg" />
+
+      </button>)} 
+
+    </div>
+  
+    </>):null}    
     <label htmlFor="country">country </label>
     </div>
     <div className="form-floating m-3">
