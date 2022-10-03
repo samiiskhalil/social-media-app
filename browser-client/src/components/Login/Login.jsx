@@ -2,8 +2,9 @@ import React from 'react'
 
 const Login = () => {
   return (
-    <div>Login</div>
-  )
+        <>
+        <h1>login</h1></>
+    )
 }
 
 export default Login

@@ -1,6 +1,6 @@
-const {createUser} = require('../controllers/userRoute.js')
+const {userSignup} = require('../controllers/userSignup.js')
 const express = require('express')
 const userRouter=express.Router()
-userRouter.post('/signup',createUser)
+userRouter.post('/signup',userSignup)
 module.exports=userRouter
 //activity test

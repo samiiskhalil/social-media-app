@@ -16,6 +16,6 @@ app.use(cors({
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use('/',rootRouter)
- app.use('/user',userRouter)
+ app.use('/users',userRouter)
 
 app.listen(1000,()=>console.log('http://localhost:1000'))
