@@ -1,9 +1,14 @@
 import React from 'react'
+import {UserPage} from '../components'
+import { Route,Routes } from 'react-router'
 const UsersRoutes = () => {
   return (
 <>
-<h1>user Routes</h1>
+<Routes> 
+  <Route path=':id' element={<UserPage/>} >
 
+  </Route>
+</Routes>
 </>
     )
 }

@@ -1,9 +1,9 @@
 import React from 'react'
 import axios from 'axios'
+import { Navigate, useNavigate } from 'react-router'
 import { useRef,useEffect,useState } from 'react'
 import { height } from '@mui/system'
 import './signup.css'
-import { useNavigate } from 'react-router'
 import Cookies from 'js-cookie'
 const Signup = () => {
   const navigate=useNavigate()
@@ -47,11 +47,7 @@ try{
   const {data}= await axios.post('http://localhost:1000/users/signup',user)
    
   if(data.success){
-  const userId=data.userId
-    Cookies.set('userId',userId)
-    console.log(userId)
-    navigate(`/users/${userId}`)
-    console.log('navigated')
+    Cookies.set('token',data.accessToken)
   }
 }catch(err){
   console.log(err.message)
@@ -195,6 +191,7 @@ firstContainerRef.current.style.display='block'
           </>:null}
     </form>
     </div>
+<h1>{Cookies.get('')}</h1>
 </>
     )
   }

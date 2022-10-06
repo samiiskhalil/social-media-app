@@ -1,0 +1,9 @@
+.app-icon{
+    transform: scale(2.2);
+    width: 100%;
+    height: 100%;
+}
+
+.icon-active{
+transform: rotate(90deg);
+}
