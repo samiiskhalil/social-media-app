@@ -1,6 +1,6 @@
 import React from 'react'
-import {Signup,Login,NavBar,Posts} from './components'
-import UsersRoutes from './RoutesLayout/UsersRoutes.jsx'
+import {User,Users,Login,Signup,Home,UsersRoute} from './pages/index.js'
+import { NavBar } from './components/index.js'
 import './app.css'
 import {useNavigate,useLocation,Routes,Route} from 'react-router-dom'
 const App = () => {
@@ -10,8 +10,8 @@ const App = () => {
 
 <Routes>
   <Route path='/' element={<NavBar/>} >
-    <Route index element={<Posts/>} />
-    <Route path='users/*' element={<UsersRoutes/>} />
+    <Route index element={<Home/>} />
+    <Route path='users/*' element={<UsersRoute/>} />
     
 </Route>
 <Route path='/signup' element={<Signup />}/>

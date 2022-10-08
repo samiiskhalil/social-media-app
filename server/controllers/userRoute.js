@@ -28,9 +28,8 @@ class user{
           sex,
           email
       })
-      const accessToken=jwt.sign({name:`${user.firstName} ${user.lastName}`,id:user.id},process.env.ACCESS_TOKEN_SECRET)
-     console.log(accessToken)
-      return res.status(201).json({success:true,accessToken})
+      console.log(user._id)
+      return res.status(201).json({success:true,userId:user._id})
     }
   
   catch(err){

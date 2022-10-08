@@ -47,7 +47,8 @@ try{
   const {data}= await axios.post('http://localhost:1000/users/signup',user)
    
   if(data.success){
-    Cookies.set('token',data.accessToken)
+    console.log(data.userId)
+    Cookies.set('userId',data.userId)
   }
 }catch(err){
   console.log(err.message)
