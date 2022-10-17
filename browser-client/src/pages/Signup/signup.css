@@ -24,3 +24,10 @@ border-bottom: 1px darkgrey solid;
     margin-top: 6vh;
     width: 80vw;
 }
+.email-error-p{
+    border-radius: 11px;
+    border: 2px red solid;
+    padding: 5px;
+    color: red;
+    font-size: 0.9rem;
+}

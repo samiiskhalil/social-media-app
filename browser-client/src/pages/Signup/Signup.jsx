@@ -6,6 +6,9 @@ import { height } from '@mui/system'
 import './signup.css'
 import Cookies from 'js-cookie'
 const Signup = () => {
+  const emailRef=useRef('')
+  const [success,setSuccess]=useState(true)
+  const [reqMsg,setReqMsg]=useState('')
   const navigate=useNavigate()
   const firstContainerRef=useRef('')
   const secondContainerRef=useRef('')
@@ -43,27 +46,37 @@ const handleChange=(e)=>{
   setUser(pre=>{return{...pre,[e.target.name]:e.target.value,[inpRef.current.name]:inpRef.current.value}})
 }
 const handleSubmit=async (e)=>{
-try{
+  try{
   const {data}= await axios.post('http://localhost:1000/users/signup',user)
-   
-  if(data.success){
-    console.log(data.userId)
+  console.log(data.token)  
+  if(Cookies.get('token'))
+    Cookies.set('token',null)
+    Cookies.set('token',data.token)
+    Cookies.set('firstTime',true)
+    Cookies.set('userName',data.userName)
     Cookies.set('userId',data.userId)
-  }
-}catch(err){
+    console.log(Cookies.get('token'))
+    setSuccess(data.success)
+    navigate(`/users/${data.userId}`)    
+  } 
+
+catch(err){
   console.log(err.message)
+  setReqMsg(err.response.data.data)
+  setSuccess(err.response.data.success)
+  
 }
 }
 return (
   <>
-  <div className="container">
+  <div className="container ">
   <form >
 <div 
 ref={firstContainerRef}
 onClick={(e)=>{
   if(!inpRef.current.contains(e.target))
   setShowToggle(false)
-}} className="container wrap form-container">
+}} className="container  form-container">
     <div className="row">
 <div className="col-sm-6 col-12 ">
 
@@ -174,7 +187,7 @@ secondContainerRef.current.style.display='block'
           {nextPageFlage?<><div ref={secondContainerRef} className=" container m-3">
 
             <div className="form-floating m-3">
-              <input onChange={handleChange} type="email" className='form-control' placeholder='email' name="email" id="email" />
+              <input ref={emailRef} onChange={handleChange} type="email" className='form-control' placeholder='email' name="email" id="email" />
               <label htmlFor="email">email</label>
             </div>
             <div className="form-floating m-3">
@@ -186,8 +199,9 @@ secondContainerRef.current.style.display='block'
       <button type='button' onClick={()=>{
         secondContainerRef.current.style.display='none'
 firstContainerRef.current.style.display='block'
-      }} className='btn-outline-primary btn ' >Back</button>  
+}} className='btn-outline-primary btn ' >Back</button>  
    
+{!success&& <h3 className=' m-3 email-error-p' >{reqMsg}</h3>}
           </div>
           </>:null}
     </form>

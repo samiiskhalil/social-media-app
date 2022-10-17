@@ -6,8 +6,9 @@ class user{
   constructor(){
 
   }
-  static createToken=async(req,res)=>{
-    jwt.sign
+  static generateToken=async(user)=>{
+   const token= await jwt.sign({id:user.id,name:`user.firstName`,email:user.email,password:user.password},process.env.JWT_SECRET,{expiresIn:'2w'})
+    return token
   }
   static signup=async(req,res)=>{
     try{ const {firstName,lastName,middleName,birthDate,city,country,age,phoneNumber,sex,street,email}= req.body
@@ -28,8 +29,10 @@ class user{
           sex,
           email
       })
-      console.log(user._id)
-      return res.status(201).json({success:true,userId:user._id})
+      req.user=user
+      const token= await this.generateToken(user)
+      console.log(token)
+      res.status(201).json({userId:user.id,userName:`${user.firstName} ${user.lastName}`,success:true,token:token})
     }
   
   catch(err){

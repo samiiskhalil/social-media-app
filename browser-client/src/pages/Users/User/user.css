@@ -1,0 +1,75 @@
+.background-image-container{
+    position: relative;
+    left: 0;
+    display: flex;
+    background-color: black;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    overflow: hidden;
+    height: 50vvh;
+}
+.background-image{position: relative;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    object-fit: contain;
+    cursor:grabbing;
+    position: relative;
+    height: 70vh;
+    width: 100%;
+}
+.btn-background{
+    position: absolute;
+    top: 38vh;
+    right: 23vw;
+    width: 40px;
+    height: 40px;
+    font-size: 0.7em;
+    border: none;
+    background-color: rgb(204, 237, 248);
+    border-radius: 50%;
+}
+.background-menu{
+    position: absolute;
+top: 46vh;
+right: 54px;
+    width: 100px;
+    background-color:rgb(209, 219, 245);
+}
+.edit-image{
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px rgb(116, 116, 116) solid;
+}
+.edit-image:hover{
+    background-color: aliceblue;
+}
+.upload-background{
+    display: none;
+}
+.form-update-background{
+    padding-inline: 40px;
+    top:10px ;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+background-color: rgba(0,0, 0, 0.3);
+z-index: 3000;
+}
+.update-background-btn{
+    margin: 5px 0;
+    color: white;
+border: 3px white solid;
+border-radius: 3px;
+}
+.update-background-btn:hover{
+background-color: rgba(34, 34, 34, 0.829);
+color: white;
+border: black;
+
+}

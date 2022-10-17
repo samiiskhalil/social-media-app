@@ -1,9 +1,35 @@
 .app-icon{
-    transform: scale(2.2);
+    transform: scale(1.5);
     width: 100%;
     height: 100%;
 }
 
 .icon-active{
 transform: rotate(90deg);
+}
+.dropdown-link{
+    width: 100%;
+}
+.dropdown-link p{
+display: inline;
+padding-left: 6px;
+}
+.navbar-nav{
+    width: 100%;
+}
+.dropdown-link p:hover{
+    border-bottom: 1px darkblue solid;
+}
+.navbar-collapse{
+    align-items: center;
+    width: 100vw;
+}
+
+.nav-container{
+}
+.sticky-nav{
+    top: -30px;
+    z-index: 10;
+    margin: 0;
+    padding: 0;
 }
