@@ -8,19 +8,23 @@
     justify-content: center;
     width: 100%;
     overflow: hidden;
-    height: 50vvh;
+    height: 50vh;
 }
 .background-image{position: relative;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -o-user-select: none;
-    user-select: none;
     object-fit: contain;
-    cursor:grabbing;
     position: relative;
-    height: 70vh;
-    width: 100%;
+    cursor: grab;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+       -ms-user-select: none;
+   user-select: none;
+}
+.cursor-default{
+    cursor: auto;
+}
+.hide-background-opt{
+    display: none;
 }
 .btn-background{
     position: absolute;
@@ -72,4 +76,29 @@ background-color: rgba(34, 34, 34, 0.829);
 color: white;
 border: black;
 
+}
+.scale-container{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 20%;
+    height: 20%;
+    background-color: rgba(0, 0, 0, 0.4);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+.scale-container svg{
+    color: white;
+    transform: scale(2);
+}
+.scale-container svg:hover{
+    cursor: pointer;
+    color: saddlebrown;
+}
+.scale-container button{
+    z-index: 3000;
+    position: relative;
+    top: 30px;
+    width: 300px;
 }
