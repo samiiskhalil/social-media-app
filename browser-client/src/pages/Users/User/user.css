@@ -1,4 +1,8 @@
+.images-holder{
+    position: relative;
+}
 .background-image-container{
+    margin-top: 14px;
     position: relative;
     left: 0;
     display: flex;
@@ -10,6 +14,7 @@
     overflow: hidden;
     height: 50vh;
 }
+
 .background-image{position: relative;
     object-fit: contain;
     position: relative;
@@ -28,28 +33,37 @@
 }
 .btn-background{
     position: absolute;
-    top: 38vh;
-    right: 23vw;
     width: 40px;
     height: 40px;
     font-size: 0.7em;
     border: none;
-    background-color: rgb(204, 237, 248);
+    background-color: white;
     border-radius: 50%;
+    right: 20px;
+    top: -50px;
+        
 }
+
 .background-menu{
+    right: 64px;
+    top: -58px;
     position: absolute;
-top: 46vh;
-right: 54px;
     width: 100px;
-    background-color:rgb(209, 219, 245);
+    background-color:white;
 }
-.edit-image{
+.update-background-container{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 3000;
+    width: 300px;
+}
+.upload-image{
     width: 100%;
     text-align: center;
     border-bottom: 1px rgb(116, 116, 116) solid;
 }
-.edit-image:hover{
+.upload-image:hover{
     background-color: aliceblue;
 }
 .upload-background{
@@ -101,4 +115,78 @@ border: black;
     position: relative;
     top: 30px;
     width: 300px;
+}
+.btn-background svg{
+transform: scale(2);
+}
+.profile-picture-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px black solid;
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    left: 13px;
+    border-radius: 50%;
+    bottom: -70px;
+    background-color: rebeccapurple;
+}
+.profile-picture-container img{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.profile-picture-options-container{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 30px;
+    background-color: red;
+    border-radius: 50%;
+    height: 30px;
+}
+.profile-picture-update-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+width: 100%;
+position: absolute;
+height: 100%;
+border-radius: 50%;
+
+}
+.profile-picture-update-button svg{
+    transform: scale(1.2);
+
+}
+.profile-picture-update-menu-container{
+    position: absolute;
+    width: 60px;
+    height: 100%;
+    right:-55px;
+    bottom: -20px;
+}
+.profile-picture-container label{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    text-align: center;
+    border: 1px black solid;
+}
+.profile-picture-update-menu-item{
+    display: none;
+    position: absolute;
+    border:1px black solid;
+    background-color: white;
+    width: 60px;
+    bottom: 0;
+    height: 100%;
+    
+}
+.profile-picture-update-menu-item:hover{
+    background-color: whitesmoke;
 }
