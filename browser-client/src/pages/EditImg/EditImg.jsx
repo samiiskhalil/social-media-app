@@ -12,17 +12,20 @@ const EditImg = (props) => {
     
   return (
     <>
-    <div className="container">
+    <div className="container container-md ">
 <div className="row">
 <div className="col">
-  <div className="sub-container">
+  <div className="">
 
-<img className='edited-image-container' ref={imgRef} initPos={{ x:0,y:0 }}
+  <div className="edited-image-container">
+
+<img className='edited-image' ref={imgRef} initPos={{ x:0,y:0 }}
  currentPos={{ x:0,y:0 }} lastOffset={{ x:0,y:0 }}
  src={`blob:http://localhost:3000/${imageSrc}`} alt="image"
- onClick={handleClick}
- />
- </div>
+onClick={handleClick} 
+/>
+  </div>
+</div>
  </div>
 
  </div>

@@ -22,7 +22,7 @@ const User = () => {
     }
 return (
 <>
-<div className="contianer container-md">
+<div className="container container-fluid ">
 <div className="row">
   <div className="col">
 
