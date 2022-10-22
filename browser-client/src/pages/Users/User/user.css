@@ -17,13 +17,6 @@
 
 .background-image{position: relative;
     object-fit: contain;
-    position: relative;
-    cursor: grab;
-    -moz-user-select: -moz-none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-       -ms-user-select: none;
-   user-select: none;
 }
 .cursor-default{
     cursor: auto;

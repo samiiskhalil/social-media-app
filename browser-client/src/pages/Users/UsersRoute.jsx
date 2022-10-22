@@ -4,7 +4,8 @@ import User from './User/User'
 const UsersRoute = () => {
   return (
         <Routes>
-            <Route path='/:id' element={<User/>} ></Route>
+            <Route path='/:id' element={<User/>} >
+            </Route>
         </Routes>
     )
 }

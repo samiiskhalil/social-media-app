@@ -1,6 +1,6 @@
 import React from 'react'
-import {User,Users,Login,Signup,Home,UsersRoute} from './pages/index.js'
-import { NavBar } from './components/index.js'
+import {EditImg,User,Users,Login,Signup,Home,UsersRoute} from './pages/index.js'
+import {  NavBar } from './components/index.js'
 import './app.css'
 import {useNavigate,useLocation,Routes,Route} from 'react-router-dom'
 const App = () => {
@@ -16,6 +16,7 @@ const App = () => {
 </Route>
 <Route path='/signup' element={<Signup />}/>
 <Route path='/login' element={<Login />}/>
+<Route path='/edit-image/:imageSrc' element={<EditImg/>}/>
 
 </Routes>
 </>
