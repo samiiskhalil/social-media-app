@@ -81,7 +81,6 @@ onClick={(e)=>{
 <div className="col-sm-6 col-12 ">
 
     <div className="form-floating  m-3">
-
     <input onChange={handleChange} placeholder='first name' required type="text" className="form-control" name='firstName' id='first-name' />
     <label htmlFor="firstNname">first name</label>
     </div>

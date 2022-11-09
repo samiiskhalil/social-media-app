@@ -3,6 +3,7 @@ import { Link,useNavigate } from 'react-router-dom'
 import {EditImg} from '../../EditImg/EditImg.jsx'
 import axios from 'axios'
 import './user.css'
+import {Posts} from '../../../components/index.js'
 import wallpaper from '../../../resources/sami.jpg'
 import {useEffect,useRef,useState} from 'react'
 const User = () => {
@@ -14,10 +15,14 @@ const User = () => {
   const [backgroundImageEditFlage,setBackgroundImageFlage]=useState(false)  
   const backgroundImageUploadRef =useRef('')
   const backgroundImageRef=useRef('')
-  const navigate=useNavigate()
+  const navigate=useNavigate()   
     const handleImgUpload=(inputRef)=>{
       const [file]=inputRef.current.files
-     const imageSrc=URL.createObjectURL(file).split('3000/')[1]
+      const imageSrc=URL.createObjectURL(file).split('3000/')[1]
+      // pass type of image to the Edit image component
+      // console.log(inputRef.current.attributes.for)
+      localStorage.setItem('type',inputRef.current.attributes['for'])
+      console.log(localStorage.getItem('type'))
       navigate(`/edit-image/${imageSrc}`)
     }
 return (
@@ -40,7 +45,7 @@ return (
   <div className={`background-menu ${!backgroundImageMenuFlage&& 'hide'}`}>
     <label className='upload-image' htmlFor="background">
 
-    <input accept='image/*'   onChange={(e)=>handleImgUpload(backgroundImageUploadRef)} 
+    <input for='background-image' accept='image/*'   onChange={(e)=>handleImgUpload(backgroundImageUploadRef)} 
     ref={backgroundImageUploadRef}  placeholder='upload' className='upload-background'  
     type="file" name="background" id="background" />
     upload
@@ -50,8 +55,8 @@ return (
   </div>
    
    
-<div className="profile-picture-container">
-  <div className="profile-img-container">
+<div  className="profile-picture-container">
+  <div  className="profile-img-container">
   <img clicking={false} draggable='false' ref={profilePictureRef}
   
   src="#" alt="profile-picture" />
@@ -65,7 +70,7 @@ return (
     </button >
       <div className={`profile-picture-update-menu-container ${!profilePictureMenuFlage&&'hide'}`}>
     <label htmlFor="update-profile-picture">
-        <input ref={profilePictureUploadInputRef}   onChange={(e)=>handleImgUpload(profilePictureUploadInputRef)} accept='image/*' placeholder='upload' type='file' name='update-profile-picture' id='update-profile-picture' className=' profile-picture-update-menu-item '/>
+        <input for='profile-image' ref={profilePictureUploadInputRef}   onChange={(e)=>handleImgUpload(profilePictureUploadInputRef)} accept='image/*' placeholder='upload' type='file' name='update-profile-picture' id='update-profile-picture' className=' profile-picture-update-menu-item '/>
          upload
     </label>
       </div>
@@ -74,6 +79,12 @@ return (
 </div>
 </div>
 </div>
+  </div>
+  <div className="row">
+    <div className="col">
+  <Posts/>
+
+    </div>
   </div>
 </div>
 </>

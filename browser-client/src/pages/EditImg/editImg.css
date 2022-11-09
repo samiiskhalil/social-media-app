@@ -1,20 +1,107 @@
+.col{
+    margin-top: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.background-image{
+    width: 100%;
+    height:60vh;
 
+}
+.post{
+    height:60vh;
+
+    width: 60%;
+}
+.profile-image{
+    border-radius: 50%;
+    width: 300px;
+    height: 300px;
+}
 .edited-image-container{
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 100px;
-    overflow: hidden;
-    width: 100%;
-background-color: aqua;
-    height:50vh;
-left: 0;
+    flex-direction: column;
+    overflow:hidden ;
+    background-color: black;
+    left: 0;
 }
 .edited-image{
-    
-    margin: auto auto;
-    position: relative;
     object-fit: cover;
-    width: 80%;
-    height: 100%;
+    position: relative;
+   
 } 
+.confirmation-container{
+    border: 2px black solid;
+    margin-top: 30px;
+    background-color: rgba(214, 214, 214, 0.1);
+    display: flex;
+    padding:10px 10px;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    width: 50vw;
+
+}
+.btn{
+    border: 2px black solid;
+    border-radius: 6px;
+    z-index: 30003;
+}
+.confirm-btn{
+    color: white;
+background-color: black;
+}
+.confirm-btn:hover{
+    border: 2px black solid;
+    background-color: white;
+}
+.cancelation-btn{
+    background-color: white;
+}
+.cancelation-btn:hover{
+    background-color: black;
+    color: white;
+    border: none;
+}
+.scaler-container{
+    position: absolute;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 20%;
+    height: 10%;
+    background-color: rgba(210, 210, 210, 0.4);
+    top: 70%;
+    left: 5vw;
+}
+.scaler-container svg{
+    color: black;
+    transform: scale(2);
+}
+.scaler-container svg:hover{
+    cursor: pointer;
+    color: saddlebrown;
+}
+.scaler-container button{
+    z-index: 3000;
+    position: relative;
+    top: 30px;
+    width: 300px;
+}
+.btn-background svg{
+transform: scale(2);
+}
+.cutter-container{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+.cutter-container svg{
+transform: scale(1.5);
+}

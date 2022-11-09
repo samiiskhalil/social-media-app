@@ -1,5 +1,9 @@
 .images-holder{
     position: relative;
+    width: 100%;
+}
+.col{
+    margin-top: 0;
 }
 .background-image-container{
     margin-top: 14px;
@@ -118,8 +122,8 @@ transform: scale(2);
     align-items: center;
     border: 1px black solid;
     position: absolute;
-    width: 100px;
-    height: 100px;
+    min-width: 100px;
+    aspect-ratio: 1/1;
     left: 13px;
     border-radius: 50%;
     bottom: -70px;
@@ -127,8 +131,6 @@ transform: scale(2);
 }
 .profile-picture-container img{
     position: absolute;
-    width: 100%;
-    height: 100%;
     border-radius: 50%;
     object-fit: cover;
 }
