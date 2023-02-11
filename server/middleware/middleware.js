@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt')
 const mongoose = require('mongoose');
+const { restart } = require('nodemon');
 const User = require('../models/userSchema.js');
 class middleware{
     constructor(){
@@ -21,33 +22,53 @@ catch(err){
 static async findUser(req,res,next){
     try{
         
-        const user=await User.findOne({email:req.body.email})
+        const user=await User.findOne({email:req.query.email})
         if(!user){
-            console.log('aaa')
-            res.status(404).json({success:false,err:'no user was found'})
+           return res.status(404).json({success:false,err:'email does not exist'})
         
-    }const res=await bcrypt.compare(req.body.password,user.password)
-        if(!res)
+    }
+    console.log(user)    
+    const password=req.headers['password']
+
+    const boolRes=await bcrypt.compare(password,user.password)
+        if(!boolRes)
         return res.status(400).json({sucess:false,err:'the password is wrong'})
         req.user=user
+        console.log(user)
         return next()
     }
     catch(err){
-
+        console.log(err.message)
+        return res.json({success:false,err:err.message})
     }
 }
 static async createUser(req,res,next){
-    try{
-        const user=await User.create({
-            ... req.body
-        })
-        req.user=user
-        return next()
+    try{ const {firstName,lastName,middleName,birthDate,city,country,age,phoneNumber,sex,street,email,password}= req.body
+      const hashedPassword=await bcrypt.hash(password,10)
+    const user =await User.create({
+      password:hashedPassword,  
+      firstName,
+          lastName,
+          middleName,
+          birthDate,
+          age,
+         address:{
+                  country,
+                  city,
+                  street
+         },
+          phoneNumber,
+          sex,
+          email
+      })
+      req.user=user
+      return next()
     }
-    catch(err){
-        console.log(err)
-        res.status(400).json({success:false,err:err.message})
-    }
+  
+  catch(err){
+  res.status(400).json({success:false,err:err.message})
+  }
+  }
 }
-}
+
 module.exports=middleware

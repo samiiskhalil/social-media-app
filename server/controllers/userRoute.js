@@ -8,21 +8,6 @@ class user{
 
   }
   // log in user
-  static async  loginUser(req,res,next) {
-    try{
-    const user =await User.findOne({email:req.query.email}) 
-    if(!user)
-      return res.status(404).json({success:false,err:'user not found'})
-      const password= req.headers['authorization']
-      const res=await bcrypt.compare(password,user.password)
-      if(res)
-      req.user=user
-      return next()      
-  }
-catch(err){
-  console.log(err.message)
-  res.status(400).json({success:false,err:err.message})
-}}
   static generateToken=async(req,res,next)=>{
    try{
     const token= await jwt.sign({id:req.user.id,},process.env.JWT_SECRET,{expiresIn:'2w'})
@@ -33,34 +18,7 @@ catch(err){
   return res.status(400).json({success:false,err:err.message})
 }
 }
-  static signup=async(req,res,next)=>{
-    try{ const {firstName,lastName,middleName,birthDate,city,country,age,phoneNumber,sex,street,email}= req.body
-      
-    const user =await User.create({
-      password:req.hashedPassword,  
-      firstName,
-          lastName,
-          middleName,
-          birthDate,
-          age,
-         address:{
-                  country,
-                  city,
-                  street
-         },
-          phoneNumber,
-          sex,
-          email
-      })
-      console.log('a')
-      req.user=user
-      return next()
-    }
-  
-  catch(err){
-  res.status(400).json({success:false,data:err.message})
-  }
-  }
+
   //send user and token
   // req.user req.token
   static async getUser(req,res){
