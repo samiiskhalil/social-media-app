@@ -47,17 +47,9 @@ const handleChange=(e)=>{
 }
 const handleSubmit=async (e)=>{
   try{
-  const {data}= await axios.post('http://localhost:1000/users/signup',user)
-  console.log(data.token)  
-  if(Cookies.get('token'))
-    Cookies.set('token',null)
-    Cookies.set('token',data.token)
-    Cookies.set('firstTime',true)
-    Cookies.set('userName',data.userName)
-    Cookies.set('userId',data.userId)
-    console.log(Cookies.get('token'))
-    setSuccess(data.success)
-    navigate(`/users/${data.userId}`)    
+  const {data}= await axios.post('http://localhost:1000/api/users/signup',user)
+  console.log(data)  
+  navigate(`/users/${data.userId}`)    
   } 
 
 catch(err){
@@ -162,13 +154,13 @@ onClick={(e)=>{
            </div>
            <div onChange={handleChange} className="form-check-inline m-3">
 
-<input onChange={handleChange} required type="radio" value='male' className='form-check-input' name="sex" id="male" />
+<input onChange={handleChange} required type="radio" value='male' className='form-check-input radio-input' name="sex" id="male" />
  <label className='form-check-label' htmlFor="sex">male</label>          
            </div>
  
            <div className="form-check-inline m-3 ">
 
-<input onChange={handleChange} required type="radio" value='female' className='form-check-input' name="sex" id="female" />
+<input onChange={handleChange} required type="radio" value='female' className='form-check-input radio-input' name="sex" id="female" />
  <label className='form-check-label' htmlFor="sex">female</label>          
            </div>
  

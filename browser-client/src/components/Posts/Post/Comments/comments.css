@@ -7,3 +7,19 @@
     overflow-y: scroll;
     background-color: rgba(163, 187, 227, 0.393);
 }
+.comment-container
+{
+    padding: 10px;
+}
+.comment-container img{
+    padding-right: 4px;
+border-radius: 50%;
+width: 40px;
+height: 40px;
+}
+.comment-container section{
+    padding-left:20px ;
+}
+.comment-container p{
+margin: 0;
+}

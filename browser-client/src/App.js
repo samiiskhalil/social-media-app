@@ -1,5 +1,5 @@
 import React from 'react'
-import {EditImg,User,Users,Login,Signup,Home,UsersRoute} from './pages/index.js'
+import {EditImg,Logout,User,Users,Login,Signup,Home,UsersRoute} from './pages/index.js'
 import {  NavBar } from './components/index.js'
 import './app.css'
 import {useNavigate,useLocation,Routes,Route} from 'react-router-dom'
@@ -14,6 +14,8 @@ const App = () => {
     <Route path='users/*' element={<UsersRoute/>} />
     
 </Route>
+<Route path='/logout' element={<Logout/>}/>
+
 <Route path='/signup' element={<Signup />}/>
 <Route path='/login' element={<Login />}/>
 <Route path='/edit-image/:imageSrc' element={<EditImg/>}/>

@@ -31,3 +31,9 @@ border-bottom: 1px darkgrey solid;
     color: red;
     font-size: 0.9rem;
 }
+input{
+    min-width: 300px;
+}
+.radio-input{
+    min-width: 10px; 
+}

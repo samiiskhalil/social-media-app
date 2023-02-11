@@ -17,6 +17,8 @@ const userSchema= new mongoose.Schema({
     middleName:{ 
     type:String
     },
+posts:[{type:mongoose.SchemaTypes.ObjectId,ref:'Post'}]
+    ,
     profilePicture:{
         type:String
     },
@@ -48,7 +50,7 @@ const userSchema= new mongoose.Schema({
 pagesLiked:[{type:mongoose.SchemaTypes.ObjectId,ref:'Page'}],
 joinedGroupes:[{type:mongoose.SchemaTypes.ObjectId,ref:'Group'}],
 hobbies:[String],
-photos:[String],
+photosUrl:[String],
 email:{
     type:String,
 
