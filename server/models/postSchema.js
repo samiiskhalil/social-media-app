@@ -9,7 +9,8 @@ const postSchema=new mongoose.Schema({
 describtion:{
     type:String,
 },
- 
+shared:{type:mongoose.SchemaTypes.ObjectId,ref:'Post'}
+, 
 photosUrl:{
     type:[String]
 },
