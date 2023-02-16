@@ -6,6 +6,14 @@ class middleware{
     constructor(){
 
     }
+    static async createPage(req,res,next){
+        try{
+
+        }
+        catch(err){
+            return res.json({success:false,err:err.message})
+        }
+    }
 static async checkEmailExists(req,res,next){
 try{
 const user=await User.findOne({email:req.body.email})
