@@ -1,11 +1,6 @@
+const Page = require('../models/pageSchema.js');
 class pagesController{
-    static async creatPage(req,res){
-        try{
+    // manager is the one who creates it
 
-        }
-        catch(err){
-            return res.json({success:false,err:err.message})
-        }
-    }
 }
 module.exports=pagesController

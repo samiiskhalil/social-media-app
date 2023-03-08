@@ -5,7 +5,7 @@ const commentSchema=new mongoose.Schema(
         ,content:String,
         postId:{type:mongoose.SchemaTypes.ObjectId,ref:'Post'}
         ,
-
+        //comment
         repliedBy:[{type:mongoose.SchemaTypes.ObjectId,ref:'Comment'}],
         repliedTo:String,
         likedBy:[{type:mongoose.SchemaTypes.ObjectId,ref:'User'}]

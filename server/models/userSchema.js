@@ -57,6 +57,10 @@ email:{
 },phoneNumber:{
     type:Number
 }
-
+,postsLiked:[{type:mongoose.SchemaTypes.ObjectId,ref:'Post'}],
+postsShared:[{type:mongoose.SchemaTypes.ObjectId,ref:'Share'}]
+,
+commentsLiked:[{type:mongoose.SchemaTypes.ObjectId,ref:'Comment'}],
+commentsRepliedTo:[{type:mongoose.SchemaTypes.ObjectId,ref:'Comment'}]
 })
 module.exports=mongoose.model('User',userSchema)

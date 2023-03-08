@@ -1,6 +1,7 @@
 const mongoose=require('mongoose')
-const PageSchema=new mongoose.Schema({
-    admins:[
+const pageSchema=new mongoose.Schema({
+    manager:{type:mongoose.SchemaTypes.ObjectId,ref:'User'}
+    ,admins:[
         {type:mongoose.SchemaTypes.ObjectId
         ,ref:'User',required:true}]
     ,pageName:{
@@ -16,5 +17,6 @@ const PageSchema=new mongoose.Schema({
     pageWallpaperImageName:String,
     wallpaperImageName:String,
     pageImageName:String
-
+    
 })
+module.exports=mongoose.model('Page',pageSchema)

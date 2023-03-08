@@ -1,4 +1,5 @@
 const Post = require('../models/postSchema.js')
+const User=require('../models/userSchema.js')
 const multer=require('multer')
 const mongoose = require('mongoose');
 const Comment=require('../models/commentSchema.js')
@@ -118,7 +119,8 @@ class postController{
     }
     static async createComment(req,res){
         try{
-           const comment=await Comment.create({
+            let user=await User.findById(req.userId)
+            const comment=await Comment.create({
             content:req.body.content,
             postId:req.body.postId,
             repliedTo:req.body.repliedCommentId||""
@@ -128,34 +130,43 @@ class postController{
        await post.save()
         if(req.body.repliedCommentId){
             //repliedComment is the original comment
-        const repliedComment=await Comment.findById(req.body.repliedCommentId)
-        repliedComment.repliedBy.push(comment.id)
+            const repliedComment=await Comment.findById(req.body.repliedCommentId)
+            repliedComment.repliedBy.push(comment.id)
+            user.commentsRepliedTo.push(comment.id)
+            await user.save()
         await repliedComment.save()
         return res.json({success:true,comment,repliedComment})
     }
     return res.json({success:true,comment})
-    } 
-            
-        catch(err){
-            return res.json({success:false,err:err.message})
-        }
+} 
+
+catch(err){
+    return res.json({success:false,err:err.message})
 }
-    static async commentReaction(req,res){
+}
+static async commentReaction(req,res){
     try{
         const comment=await Comment.findById(req.body.commentId)
         if(!comment)
         return req.json({success:false,err:'no coomment found'})
+        let user=await User.findById(req.userId)
         const reaction=req.body.reaction
         if(reaction==='like'){
             if(comment.likedBy.some(userId=>userId.toString()===req.userId))
             {
                 comment.likedBy=comment.likedBy.filter(userId=>userId.toString()!==req.userId)
+                user.commentsLiked=user.commentsLiked.filter(commentId=>commentId.toString()!==comment.id)
                 await comment.save()
+                await user.save()
                 return res.json({success:true,comment})
             }
             
             comment.likedBy.push(req.userId)
             await comment.save()
+            
+            user.commentsLiked.push(comment.id)
+            await user.save()
+            console.log(user.commentsLiked)
             return res.json({success:true,comment})
         }
         return res.json({success:false,err:'no reaction was set'})
@@ -201,7 +212,7 @@ class postController{
 
                     return res.json({success:true,newSharedPost,oldPost:post})
                 }
-                
+                return res.json({success:false,err:'no reaction was specifeid'})
         }
         catch(err){
             return res.json({success:false,err:err.message})

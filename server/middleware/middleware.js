@@ -1,14 +1,28 @@
 const bcrypt = require('bcrypt')
 const mongoose = require('mongoose');
 const { restart } = require('nodemon');
+const Page=require('../models/commentSchema.js')
 const User = require('../models/userSchema.js');
 class middleware{
     constructor(){
 
     }
-    static async createPage(req,res,next){
-        try{
-
+    // manager is the person who created the page id was taken from the token
+    static async creatPage(req,res,next){
+        const {adminsIds,pageName,describtion,pageWallpaperImageName,pageImageName}=req.body
+        try
+        {
+            const page=await Page.create({
+                manager:req.userId,
+                admins:adminsIds,    
+                pageName,
+                describtion,
+                pageWallpaperImageName,
+                pageImageName            
+            })
+            console.log(page)
+            req.page=page
+            return next()
         }
         catch(err){
             return res.json({success:false,err:err.message})
