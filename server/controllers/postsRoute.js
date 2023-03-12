@@ -6,10 +6,13 @@ const Comment=require('../models/commentSchema.js')
 const fs = require('fs')
 const path=require('path')
 const util = require('util');
-const rmdir=util.promisify(fs.rmdir)
+const rmdir=util.promisify(fs.rm)
 const readFile = util.promisify(fs.readFile)
 const writeFile=util.promisify(fs.writeFile)
 const mkdir=util.promisify(fs.mkdir)
+const postMiddleware=require('../middleware/postModelSideEffecthandler.js');
+const commentsMiddleware = require('../middleware/commentMiddleware.js');
+const { ClickAwayListener } = require('@mui/material');
 async function  saveFiles(files,postId){
     let filesNames=[]
     let dir=`./uploaded-files/posts-files/${postId}`
@@ -38,6 +41,36 @@ function convertToObjectId(id){
     return mongoose.Types.ObjectId(id)
 } 
 class postController{
+
+static async sendPost(req,res){
+    try
+    {
+        return res.json({success:true,post:req.post})
+    }
+    catch(err){
+        return res,json({success:false,err:err.message})
+    }
+}
+
+
+
+
+
+    //
+
+
+
+
+
+
+
+
+
+
+
+
+    //
+
     static async getShares(req,res){
         try{
              let post =await Post.findById(req.query.postId)
@@ -78,8 +111,12 @@ class postController{
     }
     static async deleteComment(req,res){
         try{
-              const comment  =await Comment.findByIdAndDelete(req.query.commentId)
-              if(comment.repliedTo){
+                          const comment  =await Comment.findById(req.query.commentId)
+                            console.log(comment.user.toString())
+                            console.log(req.userId)
+                          if(comment.user.toString()!==req.userId.toString())
+                          return res.json({success:false,err:'not the commenter'})                            
+                        if(comment.repliedTo){
                 const parentComment=await Comment.findById(comment.repliedTo)
                 parentComment.repliedBy=parentComment.repliedBy.filter
                 (commentId=>commentId.toString()!==comment.id.toString())
@@ -92,7 +129,7 @@ class postController{
                         let newList=[] 
                             for (let i = 0; i < oldList.length; i++) {
                                 const comment=await Comment.findByIdAndDelete(oldList[i])
-                              
+                                console.log(users,'a')
                                 console.log(comment.id,'deleted',k)
                                     k++
                                     newList=newList.concat(comment.repliedBy)
@@ -119,8 +156,8 @@ class postController{
     }
     static async createComment(req,res){
         try{
-            let user=await User.findById(req.userId)
             const comment=await Comment.create({
+                user:req.userId,
             content:req.body.content,
             postId:req.body.postId,
             repliedTo:req.body.repliedCommentId||""
@@ -128,15 +165,16 @@ class postController{
         let post=await Post.findById(comment.postId)
         post.comments.push(comment)
        await post.save()
+       console.log('before')
+     await  commentsMiddleware.addCommentToUser(req.userId,comment.id)
         if(req.body.repliedCommentId){
             //repliedComment is the original comment
             const repliedComment=await Comment.findById(req.body.repliedCommentId)
             repliedComment.repliedBy.push(comment.id)
-            user.commentsRepliedTo.push(comment.id)
-            await user.save()
-        await repliedComment.save()
+            await repliedComment.save()
         return res.json({success:true,comment,repliedComment})
     }
+
     return res.json({success:true,comment})
 } 
 
@@ -180,37 +218,42 @@ static async commentReaction(req,res){
                 let post=await Post.findById(req.body.postId)
                 if(!post)
                 return res.json({success:false,err:'post was not found'})
+                let user=await User.findById(req.userId)
                 if(req.body.reaction==='like')
                 {
+                    console.log(post.likes)
                     if(post.likes.some(like=>like.user.toString()===req.userId))
                     {
-                        post.likes= post.likes.filter(like=>!like.user.toString()===req.userId)
-                        await post.save()
+                        post.likes= post.likes.filter(like=>!like.user.toString()===req.userId.toString())
+                        console.log('aa')
                         post= await   post.populate('likes.user')
+                        await post.save()
+
+                     await   postMiddleware.addPostToUserLikedPosts(req.userId,post.id,false)
                         return res.json({success:true,post})
                     }
-                    await post.likes.push({user:req.userId})
-                    await post.save()
-                    post= await   post.populate('likes.user')
-
+                     post.likes.push({user:req.userId})
+                     await post.save()   
+                    post= await post.populate('likes.user')
+                    
+                  await  postMiddleware.addPostToUserLikedPosts(req.userId,post.id,true)
                     return res.json({success:true,post})
                 }
                 if(req.body.reaction==='share'){
-                    console.log(req.userId,post.publisher.toString())
                     if(req.userId===post.publisher.toString())
                     return res.json({success:false,err:"you are the poster :)"})
                     if(post.shares.some(share=>(share.user.toString()===req.userId)))
                         return res.json({success:false,err:'you already shared the post  '})
-                    await post.shares.push({user:req.userId})
-                    await post.save()
+                        await postMiddleware.addUserToPostShares(req.userId,post.id)
+                        await    postMiddleware.addPostToUserSharedPost(req.userId,post.id)
                     const newSharedPost=await Post.create({
                         publisher:req.userId,
                         describtion:req.body.describtion,
-                        shared:post._id
+                        shared:{post:post._id,removed:false}
 
                     })
-
-                    return res.json({success:true,newSharedPost,oldPost:post})
+                    postMiddleware.addPostToUserPosts(req.userId,newSharedPost.id)
+                        return res.json({success:true,newSharedPost,oldPost:post})
                 }
                 return res.json({success:false,err:'no reaction was specifeid'})
         }
@@ -218,7 +261,6 @@ static async commentReaction(req,res){
             return res.json({success:false,err:err.message})
         }
     }
-    // populates first layer of replies
     static async getPostComments(req,res){
         try
         {
@@ -257,8 +299,8 @@ static async commentReaction(req,res){
                 post.files.push({fileName:names[i],style:style[i]})
                 
             }
-          
                 await post.save()
+            await    postMiddleware.addPostToUserPosts(req.userId,post.id)
             return res.json({success:true,post:post})
         }
         catch(err){
@@ -266,21 +308,33 @@ static async commentReaction(req,res){
             return res.json({success:false,err:err.message})
         }
     }
+    // delete post and comment
     static async deletePost(req,res){
         try{
-                const postId=req.query.postId
-                console.log(req.query)
+            const postId=req.query.postId
+
+                const comments=await Comment.find({postId:postId}) 
+                console.log(comments.length)
+                comments.forEach(async(comment)=>{
+                    await comment.delete()
+                    //delete comment from user record
+                    console.log('removeing user comments')
+                  await  commentsMiddleware.removeCommentFromUserComments(req.userId,comment.id)
+                })
+             
+                // remove post from user record
+                console.log('removing post from user')
+           await      postMiddleware.deletePostFromUserRecord(req.userId,postId)
+                // submit that the post was reomved from posts that shared it
+                console.log('removing post from post')
+               await postMiddleware.removePostFromPostRecord(postId)
+                // delete post
                 const post=await Post.findByIdAndDelete(postId)
                 if(!post)
                 return res.json({success:false,err:'post was alreaday deleted'})
-                const comments=await Comment.find({postId:post.id}) 
-                console.log(comments.length)
-                comments.forEach(async(comment)=>{
-                        await comment.delete()
-                })
-                post.filesNames.forEach(async(fileName)=>{
+                post.files.forEach(async(file)=>{
 
-                    await rmdir(`./uploaded-files/posts-files/${post.id}`,{recursive:true})
+                    await rmdir(`./uploaded-files/posts-files/${postId}`,{recursive:true})
 
                 })
                 return res.json({success:true,post})

@@ -27,6 +27,7 @@ catch(err){
         let user=await User.findById(userId)
         user=await user.populate('posts')
         console.log(user)
+        // await user.save()
         res.json({success:true,user:user})
       }
     catch(err){

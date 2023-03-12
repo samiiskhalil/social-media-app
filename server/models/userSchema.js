@@ -58,9 +58,12 @@ email:{
     type:Number
 }
 ,postsLiked:[{type:mongoose.SchemaTypes.ObjectId,ref:'Post'}],
-postsShared:[{type:mongoose.SchemaTypes.ObjectId,ref:'Share'}]
-,
+
 commentsLiked:[{type:mongoose.SchemaTypes.ObjectId,ref:'Comment'}],
-commentsRepliedTo:[{type:mongoose.SchemaTypes.ObjectId,ref:'Comment'}]
+comments:[{type:mongoose.SchemaTypes.ObjectId,ref:'Comment'}]
 })
+userSchema.post('save',async function(doc,next){
+    console.log('a')
+    return next()
+  })
 module.exports=mongoose.model('User',userSchema)

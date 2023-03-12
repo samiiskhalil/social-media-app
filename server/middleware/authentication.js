@@ -13,6 +13,8 @@ class authentication{
             res.status(400).json({success:false,err:'you are not signed in'})
             const data=await jwt.verify(token,process.env.JWT_SECRET)
             req.userId=data.userId
+            let user=await User.findById(data.userId)
+            req.user=user
             return next()
         }
         catch(err){

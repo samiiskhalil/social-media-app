@@ -43,7 +43,8 @@ catch(err){
 // returns req.ser
 static async findUser(req,res,next){
     try{
-        
+        console.log(req.headres)
+        console.log('aaa')
         const user=await User.findOne({email:req.query.email})
         if(!user){
            return res.status(404).json({success:false,err:'email does not exist'})
@@ -84,6 +85,9 @@ static async createUser(req,res,next){
           email
       })
       req.user=user
+      user.firstName='aaa'
+      await user.save()
+      console.log('bb')
       return next()
     }
   
