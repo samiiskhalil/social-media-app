@@ -6,12 +6,28 @@ class postModelSideEffectHandler{
     constructor(){
 
     }
+    static async removeComments(req,res,next){
+        try
+        {
+            console.log('ssssssssssss')
+            let {comment,commentsList}=req
+            let post=await Post.findById(comment.postId)
+                commentsList.forEach(async(comment)=>{
+                 post.comments=post.comments.filter(postComment=>postComment.comment.toString()!==comment.id)
+                })
+                await post.save()
+                return next()
+            }
+        catch(err){
+            return res.json({success:false,err:err.message})
+        }
+    }
     static async addComment(req,res,next){
         try{
             let post=await Post.findById(req.body.postId)
                 if(!post)
                 return res.json({success:false,err:'no post was found'})
-            post.comments.push(req.comment.id)
+            post.comments.push({comment:req.comment.id,user:req.user.id})
               await post.save()
               return next()
 
@@ -32,7 +48,6 @@ class postModelSideEffectHandler{
            return next()
         }
         catch(err){
-            console.log('as')
             return res.json({success:false,err:err.message})
         }
     }

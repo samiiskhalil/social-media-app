@@ -49,7 +49,7 @@ router.patch('/like',auth.verifyToken,postMiddleware.updateLikes,userModelSideEf
 // router.patch('/',auth.verifyToken,post.postReaction)
 // router.patch('/comments',auth.verifyToken,post.commentReaction)
 // router.delete('/comments',auth.verifyToken,post.deleteComment)
-// router.get('/comments',auth.verifyToken,post.getPostComments)
+router.get('/comments',auth.verifyToken,post.getPostComments)
 // router.get('/likes',auth.verifyToken,post.getLikes)
 // router.get('/shares',auth.verifyToken,post.getShares)
 // for files

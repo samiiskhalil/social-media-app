@@ -1,7 +1,44 @@
 const User=require('../models/userSchema.js')
+const Comment=require('../models/commentSchema.js')
 class userModelSideEffectHandler{
     constructor(){
 
+    }
+    static async removeComments(req,res,next){
+        try{
+            let {commentsList}=req
+            commentsList.forEach(async(comment)=>{
+                let user=await User.findById(comment.user)
+                user.comments=user.comments.filter(commentId=>commentId.toString()!==comment.id)
+                await user.save()
+            })
+            return next()
+        }
+        catch(err){
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async removeLikes(req,res,next){
+        try
+        {
+            console.log( 'xxxxxxxxx')
+            let {commentsList}=req
+            // console.log(commentsList[0].likedBy)
+
+            // let user=await User.findById(commentsList[0].likedBy[0])
+            commentsList.forEach(async(comment)=>{
+                comment.likedBy.forEach(async(userId)=>{
+                    let user=await User.findById(userId)
+                    user.commentsLiked=user.commentsLiked.filter(commentId=>commentId.toString()!==comment.id)
+                    await user.save()
+                    console.log(user.commentsLiked)
+                })
+            })
+            return next()
+        }
+        catch(err){
+            return res.json({success:false,err:err.message})
+        }
     }
     static async addLikedComment(req,res,next){
         try
@@ -21,7 +58,6 @@ class userModelSideEffectHandler{
     static async addComment(req,res,next){
         try
         {
-            console.log('aas')
            let user=await User.findById(req.user.id)
            user.comments.push(req.comment.id)
          await user.save()

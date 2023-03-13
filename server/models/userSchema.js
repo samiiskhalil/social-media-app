@@ -62,8 +62,4 @@ email:{
 commentsLiked:[{type:mongoose.SchemaTypes.ObjectId,ref:'Comment'}],
 comments:[{type:mongoose.SchemaTypes.ObjectId,ref:'Comment'}]
 })
-userSchema.post('save',async function(doc,next){
-    console.log('a')
-    return next()
-  })
 module.exports=mongoose.model('User',userSchema)

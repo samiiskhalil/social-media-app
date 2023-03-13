@@ -7,6 +7,7 @@ const postsRouter = require('./routes/postsRoute.js');
 const userRouter = require('./routes/userRoute.js');
 const rootRouter=require('./routes/rootRoute.js')
 const mongoose = require('mongoose');
+const User=require('./models/userSchema.js')
 const commentsRouter=require('./routes/commentsRoute.js')
 const app=express()
 mongoose.connect(process.env.DATABASE_URL,()=>console.log('connected to database'),err=>console.log(err))

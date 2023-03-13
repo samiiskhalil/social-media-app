@@ -3,6 +3,22 @@ class commentModelSideEffectHandler{
     constructor(){
 
     }
+    static async removeCommentFromOgComment(req,res,next){
+        try 
+        {
+            let {comment}=req
+            if(!comment.repliedTo)
+            return next()            
+            
+            let ogComment=await Comment.findById(comment.repliedTo)
+            ogComment.repliedBy.filter(async(commentId)=>
+                commentId.toString()!==comment.id)
+                return next()
+            }
+        catch(err){
+            return res.json({success:false,err:err.message})
+        }
+    }
     static async addCommentToOgComment(req,res,next){
         try 
         {

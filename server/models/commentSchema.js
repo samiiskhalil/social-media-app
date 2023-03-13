@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const {deleteEventSideEffects}=require('./deleteEventSideEffects.js')
 const commentSchema=new mongoose.Schema(
     {
         user:{type:mongoose.SchemaTypes.ObjectId,ref:'User'}
@@ -14,18 +13,5 @@ const commentSchema=new mongoose.Schema(
         repliedTo:String,
         likedBy:[{type:mongoose.SchemaTypes.ObjectId,ref:'User'}]
     }
-)
-commentSchema.pre('remove',async (comment,next)=>{
-    try
-    {
-        let parentComment=await Comment.findById(comment.repliedTo)
-        if(!parentComment)
-        return next()
-        console.log(parentComment)
-    }
-    catch(err){
-        console.log(err.message)
-    }
-}
-)
+)    
 module.exports=mongoose.model('Comment',commentSchema)

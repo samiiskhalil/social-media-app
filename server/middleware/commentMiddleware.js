@@ -1,28 +1,57 @@
 const Comment=require('../models/commentSchema.js')
 const User=require('../models/userSchema.js')
+
 class commentsMiddleware{
     constructor(){
 
     }
-    static async deleteComment(req,res,next){
+    static async getCommentAndReplies(req,res,next){
         try
         {
-            let {comment} =req
-            await comment.delete()
+            const {comment}=req
+            let commentsList=[]
+            commentsList.push(comment)
+            async function getReplies(replies){
+               let tempList=[]
+                for (let i = 0; i < replies.length; i++) {
+                    let reply=await Comment.findById(replies[i])
+                    tempList.push(reply)
+                }
+              commentsList=  commentsList.concat(tempList)
+                for (let i = 0; i < tempList.length; i++) {
+                    await  getReplies(tempList[i].repliedBy)
+                }
+                
+            }
+            if(comment.repliedBy.length)
+            await getReplies(comment.repliedBy)
+        
+            req.commentsList=commentsList
             return next()
+        }
 
-        }
         catch(err){
+
             return res.json({success:false,err:err.message})
+        }}
+        static async deleteComments(req,res,next){
+            try
+            {
+            let comments=req.commentsList
+            comments.forEach(async(comment)=>await comment.remove())
+            return next()    
+            }
+            catch(err){
+                return res.json({success:false,err:err.message})
+            }
         }
-    }
+        
     static async updateComment(req,res,next){
         try
         {
             let {comment} =req
             comment.content=req.body.content
            await comment.save()
-           console.log()
            req.comment=comment
             return next()
 
@@ -50,7 +79,6 @@ static async updateCommentLikes(req,res,next){
     try
     {
     let {comment,user}=req
-    console.log(user)
     // check if user liked
     if(comment.likedBy.some(userId=>userId.toString()===user.id))
     {   // remove like

@@ -32,9 +32,4 @@ post:{type:mongoose.SchemaTypes.ObjectId,ref:'Post'}
 }],
 
 })
-//add post to user
-postSchema.post('validate',async function(doc,next){
-  console.log('a')
-  return next()
-})
 module.exports=mongoose.model('Post',postSchema)

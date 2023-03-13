@@ -92,7 +92,6 @@ class postMiddleware{
          return next()
     }
     catch(err){
-        console.log(err.message)
         return res.json({success:false,err:'post was not added to req object'})
     }
     }

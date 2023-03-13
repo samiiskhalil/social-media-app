@@ -21,6 +21,21 @@ router.post('/',auth.verifyToken,commentMiddleware.checkForOgComment,commentMidd
 router.patch('/',auth.verifyToken,commentMiddleware.checkAuth,commentMiddleware.updateComment,commentController.sendComment)
 // like a comment
 router.patch('/likes',auth.verifyToken,commentMiddleware.verifyComment,commentMiddleware.updateCommentLikes,userModelSideEffectHandler.addLikedComment,commentController.sendComment)
-// on delete users RepliedComments will be deleted--user who liked each comment commentsLiked record updated--
-router.delete('/',auth.verifyToken,commentMiddleware.checkAuth,commentMiddleware.deleteComment,async (req,res)=>res.send('hi'))
+// get comment and it's replies then delete users then remove the list from the post 
+router.delete('/',auth.verifyToken,
+commentMiddleware.checkAuth,
+commentModelSideEffectHandler.removeCommentFromOgComment
+// input comment doc
+// output commentsList which is a list of the comment and it's replies docs
+,commentMiddleware.getCommentAndReplies,
+// input is commentsList
+userModelSideEffectHandler.removeComments,
+// input is commentsList
+userModelSideEffectHandler.removeLikes,
+// input is commentsList
+postModelSideEffectHandler.removeComments,
+// input is commentsList
+commentMiddleware.deleteComments,
+// input is comment
+commentController.sendComment)
 module.exports=router
