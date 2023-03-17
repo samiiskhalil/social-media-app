@@ -1,2 +1,0 @@
-post model update 
-coding error handel for create post
