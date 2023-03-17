@@ -3,6 +3,7 @@ const multer = require('multer');
 const upload=multer()
 require('dotenv').config()
 const cors = require('cors')
+const Comment=require('./models/commentSchema.js')
 const postsRouter = require('./routes/postsRoute.js');
 const userRouter = require('./routes/userRoute.js');
 const rootRouter=require('./routes/rootRoute.js')
@@ -16,7 +17,7 @@ app.use(cors({
     credentials:true,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 }))
-mongoose.set('strictQuery', false)
+mongoose.set('strictQuery', true)
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(upload.any())

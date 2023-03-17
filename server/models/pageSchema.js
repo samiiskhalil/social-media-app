@@ -18,5 +18,5 @@ const pageSchema=new mongoose.Schema({
     wallpaperImageName:String,
     pageImageName:String
     
-})
+},{versionKey:false})
 module.exports=mongoose.model('Page',pageSchema)

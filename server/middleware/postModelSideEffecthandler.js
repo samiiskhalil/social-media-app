@@ -1,21 +1,84 @@
 const User=require('../models/userSchema.js')
 const Post=require('../models/postSchema.js')
 const Comment=require('../models/commentSchema.js')
+const util = require('util');
 const CommentModelSideEffectHandler=require('./commentMiddleware.js')
+const  fs=require('fs');
+const { findById } = require('../models/userSchema.js');
+const rmdir=util.promisify(fs.rm)
 class postModelSideEffectHandler{
     constructor(){
 
     }
+    static async deleteFiles(req,res,next){
+        try{
+            const {postsList}=req
+            for (let i = 0; i < postsList.length; i++) 
+                await rmdir(`./uploaded-files/posts-files/${postsList[i].id}`,{recursive:true})
+return next()
+        }
+        catch(err){
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async removePostsFromOgShares(req,res,next){
+        try
+        {
+            const {postsList}=req
+            for (let i = 0; i < postsList.length; i++) {
+                console.log(postsList[i].id)
+                let ogPost=await Post.findById(postsList[i].sharedPost.post)
+                
+                if(!ogPost)
+                return next()
+                for (let j = 0; j < ogPost.shares.length; j++) {
+                    console.log(ogPost.shares[j].post.toString(),'ssss',postsList[i].id)     
+                    if(ogPost.shares[j].post.toString()===postsList[i].id)
+                        {   ogPost.shares.splice(j,1)
+                            console.log('match')
+                        }}
+                await ogPost.save()                                        
+                         console.log('succcesssss')
+            }
+            return next()
+        }
+        catch(err){
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async removePostsFromShares(req,res,next){
+        try{
+            console.log('removving the share')
+            const {postsList}=req
+            for (let i = 0; i < postsList.length; i++) 
+                for (let j = 0; j < postsList[i].shares.length; j++) {
+                    let sharePost=await Post.findById(postsList[i].shares[j].post)
+                    sharePost.sharedPost.removed=true
+                    await sharePost.save()
+                     }                                                   
+               return next() 
+            }          
+            catch(err){
+                return res.json({success:false,err:err.message})
+            }
+        
+        }
     static async removeComments(req,res,next){
         try
         {
             console.log('ssssssssssss')
             let {comment,commentsList}=req
-            let post=await Post.findById(comment.postId)
-                commentsList.forEach(async(comment)=>{
-                 post.comments=post.comments.filter(postComment=>postComment.comment.toString()!==comment.id)
-                })
-                await post.save()
+                for (let i = 0; i < commentsList.length; i++) 
+                {
+                    console.log('post Id ',commentsList[i].postId)
+                    let post=await Post.findById(commentsList[i].postId)
+                    console.log('before post remove',post.comments.length)
+                    for (let j = 0; j < post.comments.length; j++) 
+                                if(post.comments[j].toString()===commentsList[i].id)
+                                    post.comments.splice(j,1)                        
+                                    console.log('after post delete',post.comments.length)
+                                    await post.save()    
+                }
                 return next()
             }
         catch(err){
@@ -27,8 +90,9 @@ class postModelSideEffectHandler{
             let post=await Post.findById(req.body.postId)
                 if(!post)
                 return res.json({success:false,err:'no post was found'})
-            post.comments.push({comment:req.comment.id,user:req.user.id})
-              await post.save()
+                post.comments.push(req.comment.id)
+                await post.save()
+                console.log(req.comment.id)
               return next()
 
         }
@@ -51,35 +115,7 @@ class postModelSideEffectHandler{
             return res.json({success:false,err:err.message})
         }
     }
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    static async addPostToUserPosts(userId,postId){
+            static async addPostToUserPosts(userId,postId){
         try{
         let  user=await User.findById(userId)
       user.posts.push(postId)
@@ -167,19 +203,16 @@ console.log(err)    }
 
 
 
-    static async removePostFromPostRecord(postId){
-        try{
-            // find posts that shared the post
-            let posts=await Post.find({shared:{post:postId,removed:false}})
-            if(posts.length){
-console.log(posts)
-            posts.forEach(async(post)=>{
-                // remove the post from the record
-                post.shared.removed=true
-                await post.save()}
-            )
-        }}
-        catch(err){
+    static async removePostsFromPostsRecord(req,res,next){
+        try
+        {
+            const {postsList}=req
+            for (let i = 0; i < postsList.length; i++) {
+                let sharePost=await Post.findById()
+                
+            }
+        }
+            catch(err){
             console.log(err)
         }
     }

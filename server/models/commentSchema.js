@@ -11,7 +11,8 @@ const commentSchema=new mongoose.Schema(
         //comment
         repliedBy:[{type:mongoose.SchemaTypes.ObjectId,ref:'Comment'}],
         repliedTo:String,
-        likedBy:[{type:mongoose.SchemaTypes.ObjectId,ref:'User'}]
+        likedBy:[{type:mongoose.SchemaTypes.ObjectId,ref:'User'}],
+
     }
-)    
+,{versionKey:false})    
 module.exports=mongoose.model('Comment',commentSchema)

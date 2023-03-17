@@ -5,12 +5,21 @@ class commentsMiddleware{
     constructor(){
 
     }
+    static async getPostCommentsList(req,res,next){
+        try
+        {
+        let commentsList=[... req.post.comments]
+        req.commentsList=commentsList
+        return next()        }
+        catch(err){
+            return res.json({success:false,err:err.message})
+        }
+    }
     static async getCommentAndReplies(req,res,next){
         try
         {
             const {comment}=req
             let commentsList=[]
-            commentsList.push(comment)
             async function getReplies(replies){
                let tempList=[]
                 for (let i = 0; i < replies.length; i++) {
@@ -25,7 +34,8 @@ class commentsMiddleware{
             }
             if(comment.repliedBy.length)
             await getReplies(comment.repliedBy)
-        
+            commentsList.push(comment)
+            console.log(commentsList.length)
             req.commentsList=commentsList
             return next()
         }
@@ -38,14 +48,13 @@ class commentsMiddleware{
             try
             {
             let comments=req.commentsList
-            comments.forEach(async(comment)=>await comment.remove())
+            comments.forEach(async(comment)=>await comment.delete())
             return next()    
             }
             catch(err){
                 return res.json({success:false,err:err.message})
             }
         }
-        
     static async updateComment(req,res,next){
         try
         {
@@ -63,6 +72,7 @@ class commentsMiddleware{
     static async checkAuth(req,res,next){
         try
         {
+        
         let comment =await Comment.findById(req.body.commentId||req.query.commentId)
         if(!comment)
         return res.json({success:false,err:'no comment was found'})

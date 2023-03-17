@@ -29,9 +29,9 @@ commentModelSideEffectHandler.removeCommentFromOgComment
 // output commentsList which is a list of the comment and it's replies docs
 ,commentMiddleware.getCommentAndReplies,
 // input is commentsList
-userModelSideEffectHandler.removeComments,
-// input is commentsList
 userModelSideEffectHandler.removeLikes,
+// input is commentsList
+userModelSideEffectHandler.removeComments,
 // input is commentsList
 postModelSideEffectHandler.removeComments,
 // input is commentsList

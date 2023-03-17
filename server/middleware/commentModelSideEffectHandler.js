@@ -3,6 +3,20 @@ class commentModelSideEffectHandler{
     constructor(){
 
     }
+    static async deletePostComments(req,res,next){
+        try 
+        {
+            comments.forEach(async(comment)=>{
+            
+            })
+            req.commentsList=[... deletedComments]
+            console.log(req.commentsList.length,req.commentsList)
+            // return next()
+        }
+        catch(err){
+            return res.json({success:false,err:err.message})
+        }
+    }
     static async removeCommentFromOgComment(req,res,next){
         try 
         {
@@ -13,6 +27,7 @@ class commentModelSideEffectHandler{
             let ogComment=await Comment.findById(comment.repliedTo)
             ogComment.repliedBy.filter(async(commentId)=>
                 commentId.toString()!==comment.id)
+                await ogComment.save()
                 return next()
             }
         catch(err){

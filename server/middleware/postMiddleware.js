@@ -23,6 +23,50 @@ class postMiddleware{
     constructor() {
         
     }
+    static async getComments(req,res,next){
+        try
+        {
+            let {postsList}=req
+            let commentsList=[]
+            for (let i = 0; i < postsList.length; i++) 
+            {await postsList[i].populate('comments') 
+            for (let j = 0; j < postsList[i].comments.length; j++) 
+                commentsList.push(postsList[i].comments[j])
+            }
+        req.commentsList=[... commentsList]
+            return next()
+        }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }  static async getPostsList(req,res,next){
+        try
+        {
+            let postsList=[]
+            // deleting single post
+            if(!req.body.pageId)
+            postsList.push(req.post)
+        
+            req.postsList=[... postsList]
+                return next()
+        
+    }
+        catch(err){
+            return res.json({success:false,err:err.message})
+        }}
+    static async deletePosts(req,res,next){
+        try
+        {
+            let {postsList}=req
+            postsList.forEach(async(post)=>await post.delete())
+           console.log('ssssssssdddddddddddddddd')
+            return next()
+        }
+        catch(err){
+            return res.json({success:false,err:err.message})
+        }
+    }
     static async updateLikes(req,res,next){
         try{
             let post=await Post.findById(req.body.postId)
@@ -62,7 +106,7 @@ class postMiddleware{
     }
     static async verifyPostAuthor(req,res,next){
         try{
-        let post=await Post.findById(req.body.postId)
+        let post=await Post.findById(req.body.postId||req.query.postId)
         if(!post)
         return res.json({success:false,err:'post was not found'})    
         req.post=post

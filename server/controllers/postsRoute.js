@@ -27,16 +27,16 @@ async function  saveFiles(files,postId){
 }
 
 // input is comments   
-async function getReplies(comments){
-    if(!comments)
-    return populatedComments
-    for (let i = 0; i < comments.length; i++) {
-        const populatedCommentsList= await comments[i]
-       .populate('repliedBy') 
+// async function getReplies(comments){
+//     if(!comments)
+//     return populatedComments
+//     for (let i = 0; i < comments.length; i++) {
+//         const populatedCommentsList= await comments[i]
+//        .populate('repliedBy') 
 
-           getReplies(comments[i].repliedBy) 
-    }
-}
+//            getReplies(comments[i].repliedBy) 
+//     }
+// }
 function convertToObjectId(id){
     return mongoose.Types.ObjectId(id)
 } 
@@ -266,7 +266,16 @@ static async commentReaction(req,res){
         {
             console.log('aa')
                let comments=await Comment.where({repliedTo:''}&&{postId:req.query.postId})
-                
+               async function getReplies(comments){
+                if(!comments)
+                return 0
+                for (let i = 0; i < comments.length; i++) {
+                    const populatedCommentsList= await comments[i]
+                   .populate('repliedBy') 
+            
+                       getReplies(comments[i].repliedBy) 
+                }
+            }
                 await getReplies(comments)
                 return res.json({success:true,comments})
          }
@@ -277,7 +286,8 @@ static async commentReaction(req,res){
     static async getPost(req,res){
         try{
             const post=await Post.findById(req.params.postId)
-
+            if(!post)
+            return res.json({success:false,err:'post was not found'})
             res.json({sucess:true,post:post})
         }
         catch(err){
@@ -308,42 +318,42 @@ static async commentReaction(req,res){
             return res.json({success:false,err:err.message})
         }
     }
-    // delete post and comment
-    static async deletePost(req,res){
-        try{
-            const postId=req.query.postId
+    // // delete post and comment
+    // static async deletePost(req,res){
+    //     try{
+    //         const postId=req.query.postId
 
-                const comments=await Comment.find({postId:postId}) 
-                console.log(comments.length)
-                comments.forEach(async(comment)=>{
-                    await comment.delete()
-                    //delete comment from user record
-                    console.log('removeing user comments')
-                  await  commentsMiddleware.removeCommentFromUserComments(req.userId,comment.id)
-                })
+    //             const comments=await Comment.find({postId:postId}) 
+    //             console.log(comments.length)
+    //             comments.forEach(async(comment)=>{
+    //                 await comment.delete()
+    //                 //delete comment from user record
+    //                 console.log('removeing user comments')
+    //               await  commentsMiddleware.removeCommentFromUserComments(req.userId,comment.id)
+    //             })
              
-                // remove post from user record
-                console.log('removing post from user')
-           await      postMiddleware.deletePostFromUserRecord(req.userId,postId)
-                // submit that the post was reomved from posts that shared it
-                console.log('removing post from post')
-               await postMiddleware.removePostFromPostRecord(postId)
-                // delete post
-                const post=await Post.findByIdAndDelete(postId)
-                if(!post)
-                return res.json({success:false,err:'post was alreaday deleted'})
-                post.files.forEach(async(file)=>{
+    //             // remove post from user record
+    //             console.log('removing post from user')
+    //        await      postMiddleware.deletePostFromUserRecord(req.userId,postId)
+    //             // submit that the post was reomved from posts that shared it
+    //             console.log('removing post from post')
+    //            await postMiddleware.removePostFromPostRecord(postId)
+    //             // delete post
+    //             const post=await Post.findByIdAndDelete(postId)
+    //             if(!post)
+    //             return res.json({success:false,err:'post was alreaday deleted'})
+    //             post.files.forEach(async(file)=>{
 
-                    await rmdir(`./uploaded-files/posts-files/${postId}`,{recursive:true})
+    //                 await rmdir(`./uploaded-files/posts-files/${postId}`,{recursive:true})
 
-                })
-                return res.json({success:true,post})
-            }
-        catch(err){
-            console.log(err)
-            return res.json({success:false,err:err.message})
-        }
+    //             })
+    //             return res.json({success:true,post})
+    //         }
+    //     catch(err){
+    //         console.log(err)
+    //         return res.json({success:false,err:err.message})
+    //     }
 
-    }
+    // }
 }
 module.exports=postController

@@ -1,18 +1,70 @@
 const User=require('../models/userSchema.js')
 const Comment=require('../models/commentSchema.js')
+const { findById } = require('../models/userSchema.js')
 class userModelSideEffectHandler{
     constructor(){
 
     }
+    static async removePosts(req,res,next){
+        try{    
+            let {postsList}=req
+            console.log('started removing post')
+            for (let i = 0; i < postsList.length; i++) 
+                {
+                    let user=await User.findById(postsList[i].publisher)
+                    for (let j = 0; j < user.posts.length; j++) 
+                    if(user.posts[j].toString()===postsList[i].id)
+                    user.posts.splice(j,1)
+                    await user.save()
+                }
+                console.log('post removed')
+                return next()
+        }
+        catch(err){
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async removeLikedPosts(req,res,next){
+        try
+        {
+            const {postsList}=req
+            for (let i = 0; i < postsList.length; i++) 
+                for (let j = 0; j < postsList[i].likes.length; j++) {
+                    let user=await User.findById(postsList[i].likes[j])
+                    console.log(user)
+                        for (let k = 0; k < user.postsLiked.length; k++) 
+                            if(user.postsLiked[k].toString()===postsList[i].id)
+                                user.postsLiked.splice(k,1)
+                    await user.save()
+                            }   
+                            return next()
+        }
+        catch(err){
+            return res.json({success:false,err:err.message})
+        }
+    }
     static async removeComments(req,res,next){
         try{
-            let {commentsList}=req
-            commentsList.forEach(async(comment)=>{
-                let user=await User.findById(comment.user)
-                user.comments=user.comments.filter(commentId=>commentId.toString()!==comment.id)
-                await user.save()
-            })
-            return next()
+                let {commentsList}=req
+                    for (let i = 0; i < commentsList.length; i++) {
+                        let user=await User.findById(commentsList[i].user)
+                        console.log('found user with comments of',user.comments)
+                        console.log('now iterating the user')
+                        for (let j = 0; j < user.comments.length; j++){ 
+                        console.log('uesr comment',commentsList[i].id)
+                        console.log('iterated comment',user.comments[j].toString())    
+                        if(user.comments[j].toString()===commentsList[i].id)
+                            {
+                                    console.log('found a match')
+                                    user.comments.splice(j,1)
+                                    await user.save()
+                            }
+                        }
+                            
+                        }
+                        console.log('done removing comments')
+                        return next()
+                        
         }
         catch(err){
             return res.json({success:false,err:err.message})
@@ -21,21 +73,22 @@ class userModelSideEffectHandler{
     static async removeLikes(req,res,next){
         try
         {
-            console.log( 'xxxxxxxxx')
             let {commentsList}=req
-            // console.log(commentsList[0].likedBy)
-
-            // let user=await User.findById(commentsList[0].likedBy[0])
-            commentsList.forEach(async(comment)=>{
-                comment.likedBy.forEach(async(userId)=>{
-                    let user=await User.findById(userId)
-                    user.commentsLiked=user.commentsLiked.filter(commentId=>commentId.toString()!==comment.id)
-                    await user.save()
-                    console.log(user.commentsLiked)
-                })
-            })
-            return next()
-        }
+            console.log('removing likes',commentsList.length)
+         for (let i = 0; i < commentsList.length; i++) 
+         {
+            for (let j = 0; j < commentsList[i].likedBy.length; j++) {
+                let user=await User.findById(commentsList[i].likedBy[j])
+                for (let k = 0; k < user.commentsLiked.length; k++) 
+                    if(user.commentsLiked[k].toString()===commentsList[i].id)
+                            user.commentsLiked.splice(k,1)
+            
+                await user.save()
+                        }
+         }
+         console.log('done removing likes')
+         return next()
+    }
         catch(err){
             return res.json({success:false,err:err.message})
         }
@@ -84,7 +137,7 @@ class userModelSideEffectHandler{
         try
         {
             
-           let user=req.user
+           let {user}=req
             console.log(req.like)
             if(req.like)
             user.postsLiked.push(req.post.id)
@@ -93,6 +146,18 @@ class userModelSideEffectHandler{
         
         await user.save()
             return next()
+        }
+        catch(err){
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async deletePost(req,res,next){
+        try
+        {
+            let user={req}
+            user.posts=user.posts.filter(postId=>postId.toString()!==req.post.id)
+            return next()
+
         }
         catch(err){
             return res.json({success:false,err:err.message})

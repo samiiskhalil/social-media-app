@@ -61,5 +61,5 @@ email:{
 
 commentsLiked:[{type:mongoose.SchemaTypes.ObjectId,ref:'Comment'}],
 comments:[{type:mongoose.SchemaTypes.ObjectId,ref:'Comment'}]
-})
+},{versionKey:false})
 module.exports=mongoose.model('User',userSchema)

@@ -1,5 +1,4 @@
 const express=require('express')
-const post=require('../controllers/postsRoute.js')
 const multer = require('multer');
 const auth = require('../middleware/authentication.js');
 const postMiddleware=require('../middleware/postMiddleware.js')
@@ -7,8 +6,10 @@ const postModelSideEffectHandler=require('../middleware/postModelSideEffecthandl
 const commentMiddleware=require('../middleware/commentMiddleware.js')
 const userModelSideEffectHandler=require('../middleware/userModelSideEffectHandler.js');
 const postController = require('../controllers/postsRoute.js');
+const commentModelSideEffectHandler = require('../middleware/commentModelSideEffectHandler.js');
 const router=express.Router()
-router.get('/',post.getPost)
+// get post
+router.get('/',postController.getPost)
 // when a post is created 
 // verify token
 //check if its shared or not 
@@ -34,6 +35,35 @@ postMiddleware.updatePostDescribtion,postController.sendPost)
 // handle user likes update side effect
 router.patch('/like',auth.verifyToken,postMiddleware.updateLikes,userModelSideEffectHandler.updateLikes,postController.sendPost)
 
+// delet posts
+// get the post
+// remove the post
+// get comments as comments list
+// delete comments
+// remove comments from users
+// remove liked comments from user 
+// notify shared posts
+router.delete('/',auth.verifyToken,
+// input is postId output is the verified post 
+postMiddleware.verifyPostAuthor,
+postMiddleware.getPostsList,
+// input is post output is commentList
+postMiddleware.getComments,
+// input is post output is commentsList
+commentMiddleware.deleteComments,
+userModelSideEffectHandler.removeLikes
+,userModelSideEffectHandler.removeComments,
+userModelSideEffectHandler.removePosts,
+userModelSideEffectHandler.removeLikedPosts,
+postModelSideEffectHandler.removePostsFromOgShares,
+postModelSideEffectHandler.removePostsFromShares,
+postModelSideEffectHandler.deleteFiles,
+postMiddleware.deletePosts,
+postController.sendPost)
+
+
+// get posts comments
+router.get('/comments',auth.verifyToken,postController.getPostComments)
 
 
 
@@ -49,7 +79,6 @@ router.patch('/like',auth.verifyToken,postMiddleware.updateLikes,userModelSideEf
 // router.patch('/',auth.verifyToken,post.postReaction)
 // router.patch('/comments',auth.verifyToken,post.commentReaction)
 // router.delete('/comments',auth.verifyToken,post.deleteComment)
-router.get('/comments',auth.verifyToken,post.getPostComments)
 // router.get('/likes',auth.verifyToken,post.getLikes)
 // router.get('/shares',auth.verifyToken,post.getShares)
 // for files
