@@ -44,6 +44,17 @@ catch(err){
       res.status(400).json({sucess:false,err:err.message})
     }
   }
+  static async sendImage(req,res,next){
+    try{
+      const {image}=req
+      console.log('done ',image)
+      return res.json({success:true,image})
+    }
+    catch(err){
+      console.log(err)
+      return res.json({success:false,err:err.message})
+    }
+  }
 }
   
-module.exports={user}
+module.exports=user

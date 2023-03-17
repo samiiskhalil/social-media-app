@@ -1,10 +1,16 @@
 const User=require('../models/userSchema.js')
 const Comment=require('../models/commentSchema.js')
-const { findById } = require('../models/userSchema.js')
+const fs=require('fs')
+const util=require('util')
+const mkdir=util.promisify(fs.mkdir)
+const readFile=util.promisify(fs.readFile)
+const writeFile=util.promisify(fs.writeFile)
+
 class userModelSideEffectHandler{
     constructor(){
-
     }
+   
+   
     static async removePosts(req,res,next){
         try{    
             let {postsList}=req

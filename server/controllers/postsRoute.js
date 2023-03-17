@@ -25,21 +25,6 @@ async function  saveFiles(files,postId){
 }
     return filesNames
 }
-
-// input is comments   
-// async function getReplies(comments){
-//     if(!comments)
-//     return populatedComments
-//     for (let i = 0; i < comments.length; i++) {
-//         const populatedCommentsList= await comments[i]
-//        .populate('repliedBy') 
-
-//            getReplies(comments[i].repliedBy) 
-//     }
-// }
-function convertToObjectId(id){
-    return mongoose.Types.ObjectId(id)
-} 
 class postController{
 
 static async sendPost(req,res){
@@ -51,9 +36,6 @@ static async sendPost(req,res){
         return res,json({success:false,err:err.message})
     }
 }
-
-
-
 
 
     //

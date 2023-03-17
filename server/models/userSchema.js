@@ -19,13 +19,23 @@ const userSchema= new mongoose.Schema({
     },
 posts:[{type:mongoose.SchemaTypes.ObjectId,ref:'Post'}]
     ,
-    profilePicture:{
-        type:String
+    profileImage:{
+            imageName:String,
+            style:{
+                top:String,
+                bottom:String,
+                scale:Number
+            }            
     },
-    wallpaperPicture:String
-    ,birthDate:{
-        type:Date
+    coverImage:{
+            imageName:String,
+            style:{
+                top:String,
+                bottom:String,
+                scale:Number
+            }            
     },
+   
     friends:[{type:mongoose.SchemaTypes.ObjectId,ref:'User'}],
     address:{
         country:String,
