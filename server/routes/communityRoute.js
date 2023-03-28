@@ -60,5 +60,5 @@ router.delete('/members',auth.verifyToken,communityMiddleware.getCommunity,commu
 // change commnity params
 router.patch('/manager/publicity',auth.verifyToken,auth.verifyCommunityManager,communityMiddleware.getCommunity,communityMiddleware.convertPublicity,communityController.sendCommunity)
 router.patch('/manager/post-approval',auth.verifyToken,auth.verifyCommunityManager,communityMiddleware.getCommunity,communityMiddleware.convertPostApproval,communityController.sendCommunity)
-router.patch('/cover-image',auth.verifyToken,auth.verifyCommunityManager,communityMiddleware.getImage)
+// router.patch('/cover-image',auth.verifyToken,auth.verifyCommunityManager,communityMiddleware.getImage)
 module.exports=router
