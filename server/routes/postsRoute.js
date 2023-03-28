@@ -7,6 +7,7 @@ const commentMiddleware=require('../middleware/commentMiddleware.js')
 const userModelSideEffectHandler=require('../middleware/userModelSideEffectHandler.js');
 const postController = require('../controllers/postsRoute.js');
 const commentModelSideEffectHandler = require('../middleware/commentModelSideEffectHandler.js');
+const communityMiddleware = require('../middleware/communityMiddleware.js');
 const router=express.Router()
 // get post
 router.get('/',postController.getPost)
@@ -17,11 +18,12 @@ router.get('/',postController.getPost)
 // 
 //if shared handle side effect on original post(add poster id to shares list on original post) and user side effect
 // eventually return the post
-router.post('/',auth.verifyToken,postMiddleware.validateShare,
+router.post('/',auth.verifyToken,communityMiddleware.getCommunity,postMiddleware.validateShare,
 postMiddleware.createPost,
 //check if post was shared then add publisher id to og post shares
 postModelSideEffectHandler.addPosterIdToOriginalPostShares,
 userModelSideEffectHandler.addPostToPublisherPosts,
+communityMiddleware.addPost,
 postController.sendPost)
 
 // update post 
@@ -47,6 +49,7 @@ router.delete('/',auth.verifyToken,
 // input is postId output is the verified post 
 postMiddleware.verifyPostAuthor,
 postMiddleware.getPostsList,
+communityMiddleware.removePostsList,
 // input is post output is commentList
 postMiddleware.getComments,
 // input is post output is commentsList

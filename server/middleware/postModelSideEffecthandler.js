@@ -4,11 +4,26 @@ const Comment=require('../models/commentSchema.js')
 const util = require('util');
 const CommentModelSideEffectHandler=require('./commentMiddleware.js')
 const  fs=require('fs');
-const { findById } = require('../models/userSchema.js');
 const rmdir=util.promisify(fs.rm)
 class postModelSideEffectHandler{
     constructor(){
 
+    }
+    static async removeCommunity(req,res,next){
+        try
+        {
+            const {postsList}=req
+            for (let i = 0; i < postsList.length; i++) {
+                postsList[i].community.removed=true
+               await postsList[i].save()
+                
+            }
+            req.postsList=postsList
+            return next()
+        }
+        catch(err){
+            return res.json({success:false,err:err.message})
+        }
     }
     static async deleteFiles(req,res,next){
         try{

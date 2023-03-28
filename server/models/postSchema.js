@@ -1,11 +1,20 @@
 const mongoose = require('mongoose')
 // const User
 const postSchema=new mongoose.Schema({
-    publisher:{
+
+   publisher:{
         type:mongoose.SchemaTypes.ObjectId,ref:'User'
     }
     ,
-   
+    community:{
+    communityId:{type:mongoose.SchemaTypes.ObjectId,
+    ref:'Community'
+   },
+  removed:{
+    type:Boolean,
+    default:false
+  }}
+    ,
     
 describtion:{
     type:String,
@@ -31,5 +40,5 @@ shares:[{user:{type:mongoose.SchemaTypes.ObjectId,ref:'User'},
 post:{type:mongoose.SchemaTypes.ObjectId,ref:'Post'}
 }],
 
-},{versionKey:false})
+},{versionKey:false,timestamps:true})
 module.exports=mongoose.model('Post',postSchema)

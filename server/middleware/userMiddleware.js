@@ -1,22 +1,50 @@
 const User= require('../models/userSchema.js')
 const fs=require('fs')
 const util=require('util')
+const bcrypt = require('bcrypt');
 const mkdir=util.promisify(fs.mkdir)
 const readdir=util.promisify(fs.readdir)
 const unlink=util.promisify(fs.unlink)
 const readFile=util.promisify(fs.readFile)
 const writeFile=util.promisify(fs.writeFile)
+const access=util.promisify(fs.access)
+// check if users exists
+// async function getUsers(res,usersId){
+//     let users=[]
+//     usersId.forEach(async (id)=>{
+//         let user=await User.findById(id)
+//         if(!user)
+//         return res.json({success:false,err:'user was not found'})
+//         users.push(user)
+//     })
+//     return users
+// }
 
+// input is image file and saved dir
+// first checks if dir exists
+// if it does not exists then this is the first time
+// and should create his dir
+// if it does then delete old images
+// save new image with unique name and return name 
 async function saveUserImage(imageFile,dir){
     try{
-        // delete old image
-        let imagesNames= await readdir(dir)
-        console.log('read files',imagesNames)
-        imagesNames.forEach(async(imageName)=>await unlink(`${dir}/${imageName}`))
+        let imagesNames=[]
+        console.log('sddddddddddaaaaa')
+       let a = fs.existsSync(dir)
+       console.log('listen to aaaaaaaaa',a)
+        if(!fs.existsSync(dir))
         await mkdir(dir,{recursive:true})
+       
+        if(fs.existsSync(dir))
+        {
+
+        imagesNames= await readdir(dir)
+        if(imagesNames.length)
+        imagesNames.forEach(async(imageName)=>await unlink(`${dir}/${imageName}`))
+    }
         const random=await require('crypto').randomBytes(8).toString('hex')
         const filePath=`${dir}/${random}-${imageFile.originalname}`
-        await writeFile(filePath,imageFile.buffer)
+        await writeFile(filePath,imageFile.buffer,{recursive:true})
         return `${random}-${imageFile.originalname}`
     }
     catch(err){
@@ -27,14 +55,216 @@ async function saveUserImage(imageFile,dir){
 class userMiddleware{
     constructor(){
 
-    } 
-    static async updateCoverImage(req,res,next){
+
+    }
+    static async verifyJoinerNoRole(req,res,next){
         try
+        {
+            let {joiner,community}=req
+            if(joiner.adminedCommunities.some(cid=>cid.toString()===community.id))
+            return res.json({success:false,err:'you are an admin'})
+            if(joiner.managedCommunities.some(cid=>cid.toString()===community.id))
+            return res.json({success:false,err:'you are the manager'})
+            return next()
+
+        }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async getJoiner(req,res,next){
+        try
+        {
+            let joiner=await User.findById(req.query.joinerId||req.body.joinerId)
+            if(!joiner)
+            return res.json({success:false,err:'no joiner was found'})
+            req.joiner=joiner
+            return next()
+            }
+            catch(err){
+          console.log(err)
+          return res.json({success:false,err:err.message})
+        }
+      }
+    static async findUser(req,res,next){
+        try
+        {
+            const user=await User.findById(req.body.userId||req.query.userId)
+            if(!user)
+            return res.json({success:false,err:'no user was found'})
+            req.user=user
+            return next()
+        }
+        catch(err){
+          console.log(err)
+          return res.json({success:false,err:err.message})
+        }
+      }
+    static async checkManagerNotAdmin(req,res,next){
+        try
+        {
+            let {user}=req
+            let {adminsId}=req.body
+            if(adminsId.some(id=>id.toString()===user.id))
+                return res.json({success:false,err:'you cant do both roles'})
+            return next()
+        }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async getNewManager(req,res,next){
+        try
+        {
+        let newManager=await User.findById(req.body.newManagerId)
+        if(!newManager)
+        return res.json({success:false,err:'new manager does not exists'})
+        if(newManager.id===req.user.id)
+        return res.json({success:false,err:'can not send the same old manager'})
+        req.newManager=newManager
+        return next()
+        }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async createUser(req,res,next){
+        try{ const {firstName,lastName,middleName,birthDate,city,country,age,phoneNumber,sex,street,email,password}= req.body
+          const hashedPassword=await bcrypt.hash(password,10)
+        const user =await User.create({
+          password:hashedPassword,  
+          firstName,
+              lastName,
+              middleName,
+              birthDate,
+              age,
+             address:{
+                      country,
+                      city,
+                      street
+             },
+              phoneNumber,
+              sex,
+              email
+          })
+          req.user=user
+          user.firstName='aaa'
+          await user.save()
+          console.log('bb')
+          return next()
+        }
+      
+      catch(err){
+      res.status(400).json({success:false,err:err.message})
+      }
+      }
+    static async getAdmins(req,res,next){
+        try{
+            console.log('got the admins')
+            let admins=[]
+            const {adminsId}=req.body
+            for (let i = 0; i < adminsId.length; i++) {
+                let user=await User.findById(adminsId[i])
+                if(!user)
+                return res.json({success:false,err:'no user was found'})
+                admins.push(user)
+            }
+            req.admins=admins
+            return next()
+            
+        }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+      static async checkAdmins(req,res,next){
+        try{
+            
+            let {admins}=req
+            if(!admins.length)
+            return res.json({success:false,err:'no admins were sent'})
+            const {community}=req
+            for (let i = 0; i < admins.length; i++) {
+                
+            if(community.admins.some(adminId=>adminId.toString()===admins[i].id)||admins[i].adminedCommunities.some(commId=>commId.toString()===community.id))
+                return res.json({success:false,err:'found an existing admin try again with the same list'})
+            return next()
+                      }
+                                  }
+        catch(err){
+            console.log
+        }
+      }
+      static async destructUser(req,res,next){
+        try
+        {
+           let {user}=req
+           // get posts            
+           user= await user.populate('posts')
+           req.postsList=[... user.posts]
+           // get likded posts
+           user=await user.populate('postsLiked')
+           req.postsLikedList=[... user.postsLiked]
+           // get comments
+           user=await user.populate('comments')
+           req.commentsList=[... user.comments]
+           
+           // get comments liked
+           user=await user.populate('commentsLiked')
+           req.commentsLikedList=user.commentsLiked
+           return next() 
+        }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async checkIfFriend(req,res,next){
+        try
+        {
+         const {user,addedUser}=req
+         if(user.friends.every(friendId=>addedUser.id!==friendId.toString()))
+         return next()
+           user.friends= user.friends.filter(friendId=>friendId.toString()!==addedUser.id)
+           await user.save()
+           addedUser.friends=addedUser.friends.filter(friendId=>friendId.toString()!==user.id)
+           await addedUser.save()
+           return res.json({success:true,friends:user.friends})
+            
+        }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async getUser(req,res,next){
+        try
+        {
+            let user=await User.findById(req.query.userId||req.body.userId)
+            req.addedUser=user
+            return next()
+        }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    } 
+   
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+        static async updateCoverImage(req,res,next){
+            try
         {
             const coverImage=req.files[0]
             let {style}=req.body
             style=JSON.parse(style)
-            const profileDir='./uploaded-files/user-images/user-cover-image'
+            const profileDir=`./uploaded-files/users-images/${req.user.id}/user-cover-image`
             const imageName= await saveUserImage(coverImage,profileDir)
             const image={imageName,style}
                 req.image=image
@@ -50,11 +280,10 @@ class userMiddleware{
         try
         {
             const profileImage=req.files[0]
-            console.log(profileImage)
+            console.log(req.files)
             let {style}=req.body
             style=JSON.parse(style)
-            console.log(style)
-            const profileDir='./uploaded-files/user-images/user-profile-image'          
+            const profileDir=`./uploaded-files/users-images/${req.user.id}/user-profile-image`          
             const imageName= await saveUserImage(profileImage,profileDir)
             const image={imageName,style}
                 req.image=image
@@ -66,6 +295,7 @@ class userMiddleware{
             return res.json({success:false,err:err.message})
         }
     }
+
     static async saveUserImage(req,res,next){
         try
         {
@@ -83,4 +313,5 @@ class userMiddleware{
         }
     }
 }
+
 module.exports=userMiddleware

@@ -9,6 +9,7 @@ const userRouter = require('./routes/userRoute.js');
 const rootRouter=require('./routes/rootRoute.js')
 const mongoose = require('mongoose');
 const User=require('./models/userSchema.js')
+const communityRouter=require('./routes/communityRoute.js')
 const commentsRouter=require('./routes/commentsRoute.js')
 const app=express()
 mongoose.connect(process.env.DATABASE_URL,()=>console.log('connected to database'),err=>console.log(err))
@@ -26,4 +27,5 @@ app.use('/api',rootRouter)
 app.use('/api/user',userRouter)
 app.use('/api/posts',postsRouter)
 app.use('/api/comments',commentsRouter)
+app.use('/api/community',communityRouter)
 app.listen(1000,()=>console.log('http://localhost:1000'))

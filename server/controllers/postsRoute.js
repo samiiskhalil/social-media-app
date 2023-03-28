@@ -85,7 +85,6 @@ static async sendPost(req,res){
         try{
             const filePath=path.join(__dirname,'..','uploaded-files','posts-files',req.query.postId,req.params.fileName)
             return res.sendFile(filePath)
-            console.log(path)
         }
         catch(err){
             return res.json({success:false,err:err.message})

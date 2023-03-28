@@ -2,14 +2,175 @@ const User=require('../models/userSchema.js')
 const Comment=require('../models/commentSchema.js')
 const fs=require('fs')
 const util=require('util')
+const { json } = require('body-parser')
 const mkdir=util.promisify(fs.mkdir)
 const readFile=util.promisify(fs.readFile)
 const writeFile=util.promisify(fs.writeFile)
-
 class userModelSideEffectHandler{
     constructor(){
     }
-   
+    static async approvedCommunity(req,res,next){
+        try
+        {
+            let {community,joiner}=req
+       
+            if(joiner.communities.some(joinedCommunity=>{
+                if(joinedCommunity.communityId.toString()===community.id)
+                if(joinedCommunity.approved)
+                return true
+            }))
+            return res.json({success:false,err:'user is already member'})
+            joiner.communities.push({communityId:community.id})
+            await joiner.save()
+            req.joiner=joiner
+            return next()            
+            }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async removeCommunity(req,res,next){
+        try{
+            let {community,user}=req
+            if(req.query.joinerId||req.body.joinerId){
+                let joiner=await User.findById(req.query.joinerId||req.body.joinerId)
+                if(!joiner)
+                return res.json({success:false,err:'no joiner was found'})
+                joiner.communities=joiner.communities.filter(({communityId})=>communityId.toString()!==community.id)
+               await joiner.save()
+                return next()
+            }
+            user.communities=user.communities.filter(({communityId})=>communityId.toString()!==community.id)
+            await user.save()
+            return next()            
+        }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async requestCommunityMembership(req,res,next){
+        try{
+            let {user,community}=req
+            user.communities.push({communityId:community.id})
+            await user.save()
+            return next()
+            
+        }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async updateManagersState(req,res,next){
+        try{
+            let {newManager,user,community}=req
+            newManager.managedCommunities.push(community.id)
+            user.managedCommunities=user.managedCommunities.filter(id=>id.toString()!==community.id)
+            await newManager.save()
+            await user.save()
+            return next()
+        }
+        catch(err){
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async removeAdmins(req,res,next){
+        try{
+            let {admins,community}=req
+            if(!admins.length)
+            return next()
+            for (let i = 0; i < admins.length; i++) 
+            {
+                for(let j=0;j<admins[i].adminedCommunities.length;j++)
+                        if(admins[i].adminedCommunities[j].toString()===community.id)
+                            admins[i].adminedCommunities.splice(j,1)
+                await admins[i].save()
+            }
+            console.log('adasdsad')
+            return next()
+        }
+        catch(err){
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async addAdminedCommunity(req,res,next){
+        try
+        {
+            let {community}=req
+            let {admins}= req
+            let{user}=req
+            admins.forEach(async(admin)=>{admin.adminedCommunities.push(community.id)
+            await admin.save()
+            })
+            req.admins=admins
+            req.community=community
+            return next()                  
+        }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async addManagedCommunity(req,res,next){
+        try{
+            let user=await User.findById(req.community.manager)
+            if(user.managedCommunities.some(id=>id.toString()===req.community.id))
+            return res.json({success:false,err:'user already has a manager'})
+            user.managedCommunities.push(req.community.id)
+            await user.save()
+            req.user=user
+            return next()
+        }
+        
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async removeManagedCommunity(req,res,next){
+        try
+        {
+            let user=await User.findById(req.user.id)
+            user.managedCommunities= user.managedCommunities.filter(async(communityId=>communityId.toString()!==req.community.id))
+            await user.save()
+            return next()
+        }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async removeAdminedCommunity(req,res,next){
+        try{  
+            let user=await User.findById(req.user.id)
+            user.adminedCommunities= user.adminedCommunities.filter(async(communityId=>communityId.toString()!==req.community.id))
+            await user.save()
+            return next()
+
+        }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+   static async addFriend(req,res,next){
+    try
+    {
+        let {user,addedUser}=req
+        user.friends.push(addedUser.id)
+        await user.save()
+        addedUser.friends.push(user.id)
+        await addedUser.save()
+        req.friend=addedUser
+        return next()
+    }
+    catch(err){
+        console.log(err)
+        return res.json({success:false,err:err.message})
+    }
+   }
    
     static async removePosts(req,res,next){
         try{    

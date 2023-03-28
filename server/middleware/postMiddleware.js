@@ -23,6 +23,19 @@ class postMiddleware{
     constructor() {
         
     }
+    static async getPost(req,res,next){
+        try
+        {   
+            const post=await Post.findById(req.body.postId||req.query.postId)
+            if(!post)
+            return res.json({success:false,err:'post was not found'})
+            req.post=post
+            return next()
+        }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }}
     static async getComments(req,res,next){
         try
         {
@@ -43,18 +56,28 @@ class postMiddleware{
     }  static async getPostsList(req,res,next){
         try
         {
+            
             let postsList=[]
-            // deleting single post
-            if(!req.body.pageId)
             postsList.push(req.post)
-        
-            req.postsList=[... postsList]
+            req.postsList=postsList
                 return next()
         
     }
         catch(err){
             return res.json({success:false,err:err.message})
         }}
+        static async getQueriedPost(req,res,next){
+            try
+            {
+                const post=await Post.findById(req.query.postId)
+                if(!post)
+                return res.json({success:false,err:'no post was found'})
+                req.post=post
+                return next()
+            }
+            catch(err){
+                return res.json({success:false,err:err.message})
+            }}
     static async deletePosts(req,res,next){
         try
         {
@@ -106,12 +129,14 @@ class postMiddleware{
     }
     static async verifyPostAuthor(req,res,next){
         try{
+            let {user}=req
         let post=await Post.findById(req.body.postId||req.query.postId)
         if(!post)
         return res.json({success:false,err:'post was not found'})    
-        req.post=post
-            return next()
-        }
+        if(post.publisher.toString()!==user.id)
+        return res.json({success:false,err:'you are not the publisher'})
+        return next()
+    }
 
         catch(err){
             return res.json({success:false,err:err.message})
@@ -120,12 +145,14 @@ class postMiddleware{
     static async createPost(req,res,next){
     try{
         const {describtion}=req.body
+        console.log(req.body.communityId)
         let style=JSON.parse(req.body.style)
      const post= await Post.create({
          publisher:req.user.id
          ,describtion
-         ,sharedPost:{post:req.headers['shared-post-id']||null}
-     })
+         ,sharedPost:{post:req.headers['shared-post-id']||null},
+        community:{communityId:req.body.communityId||null,removed:false}     })
+     console.log(post.Community)
      const names=await saveFiles(req.files,post.id)
      for (let i = 0; i < names.length; i++) {
          post.files.push({fileName:names[i],style:style[i]})
@@ -139,6 +166,7 @@ class postMiddleware{
         return res.json({success:false,err:'post was not added to req object'})
     }
     }
+    
     static async validateShare(req,res,next){
         try{
             if(!req.headers['shared-post-id'])

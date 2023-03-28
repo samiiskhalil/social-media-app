@@ -3,6 +3,7 @@ class commentModelSideEffectHandler{
     constructor(){
 
     }
+ 
     static async deletePostComments(req,res,next){
         try 
         {
@@ -11,7 +12,7 @@ class commentModelSideEffectHandler{
             })
             req.commentsList=[... deletedComments]
             console.log(req.commentsList.length,req.commentsList)
-            // return next()
+            return next()
         }
         catch(err){
             return res.json({success:false,err:err.message})

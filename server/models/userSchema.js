@@ -55,11 +55,16 @@ posts:[{type:mongoose.SchemaTypes.ObjectId,ref:'Post'}]
         },
         other:String
     },
-    },
-  
-pagesLiked:[{type:mongoose.SchemaTypes.ObjectId,ref:'Page'}],
-joinedGroupes:[{type:mongoose.SchemaTypes.ObjectId,ref:'Group'}],
-hobbies:[String],
+    }
+  ,
+    managedCommunities:[{type:mongoose.SchemaTypes.ObjectId,ref:'Community'}],
+    adminedCommunities:[{type:mongoose.SchemaTypes.ObjectId,ref:'Community'}]
+  ,
+communities:[{communityId:{type:mongoose.SchemaTypes.ObjectId,ref:'Community'},approved:{
+    type:Boolean,
+    default:false
+}}],
+interests:[String],
 photosUrl:[String],
 email:{
     type:String,
@@ -71,5 +76,5 @@ email:{
 
 commentsLiked:[{type:mongoose.SchemaTypes.ObjectId,ref:'Comment'}],
 comments:[{type:mongoose.SchemaTypes.ObjectId,ref:'Comment'}]
-},{versionKey:false})
+},{versionKey:false,timestamps:true})
 module.exports=mongoose.model('User',userSchema)

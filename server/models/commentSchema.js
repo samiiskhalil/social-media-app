@@ -14,5 +14,5 @@ const commentSchema=new mongoose.Schema(
         likedBy:[{type:mongoose.SchemaTypes.ObjectId,ref:'User'}],
 
     }
-,{versionKey:false})    
+,{versionKey:false,timestamps:true})    
 module.exports=mongoose.model('Comment',commentSchema)

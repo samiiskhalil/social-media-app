@@ -1,4 +1,8 @@
 const mongoose = require('mongoose')
+const fs=require('fs')
+const util=require('util')
+const {join}=require('path')
+const readFile=util.promisify(fs.readFile)
 const User = require('../models/userSchema.js');
 const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken');
@@ -7,8 +11,33 @@ class user{
   constructor(){
 
   }
+  static async getImage(req,res,next){
+    try
+    {
+      
+      if(!req.headers['image-type'])
+      return res,json({success:false,err:'no type was specified'})
+      const path=join(__dirname,'..','uploaded-files','users-images',req.query.userId,`user-${req.headers['image-type']}-image`,req.params.imageName)
+      return res.sendFile(path)
+    }
+    catch(err)
+    {
+      console.log(err)
+      return res.json({success:false,err:err.message})
+    }
+  }
   // log in user
-  static generateToken=async(req,res,next)=>{
+  static async sendFriend(req,res,next){
+    try{
+      const {friend}=req
+      return res.json({success:true,friend})
+    }
+    catch(err){
+      console.log(err)
+      return res.json({success:false,err:err.message})
+    }
+  }
+  static async generateToken(req,res,next){
    try{
     const token= await jwt.sign({id:req.user.id,},process.env.JWT_SECRET,{expiresIn:'2w'})
     return res.status(200).json({sucess:true,token:token,userId:req.user.id})
@@ -18,6 +47,7 @@ catch(err){
   return res.status(400).json({success:false,err:err.message})
 }
 }
+
 
   //send user and token
   // req.user req.token
@@ -37,11 +67,11 @@ catch(err){
   }
   static async sendUser(req,res){
     try{
-      res.status(201).json({success:true,token:req.token,user:req.user})
+    return  res.status(201).json({success:true,token:req.token,user:req.user})
     }
     catch(err){
       console.log(err)
-      res.status(400).json({sucess:false,err:err.message})
+return      res.status(400).json({sucess:false,err:err.message})
     }
   }
   static async sendImage(req,res,next){

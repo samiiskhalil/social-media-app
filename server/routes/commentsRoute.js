@@ -1,7 +1,6 @@
 const express=require('express')
 const post=require('../controllers/postsRoute.js')
 const multer = require('multer');
-const auth = require('../middleware/authentication.js');
 const postMiddleware=require('../middleware/postMiddleware.js')
 const postModelSideEffectHandler=require('../middleware/postModelSideEffecthandler.js')
 const commentMiddleware=require('../middleware/commentMiddleware.js')
@@ -9,7 +8,7 @@ const commentModelSideEffectHandler=require('../middleware/commentModelSideEffec
 const userModelSideEffectHandler=require('../middleware/userModelSideEffectHandler.js');
 const postController = require('../controllers/postsRoute.js');
 const commentController=require('../controllers/commentsRoute.js');
-const { verifyToken } = require('../middleware/authentication.js');
+const auth = require('../middleware/authentication.js');
 const router=express.Router()
 // create comment
 // if comment is a reply then find the orginal comment and handle error if found and add it to req object
