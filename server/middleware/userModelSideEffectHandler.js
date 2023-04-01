@@ -9,22 +9,92 @@ const writeFile=util.promisify(fs.writeFile)
 class userModelSideEffectHandler{
     constructor(){
     }
+    static async blockCommunity(req,res,next){
+        try
+        {
+            let {user,community}=req
+            if(user.blockedCommunities.some(id=>id.toString()===community.id))
+                {user.blockedCommunities= user.blockedCommunities.filter(id=>id.toString()!==community.id)
+                    await user.save()
+                    return next()
+                }
+                user.blockedCommunities.push(community.id)
+                await user.save()
+                req.user=user
+                console.log('asdsa')
+                return next()
+            }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async blockUser(req,res,next){
+        try
+        {
+            let {user,blockedUser,community}=req
+            if(user.blockedUsers.some(id=>id.toString()===blockedUser.id))
+                {user.blockedUsers= user.blockedUsers.filter(id=>id.toString()!==blockedUser.id)
+                    await user.save()
+                    req.user=user
+                    console.log('dasdas')
+                    return next()
+                }
+                user.blockedUsers.push(blockedUser.id)
+                await user.save()
+                return next()
+            }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async removeMembers(req,res,next){
+        try
+        {
+            let {community}=req
+            for (let i = 0; i < community.members.length; i++)
+            {
+                let member=await User.findById(comunnity.members[i].memberId)
+                member.communities=member.communities.filter(({communityId})=>communityId.toString()!==community.id)
+                await member.save()
+            }
+            return next()            
+            }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async deleteFromFriends(req,res,next){
+        try
+        {
+            let {user}=req
+            for (let i = 0; i < user.friends.length; i++) {
+                let friend=await User.findById(user.friends[i])
+                friend.friends=friend.friends.filter(id=>id.toString()!==user.id)
+                await friend.save()
+            
+            }
+            return next()
+                    }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
     static async approvedCommunity(req,res,next){
         try
         {
             let {community,joiner}=req
-       
-            if(joiner.communities.some(joinedCommunity=>{
-                if(joinedCommunity.communityId.toString()===community.id)
-                if(joinedCommunity.approved)
-                return true
-            }))
-            return res.json({success:false,err:'user is already member'})
-            joiner.communities.push({communityId:community.id})
-            await joiner.save()
-            req.joiner=joiner
-            return next()            
-            }
+                    for (let i = 0; i < joiner.communities.length; i++) 
+                            if(joiner.communities[i].communityId.toString()===community.id)
+                                  { joiner.communities[i].approved=true  
+                                    await joiner.save()                      
+                                   return next()
+                                }
+                                return res.json({success:false,err:'no community was found in your record'})
+                            }
         catch(err){
             console.log(err)
             return res.json({success:false,err:err.message})
@@ -53,6 +123,8 @@ class userModelSideEffectHandler{
     static async requestCommunityMembership(req,res,next){
         try{
             let {user,community}=req
+            if(user.communities.some(({communityId})=>communityId.toString()===community.id))
+            return res.json({success:false,err:'you already on the list'})
             user.communities.push({communityId:community.id})
             await user.save()
             return next()
@@ -70,6 +142,18 @@ class userModelSideEffectHandler{
             user.managedCommunities=user.managedCommunities.filter(id=>id.toString()!==community.id)
             await newManager.save()
             await user.save()
+            return next()
+        }
+        catch(err){
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async removeAdmin(req,res,next){
+        try{
+            let {community,user}=req
+            user.adminedCommunities=user.adminedCommunities.filter(commId=>commId.toString()!==community.id)
+            await user.save()
+            req.user=user
             return next()
         }
         catch(err){
@@ -135,6 +219,7 @@ class userModelSideEffectHandler{
             let user=await User.findById(req.user.id)
             user.managedCommunities= user.managedCommunities.filter(async(communityId=>communityId.toString()!==req.community.id))
             await user.save()
+            req.user=user
             return next()
         }
         catch(err){

@@ -8,6 +8,18 @@ const unlink=util.promisify(fs.unlink)
 const readFile=util.promisify(fs.readFile)
 const writeFile=util.promisify(fs.writeFile)
 const access=util.promisify(fs.access)
+async function checkUserBlock(req,res,userId){
+    try
+    {
+        let {user}=req
+        if(user.blockedUsers.some(id=>is.toString()===userId.toString()))
+            return true
+            return false
+    }
+    catch(err){
+        return res.json({success:false,err:err.message})
+    }
+}
 // check if users exists
 // async function getUsers(res,usersId){
 //     let users=[]
@@ -29,9 +41,7 @@ const access=util.promisify(fs.access)
 async function saveUserImage(imageFile,dir){
     try{
         let imagesNames=[]
-        console.log('sddddddddddaaaaa')
        let a = fs.existsSync(dir)
-       console.log('listen to aaaaaaaaa',a)
         if(!fs.existsSync(dir))
         await mkdir(dir,{recursive:true})
        
@@ -56,6 +66,33 @@ class userMiddleware{
     constructor(){
 
 
+    }
+    static async checkCommunityBlock(req,res,next){
+        try
+        {
+            let {user,community}=req
+            if(user.blockedCommunities.some(id=>id.toString()===community.id))
+            return res.json({success:false,err:'you  blocked this community'})
+            return next()
+        }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async getBlockedUser(req,res,next){
+        try
+        {
+            console.log('das')
+            let blockedUser=await User.findById(req.query.blockedUserId||req.body.blockedUserId)
+            req.blockedUser=blockedUser
+            return next()
+
+        }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
     }
     static async verifyJoinerNoRole(req,res,next){
         try
@@ -165,7 +202,11 @@ class userMiddleware{
         try{
             console.log('got the admins')
             let admins=[]
+            let {community}=req
             const {adminsId}=req.body
+            if(!adminsId)
+                 adminsId=[... community.admins]
+
             for (let i = 0; i < adminsId.length; i++) {
                 let user=await User.findById(adminsId[i])
                 if(!user)
@@ -227,6 +268,9 @@ class userMiddleware{
         try
         {
          const {user,addedUser}=req
+         let res= await checkUserBlock(req,res,addedUser.id,user.id)
+         if(res)
+         return res.json({success:false,err:'user is blocked by you'})
          if(user.friends.every(friendId=>addedUser.id!==friendId.toString()))
          return next()
            user.friends= user.friends.filter(friendId=>friendId.toString()!==addedUser.id)

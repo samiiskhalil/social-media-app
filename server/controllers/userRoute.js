@@ -11,6 +11,18 @@ class user{
   constructor(){
 
   }
+  static async deleteUser(req,res,next){
+    try
+    {
+      let user=await User.findByIdAndDelete(req.query.userId)
+      return res.json({success:true,msg:'you account has been deleted'})
+    }
+    catch(err)
+    {
+      console.log(err)
+      return res.json({success:false,err:err.message})
+    }
+  }
   static async getImage(req,res,next){
     try
     {
@@ -55,6 +67,9 @@ catch(err){
     try{
         const {userId}=req.params
         let user=await User.findById(userId)
+        if(!user)
+        user=req.user
+        if(user.posts)
         user=await user.populate('posts')
         console.log(user)
         // await user.save()
@@ -67,6 +82,7 @@ catch(err){
   }
   static async sendUser(req,res){
     try{
+      
     return  res.status(201).json({success:true,token:req.token,user:req.user})
     }
     catch(err){

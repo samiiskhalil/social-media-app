@@ -8,7 +8,7 @@ const rmdir=util.promisify(fs.rm)
 class postModelSideEffectHandler{
     constructor(){
 
-    }
+    } 
     static async removeCommunity(req,res,next){
         try
         {

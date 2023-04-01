@@ -1,6 +1,10 @@
 const express = require('express')
 const multer = require('multer');
 const upload=multer()
+const {promisify}=require('util')
+const fs=require('fs')
+const {resolve}=require('path')
+let  exists=promisify(fs.exists)
 require('dotenv').config()
 const cors = require('cors')
 const Comment=require('./models/commentSchema.js')
@@ -28,4 +32,5 @@ app.use('/api/user',userRouter)
 app.use('/api/posts',postsRouter)
 app.use('/api/comments',commentsRouter)
 app.use('/api/community',communityRouter)
+
 app.listen(1000,()=>console.log('http://localhost:1000'))

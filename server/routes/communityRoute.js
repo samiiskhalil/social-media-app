@@ -41,7 +41,7 @@ communityMiddleware.removeAdmins,communityController.sendCommunity)
 router.post('/posts',auth.verifyToken,communityMiddleware.getCommunity,postMiddleware.createPost,communityMiddleware.addPost,userModelSideEffectHandler.addPostToPublisherPosts,postController.sendPost)
 // approve post
 // remove post only with roles
-router.delete('/posts',auth.verifyToken,auth.verifyCommunityRole,postMiddleware.getPost,postMiddleware.getPostsList,postModelSideEffectHandler.removeCommunity,communityMiddleware.removePost,communityController.sendCommunity)
+router.delete('/posts',auth.verifyToken,auth.verifyCommunityRole,communityMiddleware.getCommunity,postMiddleware.getPost,postMiddleware.getPostsList,postModelSideEffectHandler.removeCommunity,communityMiddleware.removePost,communityController.sendCommunity)
 // approve post
 router.patch('/posts/approve',auth.verifyToken,auth.verifyCommunityRole,postMiddleware.getPost,communityMiddleware.approvePost,communityController.sendCommunity)
 // ask to join 
@@ -49,16 +49,29 @@ router.post('/members/join',auth.verifyToken,communityMiddleware.getCommunity,co
 // remove request by user
 router.delete('/members/join',auth.verifyToken,communityMiddleware.getCommunity,communityMiddleware.verifyNoRole,communityMiddleware.removeFromWaitList,userModelSideEffectHandler.removeCommunity,communityController.sendCommunity)
 // admin or manager remove request join
-router.delete('/members/role/join',auth.verifyToken,auth.verifyCommunityRole,communityMiddleware.removeFromWaitList,userModelSideEffectHandler.removeCommunity)
+router.delete('/members/role/join',auth.verifyToken,auth.verifyCommunityRole,communityMiddleware.removeFromWaitList,userModelSideEffectHandler.removeCommunity,communityController.sendCommunity)
 // approve memeber 
 router.post('/members/role/join',auth.verifyToken,auth.verifyCommunityRole,userMiddleware.getJoiner,userMiddleware.verifyJoinerNoRole,userModelSideEffectHandler.approvedCommunity,communityMiddleware.addMember,communityMiddleware.removeFromWaitList,communityController.sendCommunity)
 // remove member
-// this link is used to remove members only by those with roles not admins
+// remove by admins only members
 router.delete('/members/role',auth.verifyToken,auth.verifyCommunityRole,userMiddleware.getJoiner,userMiddleware.verifyJoinerNoRole,userModelSideEffectHandler.removeCommunity,communityMiddleware.removeMember,communityController.sendCommunity)
 // remove member by the same member used by useres with no role
 router.delete('/members',auth.verifyToken,communityMiddleware.getCommunity,communityMiddleware.verifyMember,communityMiddleware.verifyNoRole,communityMiddleware.removeMember,userModelSideEffectHandler.removeCommunity,communityController.sendCommunity)
+// admin resign
+router,delete('/admin',auth.verifyToken,communityMiddleware.getCommunity,auth.verifyCommunityAdmin,communityMiddleware.removeAdmin,userModelSideEffectHandler.removeAdmin,communityController.sendCommunity)
 // change commnity params
 router.patch('/manager/publicity',auth.verifyToken,auth.verifyCommunityManager,communityMiddleware.getCommunity,communityMiddleware.convertPublicity,communityController.sendCommunity)
 router.patch('/manager/post-approval',auth.verifyToken,auth.verifyCommunityManager,communityMiddleware.getCommunity,communityMiddleware.convertPostApproval,communityController.sendCommunity)
-// router.patch('/cover-image',auth.verifyToken,auth.verifyCommunityManager,communityMiddleware.getImage)
+router.get('/image/:imageName',auth.verifyToken,communityMiddleware.getCommunity,communityController.getImage)
+router.delete('/image/:imageName',auth.verifyToken,auth.verifyCommunityManager,communityMiddleware.getCommunity,communityMiddleware.deleteImage,communityController.sendCommunity)
+router.patch('/image',auth.verifyToken,auth.verifyCommunityManager,communityMiddleware.getCommunity,communityMiddleware.saveImage,communityController.sendCommunityCoverImageName)
+router.delete('/',auth.verifyToken,auth.verifyCommunityManager,communityMiddleware.getCommunity,
+// delete user
+userMiddleware.getAdmins,userModelSideEffectHandler.removeAdmins,
+userModelSideEffectHandler.removeManagedCommunity,userModelSideEffectHandler.removeMembers
+,communityMiddleware.deleteImage,
+communityController.sendCommunity)
+// block/unblock users only by managers
+router.patch('/block',auth.verifyToken,auth.verifyCommunityManager,userMiddleware.getBlockedUser,communityMiddleware.blockUser,communityController.sendCommunity)
+
 module.exports=router

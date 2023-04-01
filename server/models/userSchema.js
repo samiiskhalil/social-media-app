@@ -1,5 +1,9 @@
 const mongoose = require('mongoose')
 const userSchema= new mongoose.Schema({
+    blockedCommunities:[{type:mongoose.SchemaTypes.ObjectId,ref:'Community'}]    
+,
+    blockedUsers:[{type:mongoose.SchemaTypes.ObjectId,ref:'User'}],
+
     firstName:{
         type:String,required:true
     },age:{

@@ -9,7 +9,11 @@ const userModelSideEffectHandler=require('../middleware/userModelSideEffectHandl
 const postController = require('../controllers/postsRoute.js');
 const commentController=require('../controllers/commentsRoute.js');
 const auth = require('../middleware/authentication.js');
+const userMiddleware = require('../middleware/userMiddleware.js');
+const communityMiddleware = require('../middleware/communityMiddleware.js');
 const router=express.Router()
+// get communty
+router.get('/',auth.verifyToken,communityMiddleware.getCommunity,userMiddleware.checkCommunityBlock,communityMiddleware.checkUserBlock)
 // create comment
 // if comment is a reply then find the orginal comment and handle error if found and add it to req object
 // hande user side effect and handle post side effect eventually send comment

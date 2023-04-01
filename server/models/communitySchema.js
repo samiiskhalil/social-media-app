@@ -2,10 +2,15 @@ const mongoose=require('mongoose')
 const communitySchema=new mongoose.Schema({
     waitingList:[{userId:{type:mongoose.SchemaTypes.ObjectId,ref:'User'},askedAt:{
     type:Date,
-    default:()=> new Date.now()
+    default:()=> new Date()
 
 }}]
 ,
+blockedUsers:[{type:mongoose.SchemaTypes.ObjectId,ref:'User'}],
+coverImageName:{
+    type:String,
+    default:null
+},
 public:{
     type:Boolean,
     default:false
@@ -34,7 +39,7 @@ public:{
     
     ,joinedAt:{
         type:Date,
-        default:()=> new Date().now
+        default:()=> new Date()
     }}]    
 },{versionKey:false,timestamps:true})
 module.exports=mongoose.model('Community',communitySchema)

@@ -54,7 +54,7 @@ class authentication{
     static async verifyCommunityManager(req,res,next){
         try{
             console.log(req.body.communityId)
-            const community=await Community.findById(req.body.communityId)
+            const community=await Community.findById(req.body.communityId||req.query.communityId)
             if(!community)
             return res.json({success:false,err:'no commnity was found'})
             const {user}=req
@@ -84,6 +84,7 @@ class authentication{
         }
     static async verifyToken(req,res,next){
         try{
+            console.log('asdaddsa')
             const bearer =req.headers['authorization']
             const token=bearer.split(' ')[1]
             if(!token)

@@ -22,6 +22,23 @@ async function  saveFiles(files,postId){
 class postMiddleware{
     constructor() {
         
+    }static async getPosts(req,res,next){
+        try
+        {
+            let {user}=req
+            let postsList=[]
+            for (let i = 0; i < user.posts.length; i++) {
+                let post=await Post.findById(user.posts[i])
+                postsList.push(post)
+                
+            }
+            req.postsList=postsList
+            return next()
+            }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
     }
     static async getPost(req,res,next){
         try

@@ -5,6 +5,26 @@ class commentsMiddleware{
     constructor(){
 
     }
+    static async getPostsListsCommnetsList(req,res,next){
+        try
+        {
+            let {postsList}=req
+            let commentsList=[]
+            for (let i = 0; i < postsList.length; i++) 
+                for (let j = 0; j < postsList[i].comments.length; j++) 
+                {
+                    let comment=await Comment.findById(postsList[i].comments[j])
+                    commentsList.push(comment)
+
+                }
+                req.commentsList=commentsList
+                return next()
+                
+        }
+            catch(err){
+            return res.json({success:false,err:err.message})
+        }
+    }
     static async getPostCommentsList(req,res,next){
         try
         {

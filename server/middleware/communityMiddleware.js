@@ -1,14 +1,142 @@
 const Community=require('../models/communitySchema.js')
 const express=require('express')
+const fs=require('fs')
+const {resolve}=require('path')
+let {promisify}=require('util')
+const unlink=promisify(fs.unlink)
+const readdir=promisify(fs.readdir)
+const mkdir=promisify(fs.mkdir)
+const exists=promisify(fs.exists)
+const writeFile=promisify(fs.writeFile)
 const auth=require('../middleware/authentication.js')
+async function saveCommunityImage(imageFile,dir){
+    try{
+        let imagesNames=[]
+        if(!await exists(dir))
+        await mkdir(dir,{recursive:true})
+       
+        if(await exists(dir))
+        {
+
+        imagesNames= await readdir(dir)
+        if(imagesNames.length)
+        imagesNames.forEach(async(imageName)=>await unlink(`${dir}/${imageName}`))
+    }
+        const random=await require('crypto').randomBytes(8).toString('hex')
+        const filePath=`${dir}/${random}-${imageFile.originalname}`
+        await writeFile(filePath,imageFile.buffer,{recursive:true})
+        return `${random}-${imageFile.originalname}`
+    }
+    catch(err){
+        console.log(err)
+        
+    }
+    }
 class communityMiddleware{
     constructor(){
 
+    }  
+    static async checkUserBlock(req,res,next){
+        try
+        {
+            let {user,community}=req
+            if(community.blockedUsers.some(id=>id.toString()===user.id))
+            return res,json({success:false,err:'you are blocked by this community'})
+            return next()
+        }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async blockUser(req,res,next){
+        try
+        {
+            let {blockedUser,community}=req
+            if(community.blockedUsers.some(id=>id.toString()===blockedUser.id))  
+            {community.blockedUsers= community.blockedUsers.filter(id=>id.toString()!==blockedUser.id)
+                    await community.save()
+                    req.community=community
+                    console.log('dasdas')
+                    return next()
+                }
+                community.blockedUsers.push(blockedUser.id)
+                req.community=community
+                await community.save()
+                return next()
+            }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+  static async  chechPoster(req,res,next){
+        try
+        {
+            let {user,community,post}=req
+            if(community.admins.some(id=>id.string()===userid))
+            return next()
+            if(community.manager===user.id)
+            return next()
+            if(community.postApproval)
+            community.waitingList.push(post)
+            await community.save()
+            return next()
+        }
+        catch(err){
+            console.log(Err)
+            return res.josn({success:false,err:err.message})
+        }
+    }
+    static async deleteImage(req,res,next){
+        try
+        {
+            const {imageName}=req.params
+            const imagePath=resolve(__dirname,'..','uploaded-files','communities-images',req.query.communityId||req.body.communityId,imageName)
+            if(await !exists(imagePath))
+                return res.json({success:false,err:'file was found'})
+                await unlink(imagePath)   
+                return next()
+            }   
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async saveImage(req,res,next){
+        try
+        {
+            let {community}=req
+            const dir=resolve(__dirname,'..','uploaded-files','communities-images',req.query.communityId||req.body.communityId)
+             const imageName=  await saveCommunityImage(req.files[0],dir)
+            community.coverImageName=imageName
+            await community.save()
+            req.community=community
+            return next()
+        }   
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async getImage(req,res,next){
+        try
+        {
+            const {imageName}=req.params
+            const imagePath=resolve(__dirname,'..','uploaded-files','communities-images',req.query.communityId||req.body.communityId,imageName)
+            if(await exists(imagePath))
+                return res.json({success:false,err:'file was found'})
+            return res.sendFile(imagePath)
+            }   
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
     }
     static async convertPostApproval(req,res,next){
         try{
             let {community}=req
-            communtiy.postApproval=!community.postApproval
+            community.postApproval=!community.postApproval
             await community.save()
             req.community=community
             return next()
@@ -21,7 +149,7 @@ class communityMiddleware{
     static async convertPublicity(req,res,next){
         try{
             let {community}=req
-            communtiy.publicity=!community.publicity
+            community.public=!community.public
             await community.save()
             req.community=community
             return next()
@@ -47,7 +175,7 @@ class communityMiddleware{
     static async verifyMember(req,res,next){
         try
         {    
-            let {joiner,communty}=req
+            let {joiner,community}=req
             if(!joiner)
             joiner=req.user
             if(community.members.every(({memberId})=>memberId.toString()!==joiner.id))
@@ -62,7 +190,7 @@ class communityMiddleware{
     static async addMember(req,res,next){
         try
         {    
-            let {joiner,communty}=req
+            let {joiner,community}=req
             if(community.members.some(({memberId})=>memberId.toString()===joiner.id))
                 return res.json({success:false,err:'user is already a member'})
             community.members.push({memberId:joiner.id})
@@ -80,9 +208,9 @@ class communityMiddleware{
         {    
            let {community,user}=req
            if(user.adminedCommunities.some(communityId=>communityId.toString()===community.id))
-           return res.json({success:false,err:'you are an admin'})
+           return res.json({success:false,err:'you are an admin of a community '})
            if(user.managedCommunities.some(id=>id.toString()===community.id))
-           return res.json({success:false,err:'you are the manager'})
+           return res.json({success:false,err:'you are the manager of a community'})
            return next()
         }
         catch(err){
@@ -93,15 +221,11 @@ class communityMiddleware{
     static async removeFromWaitList(req,res,next){
         try
         {    
-            let {community,user}=req
-            if(req.query.joinerId||req.body.joinerId){
-                community.waitingList=community.waitingList.filter(({userId})=>userId.toString()!==req.query.joinerId)
+            console.log('adsa')
+            let {community,joiner}=req
+                community.waitingList=community.waitingList.filter(({userId})=>userId.toString()!==joiner.id)
                 await community.save()
                 return next()
-            }
-         community.waitingList=community.waitingList.filter(({userId})=>userId.toString()!==user.id)
-            await community.save()
-            return next()
         }
         catch(err){
             console.log(err)
@@ -128,7 +252,9 @@ class communityMiddleware{
         try
         {    
             let {community,user}=req
-            community.waitingList.push({user:user.id})
+            if(community.waitingList.some(({userId})=>userId.toString()===user.id))
+            return res.json({success:false,err:'user is already waiting'})
+            community.waitingList.push({userId:user.id})
             await community.save()
             return next()
         }
@@ -156,7 +282,8 @@ class communityMiddleware{
         {
             let {post,community}=req
             community.posts=community.posts.filter(({postId})=>postId.toString()!==post.id)
-            await community.psots()
+            await community.save()
+            req.community=community
             return next()
         }
         catch(err){
@@ -167,8 +294,11 @@ class communityMiddleware{
     static async addPost(req,res,next){
         try
         {
-            let {post,community}=req
-            community.posts.push({post:post.id,approved:!community.postApproval})
+            let {user,post,community}=req
+            let approval=!community.postApproval
+            if(community.admins.some(id=>id.toString()===userId||community.manager.toString()===user.id))
+            approval=true
+            community.posts.push({postId:post.id,approved:approval})
             await community.save()
             req.community=community
             return next()
@@ -208,6 +338,20 @@ class communityMiddleware{
         return res.json({success:false,err:err.message})
     }
    }
+   static async removeAdmin(req,res,next){
+    try
+    {
+        let {user,community}=req
+        community.admins= community.admins.filter(adminId=>adminId.toString()!==user.id)
+        await community.save()
+        req.community=community
+        return next()
+    }
+    catch(err){
+        console.log(err)
+        return res.json({success:false,err:err.message})
+    }
+}
     static async removeAdmins(req,res,next){
         try
         {
@@ -230,10 +374,12 @@ class communityMiddleware{
 
         try
         {
-            const community=await Community.findById(req.body.communityId)
+           console.log(req.query.communityId)
+            const community=await Community.findById(req.body.communityId||req.query.communityId)
             if(!community)
             return res.json({success:false,err:'no community was found'})
             req.community=community
+            console.log('xxxxxxxxxxxx')
             return next()
             }
         catch(err){
