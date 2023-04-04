@@ -190,6 +190,7 @@ class userModelSideEffectHandler{
             })
             req.admins=admins
             req.community=community
+            console.log('dsada')
             return next()                  
         }
         catch(err){

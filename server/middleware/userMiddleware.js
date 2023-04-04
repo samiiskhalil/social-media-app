@@ -206,7 +206,7 @@ class userMiddleware{
             const {adminsId}=req.body
             if(!adminsId)
                  adminsId=[... community.admins]
-
+            console.log(adminsId,'got the admins id')
             for (let i = 0; i < adminsId.length; i++) {
                 let user=await User.findById(adminsId[i])
                 if(!user)
@@ -229,15 +229,20 @@ class userMiddleware{
             if(!admins.length)
             return res.json({success:false,err:'no admins were sent'})
             const {community}=req
+            console.log(community,'adsdsadsadads')
+            if(!community.admins.length)
+            return next()
             for (let i = 0; i < admins.length; i++) {
-                
+                if(!admins[i].adminedCommunities.length)
+                    continue
             if(community.admins.some(adminId=>adminId.toString()===admins[i].id)||admins[i].adminedCommunities.some(commId=>commId.toString()===community.id))
                 return res.json({success:false,err:'found an existing admin try again with the same list'})
             return next()
                       }
                                   }
         catch(err){
-            console.log
+            console.log(err)
+            return res.json({success:false,err:err.message})
         }
       }
       static async destructUser(req,res,next){

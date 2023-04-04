@@ -295,6 +295,8 @@ class communityMiddleware{
         try
         {
             let {user,post,community}=req
+            if(!community)
+            return next()
             let approval=!community.postApproval
             if(community.admins.some(id=>id.toString()===userId||community.manager.toString()===user.id))
             approval=true
@@ -363,6 +365,7 @@ class communityMiddleware{
                         if(admins[j].id===community.admins[i].toString())
                             community.admins.splice(i,1)
             await  community.save()
+            console.log('asd')
             return next()
                         }
         catch(err){
@@ -374,7 +377,12 @@ class communityMiddleware{
 
         try
         {
-           console.log(req.query.communityId)
+            if(!req.query.comunityId&&!req.body.communityId)
+           {
+            console.log('no community was found')
+              req.community=null  
+               return next()
+           }
             const community=await Community.findById(req.body.communityId||req.query.communityId)
             if(!community)
             return res.json({success:false,err:'no community was found'})
@@ -410,6 +418,7 @@ class communityMiddleware{
             {
             let {community}=req
             let {admins}=req
+            console.log(admins,'asdasdsa')
             for (let i = 0; i < admins.length; i++) 
                 community.admins.push(admins[i].id)                
         

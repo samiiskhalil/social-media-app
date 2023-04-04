@@ -266,7 +266,7 @@ static async commentReaction(req,res){
     }
     static async getPost(req,res){
         try{
-            const post=await Post.findById(req.params.postId)
+            const post=await Post.findById(req.query.postId)
             if(!post)
             return res.json({success:false,err:'post was not found'})
             res.json({sucess:true,post:post})

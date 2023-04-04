@@ -20,11 +20,12 @@ userModelSideEffectHandler.addAdminedCommunity
 // need to populate posts thoughs
 router.get('/',communityController.sendCommunity)
 // add admins 
-router.post('/admins',auth.verifyToken,auth.verifyCommunityManager,userMiddleware.checkManagerNotAdmin,communityMiddleware.getCommunity,userMiddleware.getAdmins
+router.post('/admins',auth.verifyToken,auth.verifyCommunityManager,userMiddleware.checkManagerNotAdmin,
+communityMiddleware.getCommunity,userMiddleware.getAdmins
 ,userMiddleware.checkAdmins,communityMiddleware.addAdmins,userModelSideEffectHandler.addAdminedCommunity
 ,communityController.sendCommunity)
 // remove admins
-router.patch('/admins/remove',auth.verifyToken,
+router.patch('/admins/remove',auth.verifyToken,communityMiddleware.getCommunity,
 auth.verifyCommunityManager,userMiddleware.getAdmins,communityMiddleware.removeAdmins
 ,userModelSideEffectHandler.removeAdmins,
 communityController.sendCommunity)

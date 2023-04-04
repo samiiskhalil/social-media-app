@@ -162,14 +162,16 @@ class postMiddleware{
     static async createPost(req,res,next){
     try{
         const {describtion}=req.body
-        console.log(req.body.communityId)
+        let communityId=null
+        let {community}=req
+        if(community)
+        communityId=community.id
         let style=JSON.parse(req.body.style)
      const post= await Post.create({
          publisher:req.user.id
          ,describtion
          ,sharedPost:{post:req.headers['shared-post-id']||null},
-        community:{communityId:req.body.communityId||null,removed:false}     })
-     console.log(post.Community)
+        community:{communityId:communityId||null,removed:false}     })
      const names=await saveFiles(req.files,post.id)
      for (let i = 0; i < names.length; i++) {
          post.files.push({fileName:names[i],style:style[i]})
@@ -180,6 +182,7 @@ class postMiddleware{
          return next()
     }
     catch(err){
+        console.log(err)
         return res.json({success:false,err:'post was not added to req object'})
     }
     }

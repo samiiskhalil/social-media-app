@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 // const User
 const postSchema=new mongoose.Schema({
-
    publisher:{
         type:mongoose.SchemaTypes.ObjectId,ref:'User'
     }

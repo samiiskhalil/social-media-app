@@ -49,17 +49,10 @@ posts:[{type:mongoose.SchemaTypes.ObjectId,ref:'Post'}]
     ,
     job:String,
    education:{
-       educationLevel:String,
-    studyPlace:{
-        school:String,
-        college:{
-            name:String,
-            graduated:Boolean,
-            major:String
-        },
-        other:String
-    },
-    }
+        educationLevel:String,
+        educationPlace:String,
+        finished:Boolean
+}
   ,
     managedCommunities:[{type:mongoose.SchemaTypes.ObjectId,ref:'Community'}],
     adminedCommunities:[{type:mongoose.SchemaTypes.ObjectId,ref:'Community'}]
