@@ -36,6 +36,19 @@ class communityMiddleware{
     constructor(){
 
     }  
+    static async verifyCommunityPublic(req,res,next){
+        try
+        {
+            let {user,community}=req
+            if(!community.public)
+            return res.json({success:false,err:'community is not public'})
+            return next()
+        }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
     static async checkUserBlock(req,res,next){
         try
         {
@@ -190,7 +203,9 @@ class communityMiddleware{
     static async addMember(req,res,next){
         try
         {    
-            let {joiner,community}=req
+            let {joiner,user,community}=req
+            if(!joiner)
+            joiner=user
             if(community.members.some(({memberId})=>memberId.toString()===joiner.id))
                 return res.json({success:false,err:'user is already a member'})
             community.members.push({memberId:joiner.id})

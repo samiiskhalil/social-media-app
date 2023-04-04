@@ -43,6 +43,8 @@ router.post('/posts',auth.verifyToken,communityMiddleware.getCommunity,postMiddl
 // approve post
 // remove post only with roles
 router.delete('/posts',auth.verifyToken,auth.verifyCommunityRole,communityMiddleware.getCommunity,postMiddleware.getPost,postMiddleware.getPostsList,postModelSideEffectHandler.removeCommunity,communityMiddleware.removePost,communityController.sendCommunity)
+// join community
+router.post('/members',auth.verifyToken,communityMiddleware.getCommunity,communityMiddleware.verifyNoRole,communityMiddleware.verifyCommunityPublic,communityMiddleware.addMember,communityController.sendCommunity)
 // approve post
 router.patch('/posts/approve',auth.verifyToken,auth.verifyCommunityRole,postMiddleware.getPost,communityMiddleware.approvePost,communityController.sendCommunity)
 // ask to join 
