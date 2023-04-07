@@ -2,9 +2,13 @@
     position: relative;
     width: 100%;
 }
+.container{
+    position: relative;
+}
 .col{
     margin-top: 0;
 }
+
 .background-image-container{
     margin-top: 14px;
     position: relative;
@@ -117,9 +121,6 @@ border: black;
 transform: scale(2);
 }
 .profile-picture-container{
-    display: flex;
-    justify-content: center;
-    align-items: center;
     border: 1px black solid;
     position: absolute;
     min-width: 100px;
@@ -127,12 +128,7 @@ transform: scale(2);
     left: 13px;
     border-radius: 50%;
     bottom: -70px;
-    background-color: rebeccapurple;
-}
-.profile-picture-container img{
-    position: absolute;
-    border-radius: 50%;
-    object-fit: cover;
+    background-color: black;
 }
 .profile-picture-options-container{
     position: absolute;
@@ -152,12 +148,11 @@ position: absolute;
 height: 100%;
 border-radius: 50%;
 }
-.profile-img-container{
-    position: absolute;
+.profile-image-container{
+    position: relative;
     overflow: hidden;
-    
-    width: 100%;
-    height: 100%;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
 }
 
@@ -192,4 +187,19 @@ border-radius: 50%;
 }
 .profile-picture-update-menu-item:hover{
     background-color: whitesmoke;
+}
+.user-name{
+    white-space: nowrap;
+    margin-top: 10px;
+margin-left: 60%;
+}
+.user-profile-image{
+    width: 100px;
+    height: 100px;
+    top: 0;
+    object-fit: cover;
+    user-select: none;
+}
+button{
+    z-index: 3000;
 }

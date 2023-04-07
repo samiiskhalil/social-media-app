@@ -1,9 +1,10 @@
 import React from 'react'
 import axios from 'axios'
+import userApi from '../../resources/api/user_requests.js'
 import { Navigate, useNavigate } from 'react-router'
 import { useRef,useEffect,useState } from 'react'
-import { height } from '@mui/system'
 import './signup.css'
+import store from 'store'
 import Cookies from 'js-cookie'
 const Signup = () => {
   const emailRef=useRef('')
@@ -36,8 +37,11 @@ const temp=data.map(country=>{
 })
 setCountries(temp)
 
-}catch(err){
-  console.log(err)
+}catch(err)
+{
+  setReqMsg(err)
+  setSuccess(false)
+  
 }
 }
 ,[])
@@ -46,19 +50,22 @@ const handleChange=(e)=>{
   setUser(pre=>{return{...pre,[e.target.name]:e.target.value,[inpRef.current.name]:inpRef.current.value}})
 }
 const handleSubmit=async (e)=>{
-  try{
-  const {data}= await axios.post('http://localhost:1000/api/users/signup',user)
-  console.log(data)  
-  navigate(`/users/${data.userId}`)    
-  } 
 
-catch(err){
-  console.log(err.message)
-  setReqMsg(err.response.data.data)
-  setSuccess(err.response.data.success)
-  
-}
-}
+  const res= await userApi.createUser(user)
+  if(!res.success){
+    setSuccess(false)
+    setReqMsg(res.err)
+    return 
+  } 
+  setSuccess(true)
+  store.set('user',res.user)
+  store.set('userId',res.user_id)
+  Cookies.set('token',`BEARER ${res.token}`)
+  navigate(`../user/${res.user._id}`)
+  }
+
+
+
 return (
   <>
   <div className="container ">
@@ -188,16 +195,16 @@ secondContainerRef.current.style.display='block'
 
     <button onClick={handleSubmit} type='button' className='btn btn-primary  m-3'>submit</button>
       <button type='button' onClick={()=>{
+        console.log(firstContainerRef.current.style.display)
         secondContainerRef.current.style.display='none'
 firstContainerRef.current.style.display='block'
 }} className='btn-outline-primary btn ' >Back</button>  
    
-{!success&& <h3 className=' m-3 email-error-p' >{reqMsg}</h3>}
+          {!success&&<h3 className=' m-3 email-error-p' >{reqMsg}</h3>}
           </div>
           </>:null}
     </form>
     </div>
-<h1>{Cookies.get('')}</h1>
 </>
     )
   }

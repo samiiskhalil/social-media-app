@@ -1,0 +1,2 @@
+here I made sure image appeared properly depending on wether its for profile or cover
+and scaling differs based on image type also

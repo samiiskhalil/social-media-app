@@ -1,12 +1,16 @@
 import './login.css'
+import store from 'store'
 import Cookies from 'js-cookie'
 import { useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router'
+import userAPI from '../../resources/api/user_requests'
 const Login=()=>{
 const [user,setUser]=useState({})
 const [loggerFlage,setLoggerFlage]=useState(false)
 const navigate=useNavigate()
+const [errMsg,setErrMsg]=useState('')
+const [success,setSuccess]=useState(true)
 function handleChange(e){
   setUser(pre=>{
     return {
@@ -14,25 +18,19 @@ function handleChange(e){
     }
   })}
   async function handleClick(e){
+const data=await userAPI.logUser(user.email,user.password)
+if(!data.success){
+setSuccess(false)
+setErrMsg(data.err)
+return 
+}    
+console.log('aaaaaaaa')
+setSuccess(true)
+store.set('user',data.user)
+store.set('userId',data.user._id)
+Cookies.set('token',`BEARER ${data.token}`)
+navigate(`../user/${data.user._id}`)
 
-    
-    try{
-      e.preventDefault()
- const {data}= await axios.get('http://localhost:1000/api/users/login',{params:{
-      email:user.email
-    },headers:{
-      "authorization":user.password
-    }})
-    console.log('a')
-    console.log(data)
-    if(data.success)
-    Cookies.set('token',data.token,data.userId)
-    navigate(`/users/${data.userId}`)
-  }
-
-  catch(err){
-    console.log(err)
-  }
   }
  
   return(
@@ -50,6 +48,7 @@ function handleChange(e){
     </div>
     <button onClick={handleClick} type='button' className="btn">submit</button>
     </form>
+    {!success&&<h3 className=' m-3 email-error-p' >{errMsg}</h3>}
   </div>
   )
 }

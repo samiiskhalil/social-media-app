@@ -188,9 +188,7 @@ class userMiddleware{
               email
           })
           req.user=user
-          user.firstName='aaa'
           await user.save()
-          console.log('bb')
           return next()
         }
       
@@ -311,6 +309,7 @@ class userMiddleware{
             try
         {
             const coverImage=req.files[0]
+            console.log(coverImage)
             let {style}=req.body
             style=JSON.parse(style)
             const profileDir=`./uploaded-files/users-images/${req.user.id}/user-cover-image`

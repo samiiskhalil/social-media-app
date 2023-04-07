@@ -1,25 +1,23 @@
 import React from 'react'
-import {EditImg,Logout,User,Users,Login,Signup,Home,UsersRoute} from './pages/index.js'
+import {EditImg,Search,Logout,User,Login,Signup,Home} from './pages/index.js'
 import {  NavBar } from './components/index.js'
-import './app.css'
-import {useNavigate,useLocation,Routes,Route} from 'react-router-dom'
+import {useNavigate,Routes,Route} from 'react-router-dom'
 const App = () => {
-  let location=useLocation()
   return (
 <>
 
 <Routes  >
   <Route path='/' element={<NavBar/>} >
     <Route index element={<Home/>} />
-    <Route path='users/*' element={<UsersRoute/>} />
-    
+    <Route path='user/:id' element={<User/>} />
+    <Route path='/search' element={<Search/>} />
 </Route>
 <Route path='/logout' element={<Logout/>}/>
 
 <Route path='/signup' element={<Signup />}/>
 <Route path='/login' element={<Login />}/>
-<Route path='/edit-image/:imageSrc' element={<EditImg/>}/>
 
+<Route path='/edit-image/:imageSrc' element={<EditImg/>}/>
 </Routes>
 </>
     )

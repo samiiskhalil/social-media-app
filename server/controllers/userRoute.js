@@ -23,13 +23,24 @@ class user{
       return res.json({success:false,err:err.message})
     }
   }
-  static async getImage(req,res,next){
+  static async getCoverImage(req,res,next){
     try
     {
       
-      if(!req.headers['image-type'])
-      return res,json({success:false,err:'no type was specified'})
-      const path=join(__dirname,'..','uploaded-files','users-images',req.query.userId,`user-${req.headers['image-type']}-image`,req.params.imageName)
+      const path=join(__dirname,'..','uploaded-files','users-images',req.query.userId,`user-cover-image`,req.params.imageName)
+      return res.sendFile(path)
+    }
+    catch(err)
+    {
+      console.log(err)
+      return res.json({success:false,err:err.message})
+    }
+  }
+  static async getProfileImage(req,res,next){
+    try
+    {
+      
+      const path=join(__dirname,'..','uploaded-files','users-images',req.query.userId,`user-profile-image`,req.params.imageName)
       return res.sendFile(path)
     }
     catch(err)

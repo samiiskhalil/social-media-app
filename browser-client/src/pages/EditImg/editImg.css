@@ -1,9 +1,6 @@
 .col{
     margin-top: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+   
 }
 .background-image{
     width: 100%;
@@ -21,6 +18,7 @@
     height: 300px;
 }
 .edited-image-container{
+    margin-top:100px ;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -28,22 +26,24 @@
     overflow:hidden ;
     background-color: black;
     left: 0;
+    width: 60vw;
+    height: 60vh;
 }
 .edited-image{
-    object-fit: cover;
     position: relative;
+    user-select: none;
+
    
 } 
-.confirmation-container{
-    border: 2px black solid;
-    margin-top: 30px;
-    background-color: rgba(214, 214, 214, 0.1);
-    display: flex;
-    padding:10px 10px;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
+.btns-container{
+    margin-top: 120px;
     width: 50vw;
+    border: 2px black solid;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    background-color: rgba(214, 214, 214, 0.1);
 
 }
 .btn{
@@ -56,6 +56,7 @@
 background-color: black;
 }
 .confirm-btn:hover{
+    color: black;
     border: 2px black solid;
     background-color: white;
 }
@@ -104,4 +105,33 @@ transform: scale(2);
 }
 .cutter-container svg{
 transform: scale(1.5);
+}
+.background-image{
+    margin-top: 14px;
+    position: relative;
+    left: 0;
+    display: flex;
+    background-color: black;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    overflow: hidden;
+    height: 50vh;
+}
+.profile-image{
+    margin-top: 150px;
+    position: relative;
+    left: 0;
+    display: flex;
+    background-color: black;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 300px; 
+    overflow: hidden;
+    height: 300px;
+}
+img{
+    object-fit: cover;
 }

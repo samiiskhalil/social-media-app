@@ -8,6 +8,7 @@ const router=express.Router()
 router.get('/',auth.verifyToken
 )
 router.get('/post-file/:fileName',postController.getFile)
-router.get('/user-image/:imageName',userController.getImage)
+router.get('/user-cover-image/:imageName',userController.getCoverImage)
+router.get('/user-profile-image/:imageName',userController.getProfileImage)
 
 module.exports=router

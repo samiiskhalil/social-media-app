@@ -27,7 +27,6 @@ posts:[{type:mongoose.SchemaTypes.ObjectId,ref:'Post'}]
             imageName:String,
             style:{
                 top:String,
-                bottom:String,
                 scale:Number
             }            
     },
@@ -35,7 +34,6 @@ posts:[{type:mongoose.SchemaTypes.ObjectId,ref:'Post'}]
             imageName:String,
             style:{
                 top:String,
-                bottom:String,
                 scale:Number
             }            
     },

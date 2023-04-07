@@ -10,10 +10,3 @@
 
 align-items: center;
 }
-.btns-container{
-margin-top: 20px;
-display: flex;
-flex-wrap: nowrap;
-flex-direction: row;
-width: 100vw;
-}

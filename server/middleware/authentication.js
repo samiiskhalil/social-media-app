@@ -84,9 +84,10 @@ class authentication{
         }
     static async verifyToken(req,res,next){
         try{
-            console.log('asdaddsa')
             const bearer =req.headers['authorization']
+            console.log(bearer)
             const token=bearer.split(' ')[1]
+            console.log(token)
             if(!token)
             res.status(400).json({success:false,err:'you are not signed in'})
             const data=await jwt.verify(token,process.env.JWT_SECRET)
