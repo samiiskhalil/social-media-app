@@ -38,7 +38,8 @@ posts:[{type:mongoose.SchemaTypes.ObjectId,ref:'Post'}]
             }            
     },
    
-    friends:[{type:mongoose.SchemaTypes.ObjectId,ref:'User'}],
+    followers:[{type:mongoose.SchemaTypes.ObjectId,ref:'User'}],
+    followes:[{type:mongoose.SchemaTypes.ObjectId,ref:'User'}],
     address:{
         country:String,
         city:String,

@@ -267,20 +267,20 @@ class userMiddleware{
             return res.json({success:false,err:err.message})
         }
     }
-    static async checkIfFriend(req,res,next){
+    static async checkIfFollowes(req,res,next){
         try
         {
          const {user,addedUser}=req
-         let res= await checkUserBlock(req,res,addedUser.id,user.id)
-         if(res)
+         let response= await checkUserBlock(req,res,addedUser.id,user.id)
+         if(response)
          return res.json({success:false,err:'user is blocked by you'})
-         if(user.friends.every(friendId=>addedUser.id!==friendId.toString()))
+         if(user.followes.every(friendId=>addedUser.id!==friendId.toString()))
          return next()
-           user.friends= user.friends.filter(friendId=>friendId.toString()!==addedUser.id)
+           user.followes= user.followes.filter(friendId=>friendId.toString()!==addedUser.id)
            await user.save()
-           addedUser.friends=addedUser.friends.filter(friendId=>friendId.toString()!==user.id)
+           addedUser.followers=addedUser.followers.filter(friendId=>friendId.toString()!==user.id)
            await addedUser.save()
-           return res.json({success:true,friends:user.friends})
+           return res.json({success:true,followes:addedUser})
             
         }
         catch(err){
@@ -291,6 +291,7 @@ class userMiddleware{
     static async getUser(req,res,next){
         try
         {
+            console.log(req.body)
             let user=await User.findById(req.query.userId||req.body.userId)
             req.addedUser=user
             return next()

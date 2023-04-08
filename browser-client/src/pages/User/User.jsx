@@ -29,43 +29,44 @@ const User = () => {
   const backgroundImageRef=useRef('')
   const navigate=useNavigate()   
   const params=useParams()
+  const [ownerFlage,setOwnerFlage]=useState(false)
   // first check if the account belongs to the same user
   useEffect(()=>{
     if((!Cookies.get('token'))||(!store.get('user'))){
       navigate('../../login')
       
     }
-    setUser(store.get('user'))
 
+    setUser(store.get('user'))
     },[])
   useEffect(()=>{
     async function checkUser(){
-      if(params.id!==store.get('user')._id)
-      {
-        console.log('asd')
-        setOwner(false)
         let {user}=await userAPI.getUser(params.id)
-        setOwner(false)
-        setUser(user)
+       console.log(user)
+      setOwnerFlage(false)
+       if(params.id===store.get('user')._id)
+        setOwnerFlage(true)
+        setOwner(user)
       }
-      setUser(store.get('user'))
-        }
-        checkUser()
-    
-  },[])
+      
+      checkUser()
+      
+  },[params.id])
   useEffect(()=>{
     
-    if(!user._id)
+    if(!owner._id)
     {
       setSuccess(false)
       setErrMsg('no user was found')
       return 
     }
-    if(user._id){
-      setCoverImageSrc(`http://localhost:1000/api/user-cover-image/${user.coverImage.imageName}?userId=${user._id}`)
-      setProfileImageSrc(`http://localhost:1000/api/user-profile-image/${user.profileImage.imageName}?userId=${user._id}`)
+    if(owner._id){
+      if(owner.coverImage)
+      setCoverImageSrc(`http://localhost:1000/api/user-cover-image/${owner.coverImage.imageName}?userId=${owner._id}`)
+      if(owner.profileImage)
+      setProfileImageSrc(`http://localhost:1000/api/user-profile-image/${owner.profileImage.imageName}?userId=${owner._id}`)
     }
-},[user])
+},[owner])
     const handleImgUpload=(inputRef,imageType)=>{
       const [file]=inputRef.current.files
       const imageSrc=URL.createObjectURL(file).split('/')[3]
@@ -77,10 +78,21 @@ const User = () => {
       store.set('type',imageType)
       navigate(`/edit-image/${imageSrc}`)
     }
+  async  function handleFollow(){
+      const data=await userAPI.follow(owner._id)
+      if(!data.success)
+      {
+        setErrMsg('could not follow')
+        return 
+      }
+      console.log(data.followes)
+      setOwner({... data.followes})
+    }
 return (
 <>
+{
 
-<div className="container container-fluid ">
+owner._id&&<div className="container container-fluid ">
 <div className="row">
   <div className="col">
 
@@ -88,12 +100,12 @@ return (
   <div className="background-image-container">
 
 <img  draggable='false' ref={backgroundImageRef}
-     src={user._id?coverImageSrc:'*'}
-     style={user._id&&{ transform:`scale(${user.coverImage.style.scale})` ,top:`${user.coverImage.style.top}px`}} 
+     src={owner._id?coverImageSrc:'*'}
+     style={owner.coverImage&&{ transform:`scale(${owner.coverImage.style.scale})` ,top:`${owner.coverImage.style.top}px`}} 
      alt='background-image' />
      </div>
     <div   className='update-background-container  '>
-   <button onClick={()=>setBackgroundImageMenuFlage(pre=>!pre)} className='btn-background' ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-camera" viewBox="0 0 16 16">
+   <button style={{ display:!ownerFlage&&'none' }} onClick={()=>setBackgroundImageMenuFlage(pre=>!pre)} className='btn-background' ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-camera" viewBox="0 0 16 16">
   <path d="M15 12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1.172a3 3 0 0 0 2.12-.879l.83-.828A1 1 0 0 1 6.827 3h2.344a1 1 0 0 1 .707.293l.828.828A3 3 0 0 0 12.828 5H14a1 1 0 0 1 1 1v6zM2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2z"/>
   <path d="M8 11a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm0 1a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM3 6.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z"/>
 </svg></button>
@@ -114,15 +126,15 @@ return (
   <div  className="profile-image-container">
 
   <img  className='user-profile-image' draggable='false' ref={profilePictureRef}
-      src={user._id?profileImageSrc:'*'}
-      style={user._id&&{
-         transform:`scale(${user.profileImage.style.scale*4 })`
-         , top:`${user.profileImage.style.top}px`}}
+      src={owner._id?profileImageSrc:'*'}
+      style={owner.profileImage&&{
+         transform:`scale(${owner.profileImage.style.scale*4 })`
+         , top:`${owner.profileImage.style.top}px`}}
          
          alt="user-profile-picture" />
   </div>
   <div className={`profile-picture-options-container `}>
-    <button onClick={e=>setProfilePictureMenuFlage(pre=>!pre)}  type='button' className='profile-picture-update-button'>
+    <button style={{ display:!ownerFlage&&'none' }} onClick={e=>setProfilePictureMenuFlage(pre=>!pre)}  type='button' className='profile-picture-update-button'>
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-camera" viewBox="0 0 16 16">
       <path d="M15 12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1.172a3 3 0 0 0 2.12-.879l.83-.828A1 1 0 0 1 6.827 3h2.344a1 1 0 0 1 .707.293l.828.828A3 3 0 0 0 12.828 5H14a1 1 0 0 1 1 1v6zM2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2z"/>
   <path d="M8 11a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm0 1a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM3 6.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z"/>
@@ -141,13 +153,25 @@ return (
   </div>
   <div className="row">
     <div className="col">
-      <h1 className='user-name'>{user.firstName} {user.lastName}</h1>
+      <div style={{ minWidth:'70vw' }} className="  d-flex align-items-end justify-content-center flex-column ">
+      <h1 className='user-name text-xxl'>{owner.firstName} {owner.lastName}</h1>
+     <div  className=" mt-3 d-flex flex-row justify-content-between align-items-center">
+      <div style={{ width:'50vw' }} className="">
+        <p>{`follwers : ${owner._id&&owner.followers.length}`}</p>
+        <p>{`followes : ${owner._id&&owner.followes.length}`}</p>
+      </div>
+      {!ownerFlage&&<button onClick={handleFollow} className="btn-primary btn">{owner.followers.some(followerId=>followerId===store.get('user')._id)?'unfollow':'follow'}</button>}
+      </div>   
+        
+     
+      </div>
       
   <Posts/>
 
     </div>
   </div>
 </div>
+}
 </>
     )
 }

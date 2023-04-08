@@ -241,13 +241,13 @@ class userModelSideEffectHandler{
             return res.json({success:false,err:err.message})
         }
     }
-   static async addFriend(req,res,next){
+   static async addFollow(req,res,next){
     try
     {
         let {user,addedUser}=req
-        user.friends.push(addedUser.id)
+        user.followes.push(addedUser.id)
         await user.save()
-        addedUser.friends.push(user.id)
+        addedUser.followers.push(user.id)
         await addedUser.save()
         req.friend=addedUser
         return next()

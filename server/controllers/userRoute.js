@@ -50,10 +50,10 @@ class user{
     }
   }
   // log in user
-  static async sendFriend(req,res,next){
+  static async sendFollow(req,res,next){
     try{
       const {friend}=req
-      return res.json({success:true,friend})
+      return res.json({success:true,followes:friend})
     }
     catch(err){
       console.log(err)

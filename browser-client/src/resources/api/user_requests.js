@@ -88,4 +88,29 @@ static async getUserImage(userId,imageName,imageType){
         return err.response.data
     }
 }
+static async searchQuery(query){
+    try{
+        const {data}=await axios.get(`http://localhost:1000/api/search?searchQuery=${query}`)
+        console.log(data)
+          return data
+    }
+    catch(err){
+        return err.response.data
+    }
+}
+static async follow(userId){
+    try{
+
+        let headers={
+            authorization:Cookies.get('token'),
+            
+        }
+        const {data}=await axios.patch('http://localhost:1000/api/user/followers',{userId},{headers})
+        return data
+    }
+    catch(err){
+        console.log(err)
+        return err.response.data
+    }
+}
 }

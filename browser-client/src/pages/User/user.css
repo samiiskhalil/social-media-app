@@ -135,7 +135,6 @@ transform: scale(2);
     bottom: 0;
     right: 0;
     width: 30px;
-    background-color: red;
     border-radius: 50%;
     height: 30px;
 }

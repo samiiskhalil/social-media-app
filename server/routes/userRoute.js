@@ -18,17 +18,17 @@ router.patch('/profile-image',authentication.verifyToken,userMiddleware.updatePr
 
 router.patch('/cover-image',authentication.verifyToken,userMiddleware.updateCoverImage,userMiddleware.saveUserImage,userController.sendImage)
 
-router.patch('/friends',
+router.patch('/followers',
 authentication.verifyToken,
 // input req.body.addedUser Id
 userMiddleware.getUser,
-// check if friends and delete
-userMiddleware.checkIfFriend
+// check if followes and delete
+userMiddleware.checkIfFollowes
 // input is added user
-,userModelSideEffect.addFriend
+,userModelSideEffect.addFollow
 // input is activity
-// sends friend
-,userController.sendFriend)
+// sends follow
+,userController.sendFollow)
 router.delete('/',authentication.verifyUser,
 userMiddleware.destructUser,)
 router.get('/:userId',userController.getUser)

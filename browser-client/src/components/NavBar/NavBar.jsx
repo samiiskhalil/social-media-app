@@ -1,19 +1,24 @@
 import React from 'react'
 import store from 'store';
-import { useState } from 'react'
+import { useState,useRef,useEffect } from 'react'
+import userAPI from '../../resources/api/user_requests';
 import { Link } from 'react-router-dom';
 import StickyBox from "react-sticky-box";
 import './NavBar.css'
 import {useLocation,NavLink,Outlet, useNavigate} from 'react-router-dom'
 import Cookies from 'js-cookie'
-import { Input } from '@mui/material';
 const NavBar = () => {
-  const [results,setResults]=useState()
   const navigate=useNavigate()
-  const [searchFlage,setSearchFlage]=useState(false)
-  const [collapse,setCollapse]=useState(false)
+  const [results,setResults]=useState([])
+  const [searchQuery,setSearchQuery]=useState()
   let location=useLocation()
-
+  async function handleSearch(e)
+  {
+    e.preventDefault()
+    const results=await userAPI.searchQeury(searchQeury)
+   
+    console.log(results)
+  }
 return (<>
 
 <StickyBox className='sticky-nav' style={{ top:'0px',zIndex:'99999999'}}  >
@@ -44,10 +49,62 @@ return (<>
           </a>
                   </li>
       </ul>
-      <form className="d-flex">
-        <input className="form-control me-2" type="search" placeholder="Search" id='searcgQuery' aria-label="Search"/>
+      <form className="d-flex position-relative">
+        <input  onChange={(e)=>{setSearchQuery(e.target.value)
+        if(e.target.value==='')
+        setResults([])
+        
+        }} className="form-control me-2" type="search" placeholder="Search" id='searcgQuery' aria-label="Search"/>
 
-        <button className="btn btn-outline-success" type="submit">Search</button>
+        <button onClick={async(e)=>  {
+          e.preventDefault()
+          const data= await userAPI.searchQuery(searchQuery)
+          console.log(data) 
+          setResults(data.results)
+}} className="btn btn-outline-success" type="submit">Search</button>
+
+        {Object.keys(results).length?<div style={{ top:'90px',minWidth:'200px',width:'30vw',maxWidth:'400px' }} className="list-container position-absolute  left-0">
+          <ul className='list-group positoin-absolute' >
+              <>
+              <>
+              {
+
+                results.users.map((user,i)=>{
+                  return  <li key={i} className='list-group-item'>
+                        <a href="#" className=" text-dark list-group-item list-group-item-action">
+                            <Link to={`user/${user.id}`} >
+                               <h4 className='text-dark'>
+                                 {user.firstName}  {user.lastName}
+                               </h4>
+                            </Link>
+                        </a>
+
+                    </li>
+                    
+                  })
+                }
+              </>                
+              <>
+              {
+                
+                results.communities.map((community,i)=>{
+                  return  <li key={i} className='list-group-item'>
+                        <a href="#" className=" text-dark list-group-item list-group-item-action">
+                            <Link to={`user/${user.id}`} >
+                               <h4 className='text-dark'>
+                                 {community.communityName}
+                               </h4>
+                            </Link>
+                        </a>
+
+                    </li>
+                    
+                  })
+              }
+              </>  
+              </>
+          </ul>
+        </div>:null}
       </form>
     </div>
   </div>
