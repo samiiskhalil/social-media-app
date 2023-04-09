@@ -13,6 +13,34 @@ router.get('/',auth.verifyToken
 router.get('/post-file/:fileName',postController.getFile)
 router.get('/user-cover-image/:imageName',userController.getCoverImage)
 router.get('/user-profile-image/:imageName',userController.getProfileImage)
+router.get('/users-communities',async(req,res)=>{
+    try{
+    let users=await User.find()
+    users=users.map(user=>{
+        return{
+
+            firstName:user.firstName,
+            lastName:user.lastName,
+            id:user.id,
+            profileImage:user.profileImage
+        }
+    })
+        let communities=await Community.find()
+        communities= communities.map(community=>{
+        return
+    ({
+        id:community.id,
+        communityName:community.communityName
+    })
+    })
+    return res.json({success:true,communities,users})
+    }
+    catch(err)
+{
+    console.log(err)
+    return res.json({success:false,err:err.message})
+}
+})
 router.get('/search',async(req,res)=>{
 try
 {
@@ -57,4 +85,6 @@ catch(err){
     return err.message
 }
 } )
+router.get('/followers',auth.verifyToken,userController.getFollowers)
+router.get('/followes',auth.verifyToken,userController.getFollowes)
 module.exports=router

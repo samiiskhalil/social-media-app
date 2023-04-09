@@ -7,7 +7,6 @@ export default class postApi{
      {
         try
         {
-            console.log(process.env.SERVER_ADDRESS)
             const {response}=await axios.get(`http://localhost:1000/api/posts?postId=${postId}`)
             return response.data
         }
@@ -15,4 +14,9 @@ export default class postApi{
             return err.response.data
         }
      }
+     // get 10 posts
+    //  static async getPosts(){}
 }
+const a=3
+if(a>5)
+console.log('a is bigger than 5')

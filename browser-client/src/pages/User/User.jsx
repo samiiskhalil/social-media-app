@@ -14,7 +14,7 @@ import userAPI from '../../resources/api/user_requests.js'
 const User = () => {
   const [imageSrc,setImageSrc]=useState()
   const [errMsg,setErrMsg]=useState('')
-  const[success,setSuccess]=useState(true)
+  const [success,setSuccess]=useState(true)
   const [owner,setOwner]=useState(true)
   const [profileImageSrc,setProfileImageSrc]=useState()
   const [coverImageSrc,setCoverImageSrc]=useState()
@@ -47,6 +47,7 @@ const User = () => {
        if(params.id===store.get('user')._id)
         setOwnerFlage(true)
         setOwner(user)
+        store.set('owner',user)
       }
       
       checkUser()
@@ -86,7 +87,7 @@ const User = () => {
         return 
       }
       console.log(data.followes)
-      setOwner({... data.followes})
+      setOwner(data.followes)
     }
 return (
 <>
@@ -156,18 +157,25 @@ owner._id&&<div className="container container-fluid ">
       <div style={{ minWidth:'70vw' }} className="  d-flex align-items-end justify-content-center flex-column ">
       <h1 className='user-name text-xxl'>{owner.firstName} {owner.lastName}</h1>
      <div  className=" mt-3 d-flex flex-row justify-content-between align-items-center">
-      <div style={{ width:'50vw' }} className="">
+      <div style={{ width:'50vw' }} className="border border-3">
+        <Link  to='user/../../follow/followers'>
         <p>{`follwers : ${owner._id&&owner.followers.length}`}</p>
+        </Link>
+        <Link  to='user/../../follow/followes'>
         <p>{`followes : ${owner._id&&owner.followes.length}`}</p>
+        </Link>
       </div>
       {!ownerFlage&&<button onClick={handleFollow} className="btn-primary btn">{owner.followers.some(followerId=>followerId===store.get('user')._id)?'unfollow':'follow'}</button>}
       </div>   
         
      
       </div>
-      
+      <div style={{ width:'100vw',backgroundColor:'rgba(0,0,0,0.03)',height:'100vh' }} className='mt-5'>
+
+        <h1>{ownerFlage?'your posts':'posts'}</h1>
   <Posts/>
 
+      </div>
     </div>
   </div>
 </div>

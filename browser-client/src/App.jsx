@@ -1,5 +1,5 @@
 import React from 'react'
-import {EditImg,Search,Logout,User,Login,Signup,Home} from './pages/index.js'
+import {EditImg,Search,Logout,Follow,User,Login,Signup,Home} from './pages/index.js'
 import {  NavBar } from './components/index.js'
 import {useNavigate,Routes,Route} from 'react-router-dom'
 const App = () => {
@@ -9,6 +9,7 @@ const App = () => {
 <Routes  >
   <Route path='/' element={<NavBar/>} >
     <Route index element={<Home/>} />
+    <Route path='user/follow/:type' element={<Follow/>} />
     <Route path='user/:id' element={<User/>} />
     <Route path='/search' element={<Search/>} />
 </Route>

@@ -2,12 +2,23 @@ import React,{useState,useEffect} from 'react'
 import Cookies from 'js-cookie'
 import store from 'store'
 import axios from 'axios'
+import utilApi from '../../resources/api/util_requests.js'
 import './home.css'
 import { useNavigate } from 'react-router'
 const Home = () => {
   const [user,setUser]=useState({})
   const [userLoggedFlage,setUserLoggedFlage]=useState(false)
   const navigate=useNavigate()
+  useEffect(()=>{
+    async function getData(){
+     const data=await utilApi.getUsersAndCommunities()
+     console.log(data)
+     store.set('users',data.users)
+     store.set('communities',data.communties)
+     
+    }
+     getData()
+  },[])
 async function checkLogger(){
 
   if(store.get('user')){
@@ -18,7 +29,9 @@ async function checkLogger(){
     store.set('user',data.user)
     navigate(`/user/${data.user._id}`)
   } 
-    
+    useEffect(()=>{
+      checkLogger()
+    })
     }
   return (
 <>

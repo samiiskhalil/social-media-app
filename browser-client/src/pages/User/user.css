@@ -8,7 +8,10 @@
 .col{
     margin-top: 0;
 }
-
+li:hover{
+    background-color: aliceblue;
+    cursor: pointer;
+}
 .background-image-container{
     margin-top: 14px;
     position: relative;

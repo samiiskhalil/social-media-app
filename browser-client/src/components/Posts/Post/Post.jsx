@@ -3,16 +3,15 @@ import {useRef,useState,useEffect} from 'react'
 import './post.css'
 import {Comments} from './../../index.js'
 import sami from '../../../resources/sami.jpg'
-const Post = () => {
+const Post = ({post,communty,sharedPost}) => {
+  const [author,setAuthor]=useState({})  
   const [showCommentsFlage,setShowCommentsFlage]=useState(false)
   const [clickedSvgFlage,setClickedSvgFlage]=useState(false)
   const [hideDescribtionFlage,setHideDescribtionFlage]=useState(true)
   const [describtion,setDescribtion]=useState('hello theremy name is sami and i will be your tutor for this weeken i hope you will have a good ime and let start lreaning how to vode and ot is gonna be awsome')
   const [visibleDescribtion,setVisibleDescribtion]=useState([])
   const [hiddenDescribtion,setHiddenDescribtion]=useState([])
-  const handleStarClick=e=>{
-}
-const handleCommentClick=e=>{
+  const handleCommentClick=e=>{
   e.preventDefault()
 setShowCommentsFlage(pre=>!pre)
 }

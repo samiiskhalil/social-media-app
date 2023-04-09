@@ -11,6 +11,42 @@ class user{
   constructor(){
 
   }
+  static async getFollowes(req,res){
+    try{
+
+      const {userId}=req.query
+      let followes=[]
+      let user=await User.findById(userId)
+      for (let i = 0; i < user.followes.length; i++) {
+        let follow=await User.findById(user.followes[i])
+        followes.push({profileImage:follow.profileImage,firstName:follow.firstName,lastName:follow.lastName,id:follow.id})
+      }
+      return res.json({success:true,followes})
+    }
+      catch(err){
+        console.log(err)
+        return res.json({success:false,err:err.message})
+      }
+          
+  }
+  static async getFollowers(req,res){
+    try{
+
+      const {userId}=req.query
+      let followers=[]
+      let user=await User.findById(userId)
+      for (let i = 0; i < user.followers.length; i++) {
+        let follower=await User.findById(user.followers[i])
+        followers.push({profileImage:follower.profileImage,firstName:follower.firstName,lastName:follower.lastName,id:follower.id})
+      }
+      return res.json({success:true,followers})
+    }
+      catch(err){
+        console.log(err)
+        return res.json({success:false,err:err.message})
+      }
+          
+  }
   static async deleteUser(req,res,next){
     try
     {
