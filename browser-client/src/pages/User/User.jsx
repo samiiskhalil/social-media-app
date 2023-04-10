@@ -11,6 +11,7 @@ import {Posts,OverlayImage} from '../../components/index.js'
 import wallpaper from '../../resources/sami.jpg'
 import {useEffect,useRef,useState} from 'react'
 import userAPI from '../../resources/api/user_requests.js'
+import MakePost from '../../components/MakePost/MakePost.jsx'
 const User = () => {
   const [imageSrc,setImageSrc]=useState()
   const [errMsg,setErrMsg]=useState('')
@@ -170,10 +171,12 @@ owner._id&&<div className="container container-fluid ">
         
      
       </div>
+        <h2 className='mt-3'>make a post now</h2>
+        <MakePost user={store.get('user')}/>
       <div style={{ width:'100vw',backgroundColor:'rgba(0,0,0,0.03)',height:'100vh' }} className='mt-5'>
 
         <h1>{ownerFlage?'your posts':'posts'}</h1>
-  <Posts/>
+  <Posts postsId={owner.posts} />
 
       </div>
     </div>

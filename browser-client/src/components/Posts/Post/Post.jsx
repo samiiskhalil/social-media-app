@@ -11,7 +11,9 @@ const Post = ({post,communty,sharedPost}) => {
   const [describtion,setDescribtion]=useState('hello theremy name is sami and i will be your tutor for this weeken i hope you will have a good ime and let start lreaning how to vode and ot is gonna be awsome')
   const [visibleDescribtion,setVisibleDescribtion]=useState([])
   const [hiddenDescribtion,setHiddenDescribtion]=useState([])
-  const handleCommentClick=e=>{
+  const handleStarClick=e=>{
+}
+const handleCommentClick=e=>{
   e.preventDefault()
 setShowCommentsFlage(pre=>!pre)
 }

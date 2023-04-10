@@ -166,7 +166,6 @@ class postMiddleware{
         let {community}=req
         if(community)
         communityId=community.id
-        let style=JSON.parse(req.body.style)
      const post= await Post.create({
          publisher:req.user.id
          ,describtion
@@ -174,7 +173,7 @@ class postMiddleware{
         community:{communityId:communityId||null,removed:false}     })
      const names=await saveFiles(req.files,post.id)
      for (let i = 0; i < names.length; i++) {
-         post.files.push({fileName:names[i],style:style[i]})
+         post.files.push({fileName:names[i]})
          
         }
          await post.save()
