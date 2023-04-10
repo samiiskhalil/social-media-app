@@ -7,7 +7,6 @@ export default class  userAPI{
     static async getUser(userId){
         try{
             const {data}=await axios.get(`http://localhost:1000/api/user/${userId}`)
-            console.log(data)
             return data
         }
         catch(err){
@@ -20,7 +19,7 @@ export default class  userAPI{
 
         let {response}= await  axios.get('http://localhost:1000/api/users/user',{
             Headers:{
-                "authorization":`BEARER ${Cookies.get('token')}`
+                "authorization":`${Cookies.get('token')}`
             }
         })
         return response.data

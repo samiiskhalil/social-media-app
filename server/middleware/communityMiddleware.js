@@ -392,9 +392,6 @@ class communityMiddleware{
 
         try
         {
-            if(req.body.communityId){
-                console.log('aaaaa')
-            }
             
             if(!req.query.comunityId&&!req.body.communityId)
            {

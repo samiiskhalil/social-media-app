@@ -1,10 +1,20 @@
+// `http://localhost:1000/api/${post.files[0].fileName}?postId=${post._id}
+// if user is the the author or the the owner is the author then dont fetch the autor other wise fetch
 import React from 'react'
 import {useRef,useState,useEffect} from 'react'
 import './post.css'
+import store from 'store'
 import {Comments} from './../../index.js'
 import sami from '../../../resources/sami.jpg'
-const Post = ({post,communty,sharedPost}) => {
-  const [author,setAuthor]=useState({})  
+const Post = ({post}) => {
+  const [author,setAuthor]=useState(()=>{
+    if(store.get('owner')._id===post.publisher)
+      return store.get('owner')
+    if(store.get('user'._id===post.publisher))
+      return store.get('user')
+      return {_id:''}
+
+  })  
   const [showCommentsFlage,setShowCommentsFlage]=useState(false)
   const [clickedSvgFlage,setClickedSvgFlage]=useState(false)
   const [hideDescribtionFlage,setHideDescribtionFlage]=useState(true)
@@ -28,13 +38,16 @@ useEffect(()=>{
   setHiddenDescribtion(hiddenDescribtion)
   setVisibleDescribtion(visibleDescribtion)
 },[])
-console.log(visibleDescribtion)
+console.log(author)
 return (<>
+            {author._id?
+<>
+            
             <div className="post-container">
                 <div className="post-header">
                   <div className="poster-image-container">
 
-                <img className='poster-image' src={sami} height='100' width='100' alt="profile-image" />  
+                <img className='poster-image' src={post.files.length?`http://localhost:1000/api/${author.profileImage.imageName}?userId=${author._id}`:'*'} height='100' width='100' alt="profile-image" />  
                   </div>
                 <h4 className='poster-name' >sami khalil</h4>
                 </div>
@@ -43,7 +56,7 @@ return (<>
                     <p ref={describtionRef}>{visibleDescribtion} 
                     <button onClick={()=>setHideDescribtionFlage(pre=>!pre)} className={`see-more-button ${!hideDescribtionFlage&&'hide'} `}> ...see more</button>
                      <span className={`${hideDescribtionFlage&&'hide'}`}>{hiddenDescribtion}</span>   </p>            </div>
-                <button onClick={()=>setHideDescribtionFlage(pre=>!pre)} className={` see-less-button ${hideDescribtionFlage&&'hide'}`} > ...see less</button>
+                <button onClick={()=>setHideDescribtionFlage(pre=>!pre)} className={` see-less-button ${hideDescribtionFlage&&'hide'}`} > see less</button>
                 <div className="post-image-container">
 
                 <img src={sami} alt="post-photo" className='post-image-container' />
@@ -72,7 +85,9 @@ return (<>
               </div>
               </div>
               {showCommentsFlage&&<Comments/>}
-              </>
+</>:<h1>wait</h1>
+            }
+            </>
         )
 }
 

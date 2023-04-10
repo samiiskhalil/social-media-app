@@ -162,6 +162,8 @@ class postMiddleware{
     static async createPost(req,res,next){
     try{
         const {describtion}=req.body
+        if(!describtion&&!req.files[0])
+        return res.json({success:false,err:'you have sent nothing'})
         let communityId=null
         let {community}=req
         if(community)

@@ -45,15 +45,15 @@ display: inline;
 }
 
 .post-image-container{
-width: 100%;
-object-fit: cover;
+width: 300px;
+object-fit: contain;
 height: 300px;
-
 }
 .post-tail{
     padding-inline:15px ;
     display: flex;
     align-items: center;
+    flex-direction: row;
     justify-content: space-between;
     width: 100%;
     height: 40px;

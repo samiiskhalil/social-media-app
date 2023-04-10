@@ -16,10 +16,10 @@ const User = () => {
   const [imageSrc,setImageSrc]=useState()
   const [errMsg,setErrMsg]=useState('')
   const [success,setSuccess]=useState(true)
-  const [owner,setOwner]=useState(true)
+  const [owner,setOwner]=useState({_id:''})
   const [profileImageSrc,setProfileImageSrc]=useState()
   const [coverImageSrc,setCoverImageSrc]=useState()
-  const [user,setUser]=useState({})
+  const [user,setUser]=useState({_id:null})
   const profilePictureUploadInputRef=useRef('')
   const profilePictureRef=useRef('')
   const [profilePictureEditigFlage,setProfilePictureEditingFlage]=useState(false)
@@ -33,6 +33,7 @@ const User = () => {
   const [ownerFlage,setOwnerFlage]=useState(false)
   // first check if the account belongs to the same user
   useEffect(()=>{
+    setUser(store.get('user'))
     if((!Cookies.get('token'))||(!store.get('user'))){
       navigate('../../login')
       
@@ -90,14 +91,20 @@ const User = () => {
       console.log(data.followes)
       setOwner(data.followes)
     }
+    const updateUser=(updatedUser)=>{
+      console.log(updatedUser)
+      setUser(updatedUser)
+      if(updatedUser._id===owner._id)
+      setOwner(updatedUser)
+      store.set('user',updatedUser)
+    }
 return (
 <>
 {
-
-owner._id&&<div className="container container-fluid ">
+user._id&&owner._id&&<div className="container container-fluid ">
 <div className="row">
   <div className="col">
-
+{user.posts.length}
 <div className="images-holder">
   <div className="background-image-container">
 
@@ -172,11 +179,11 @@ owner._id&&<div className="container container-fluid ">
      
       </div>
         <h2 className='mt-3'>make a post now</h2>
-        <MakePost user={store.get('user')}/>
+        {params.id===store.get('user')._id&&<MakePost updateUser={updateUser} />}
       <div style={{ width:'100vw',backgroundColor:'rgba(0,0,0,0.03)',height:'100vh' }} className='mt-5'>
 
         <h1>{ownerFlage?'your posts':'posts'}</h1>
-  <Posts postsId={owner.posts} />
+  <Posts posts={owner.posts} />
 
       </div>
     </div>

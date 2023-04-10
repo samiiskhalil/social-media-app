@@ -20,7 +20,6 @@ export default class postApi{
      static async makePost(post,community,sharedPostId){
         try
         {
-            console.log(Cookies.get('token'))
             let formData=new FormData()
             formData.set('image',post.image)
             formData.set('describtion',post.describtion)
@@ -30,7 +29,6 @@ export default class postApi{
                 'shared-post-id':post.sharedPostId||''
             }
             const {data}=await axios.post('http://localhost:1000/api/posts',formData,{headers})
-            console.log(data)
             return data
         }
         catch(err){

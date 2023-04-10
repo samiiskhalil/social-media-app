@@ -1,8 +1,9 @@
 import { useRef,useState,useEffect } from 'react'
 import postApi from '../../resources/api/post_requests'
 import store from 'store'
+import userAPI from '../../resources/api/user_requests'
 import { useParams,Navigate} from 'react-router'
-const MakePost = ({user,communityId,sharedPostId}) => {
+const MakePost = ({updateUser,communityId,sharedPostId}) => {
     const params=useParams()
     const [image,setImage]=useState()
     const [imageSrc,setImageSrc]=useState('')
@@ -15,14 +16,18 @@ const MakePost = ({user,communityId,sharedPostId}) => {
     const imageRef=useRef('')
     const textRef=useRef('')
     async function handleMakePost(){
-        console.log('a')
-    const data=await postApi.makePost(post)
+    let data=await postApi.makePost(post)
       if(!data.success)
       // throw err
-      console.log('a')
       textRef.current.value=''  
       imageRef.current.value=''  
       setImageSrc('')
+      data=await userAPI.getUser(store.get('user')._id)
+      console.log('aaaaa')
+       if(!data.success)
+      {setSuccess(false)
+      console.log('no no')}
+      updateUser(data.user)
     }
   
 
@@ -36,6 +41,7 @@ const MakePost = ({user,communityId,sharedPostId}) => {
           [name]: value,
         }));
       };
+      console.log(store.get('user').posts.length)
     return (
     <div className="row">
         <div className="col card p-3 shadow pd d-flex justify-content-center flex-column align-items-start">
@@ -53,9 +59,9 @@ const MakePost = ({user,communityId,sharedPostId}) => {
 
             } }className="form-control" 
        type="file" accept='*image /.mp4' multiple></input>
-       <div style={{ width:'80%',height:'400px' }} className="">
+       <div style={{ width:'40vw',height:'200px' }} className="">
 
-        <img className='mt-3 object-fit-cover'  style={{ objectFit:'contain',width:'100%',height:'100%' }}  src={imageSrc} alt="image" />
+        <img height='300px' className='mt-3 object-fit-cover'  style={{ objectFit:'contain',width:'100%' }}  src={imageSrc} alt="image" />
        </div>
        <button onClick={handleMakePost} className='btn-primary btn'>submit</button>
         </div>
