@@ -9,8 +9,10 @@ const Posts = ({posts}) => {
   // make api call to posts
   return (
   <div className="row" >
-    <div className="col"></div>
-    {posts.map(post=>   < Post post={post} key={post._id} />)}
+    <div className="col d-flex flex-column align-items-center justify-content-center">
+
+    {posts.map(post=>< Post post={post} key={post._id} />)}
+    </div>
 
   </div>
   )

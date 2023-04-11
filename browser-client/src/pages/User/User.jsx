@@ -180,7 +180,7 @@ user._id&&owner._id&&<div className="container container-fluid ">
       </div>
         <h2 className='mt-3'>make a post now</h2>
         {params.id===store.get('user')._id&&<MakePost updateUser={updateUser} />}
-      <div style={{ width:'100vw',backgroundColor:'rgba(0,0,0,0.03)',height:'100vh' }} className='mt-5'>
+      <div style={{ width:'100vw',backgroundColor:'rgba(0,0,0,0.03)' }} className='mt-5'>
 
         <h1>{ownerFlage?'your posts':'posts'}</h1>
   <Posts posts={owner.posts} />

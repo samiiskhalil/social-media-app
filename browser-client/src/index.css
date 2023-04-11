@@ -1,3 +1,29 @@
-.hide{
-    display: none;
+a {
+    color: black;
+}
+a:hover{
+    background-color: aliceblue;
+}
+.card a:hover{
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    position: relative;
+    top: 5px;
+}
+.svg-container{
+    display: flex;
+    justify-content: space-around;
+    align-items: start;
+    flex-direction: column;
+    position: relative;
+    border-radius: 50%;
+    z-index: 555;
+}
+.svg-container:hover{
+    background-color: rgba(244, 244, 244,0.9);
+    }
+
+.svg-container svg{
+    z-index: 11;
+    position: relative;    
+    margin: 0;
 }

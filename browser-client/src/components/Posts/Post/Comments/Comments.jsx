@@ -7,7 +7,7 @@ const Comments = () => {
      e.preventDefault()   
     }
     return (
-    <div className="comments-container" >
+    <div className="comments-container mt-3" >
         <div className="comment-container">
                 <div className="commentator-container">
                     
