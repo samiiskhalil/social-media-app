@@ -100,6 +100,7 @@ const User = () => {
     }
 return (
 <>
+<h1>{owner.profileImage.style.top}</h1>
 {
 user._id&&owner._id&&<div className="container container-fluid ">
 <div className="row">
@@ -110,7 +111,7 @@ user._id&&owner._id&&<div className="container container-fluid ">
 
 <img  draggable='false' ref={backgroundImageRef}
      src={owner._id?coverImageSrc:'*'}
-     style={owner.coverImage&&{ transform:`scale(${owner.coverImage.style.scale})` ,top:`${owner.coverImage.style.top}px`}} 
+     style={owner.coverImage&&{ transform:`scale(${owner.coverImage.style.scale})` ,top:`${owner.coverImage.style.top}`}} 
      alt='background-image' />
      </div>
     <div   className='update-background-container  '>
@@ -136,9 +137,9 @@ user._id&&owner._id&&<div className="container container-fluid ">
 
   <img  className='user-profile-image' draggable='false' ref={profilePictureRef}
       src={owner._id?profileImageSrc:'*'}
-      style={owner.profileImage&&{
+      style={owner.profileImage&&{position:'relative',
          transform:`scale(${owner.profileImage.style.scale*4 })`
-         , top:`${owner.profileImage.style.top}px`}}
+         , top:`${owner.profileImage.style.top} px`}}
          
          alt="user-profile-picture" />
   </div>

@@ -68,7 +68,6 @@ const handleConfrim=async (e)=>{
     const file = new File([blob], store.get('image-name'), { type: 'image/png' });
     
      setFile(file)
-    console.log(file)
   }, 'image/png');
 }
   const handleCancel=e=>{
@@ -118,7 +117,8 @@ user.profileImage=data.image
 }
 store.set('user',user)
 setErrMsg('')
-console.log('asdsa')
+store.set('owner',user)
+console.log(data)
 navigate(`../user/${user._id}`)
 }
 updataImage()

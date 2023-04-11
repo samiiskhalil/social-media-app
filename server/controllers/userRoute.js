@@ -118,7 +118,7 @@ catch(err){
         user=req.user
         if(user.posts)
         user=await user.populate('posts')
-        console.log(user)
+        user.posts=user.posts.filter(post=>!post.community.communityId)
         // await user.save()
         res.json({success:true,user:user})
       }

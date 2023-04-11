@@ -36,4 +36,15 @@ export default class postApi{
             return err.response.data
         }
      }
-}
+     static async like(){
+        try
+        {
+            const {data}=await axios.ge
+        }
+        catch(err)
+        {
+            console.log(err)
+            return err.data
+        }
+     }
+    }

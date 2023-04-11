@@ -271,6 +271,8 @@ class userMiddleware{
         try
         {
          const {user,addedUser}=req
+         if(user.id===addedUser.id)
+         return res.json({success:false,err:'you can not follow your self'})
          let response= await checkUserBlock(req,res,addedUser.id,user.id)
          if(response)
          return res.json({success:false,err:'user is blocked by you'})

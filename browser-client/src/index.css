@@ -10,6 +10,8 @@ a:hover{
     top: 5px;
 }
 .svg-container{
+    cursor: pointer;
+
     display: flex;
     justify-content: space-around;
     align-items: start;

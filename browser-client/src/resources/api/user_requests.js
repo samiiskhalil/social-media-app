@@ -64,7 +64,8 @@ static async updateUserImage(formData,imageType){
       let  headers={
             'authorization':Cookies.get('token'),
             'Content-Type': 'multipart/form-data'        }
-        const response=await axios.patch(`http://localhost:1000/api/user/${imageType}`,formData,{
+        console.log(formData.get('style'))
+            const response=await axios.patch(`http://localhost:1000/api/user/${imageType}`,formData,{
             headers
         })
     return response.data
