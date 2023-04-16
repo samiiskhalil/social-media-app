@@ -90,7 +90,7 @@ useEffect(()=>{
     return
     let data={}
     const style=JSON.stringify({
-    top:`${lastOffset.y} px`,
+    top:`${lastOffset.y}`,
     scale:imgSize
   })
   let formData=new FormData()
@@ -134,7 +134,7 @@ updataImage()
   <div ref={containerRef} className={` ${imageType}`}>
 
 
-<img style={{ transform:`scale(${imgSize})` }} draggable='false' onMouseUp={handleMouseUp} onMouseMove={handleMouseMove} className='edited-image' ref={imgRef} initpos={{ x:0,y:0 }}
+<img style={{ objectFit:'contain',transform:`scale(${imgSize})` }} draggable='false' onMouseUp={handleMouseUp} onMouseMove={handleMouseMove} className='edited-image' ref={imgRef} initpos={{ x:0,y:0 }}
 offset={{y:0}}  currentpos={{y:0 }} 
 lastoffset={{y:0}} src={`blob:http://localhost:5173/${imageSrc}`} alt="image"
 onMouseDown={handleMouseDown} 

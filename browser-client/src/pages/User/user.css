@@ -198,7 +198,7 @@ margin-left: 60%;
 .user-profile-image{
     width: 100px;
     height: 100px;
-    top: 0;
+    position: relative;
     object-fit: cover;
     user-select: none;
 }

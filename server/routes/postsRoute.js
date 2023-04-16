@@ -76,13 +76,13 @@ router.get('/comments',auth.verifyToken,postController.getPostComments)
 
 
 
+// router.get('/likes',auth.verifyToken,post.getLikes)
 // router.delete('/',auth.verifyToken,post.deletePost )
 // //react to a post like or share
 // router.post('/comments',auth.verifyToken,post.createComment)
 // router.patch('/',auth.verifyToken,post.postReaction)
 // router.patch('/comments',auth.verifyToken,post.commentReaction)
 // router.delete('/comments',auth.verifyToken,post.deleteComment)
-// router.get('/likes',auth.verifyToken,post.getLikes)
 // router.get('/shares',auth.verifyToken,post.getShares)
 // for files
 module.exports=router

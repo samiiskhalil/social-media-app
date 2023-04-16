@@ -1,5 +1,6 @@
 import axios from "axios"
 import Cookies from "js-cookie"
+const baseUrl='http://localhost:1000/api'
 export default class postApi{
     constructor(){
 
@@ -8,7 +9,7 @@ export default class postApi{
      {
         try
         {
-            const {response}=await axios.get(`http://localhost:1000/api/posts?postId=${postId}`)
+            const {response}=await axios.get(`${baseUrl}/posts?postId=${postId}`)
             return response.data
         }
         catch(err){
@@ -28,7 +29,7 @@ export default class postApi{
                 'authorization':Cookies.get('token'),
                 'shared-post-id':post.sharedPostId||''
             }
-            const {data}=await axios.post('http://localhost:1000/api/posts',formData,{headers})
+            const {data}=await axios.post(`${baseUrl}/posts`,formData,{headers})
             return data
         }
         catch(err){
@@ -36,10 +37,15 @@ export default class postApi{
             return err.response.data
         }
      }
-     static async like(){
+     static async like(postId){
         try
         {
-            const {data}=await axios.ge
+            const {data}=await axios.patch(`${baseUrl}/posts/like`,{postId},{
+                headers:{
+                  'Authorization':Cookies.get('token')
+                }
+            })
+            return data
         }
         catch(err)
         {

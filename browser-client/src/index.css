@@ -29,3 +29,25 @@ a:hover{
     position: relative;    
     margin: 0;
 }
+ .svg-span-son{
+    background-color: red;
+    user-select: none; /* Standard syntax */
+    -ms-user-select: none; /* IE10+/Edge */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+
+}
+img{
+    user-select: none; /* Standard syntax */
+    -ms-user-select: none; /* IE10+/Edge */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+
+}
+.number-holder{
+    cursor: pointer; user-select: none; /* Standard syntax */
+    -ms-user-select: none; /* IE10+/Edge */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+
+}

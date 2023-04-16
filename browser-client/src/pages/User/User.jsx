@@ -97,10 +97,10 @@ const User = () => {
       if(updatedUser._id===owner._id)
       setOwner(updatedUser)
       store.set('user',updatedUser)
+
     }
 return (
 <>
-<h1>{owner.profileImage.style.top}</h1>
 {
 user._id&&owner._id&&<div className="container container-fluid ">
 <div className="row">
@@ -111,7 +111,7 @@ user._id&&owner._id&&<div className="container container-fluid ">
 
 <img  draggable='false' ref={backgroundImageRef}
      src={owner._id?coverImageSrc:'*'}
-     style={owner.coverImage&&{ transform:`scale(${owner.coverImage.style.scale})` ,top:`${owner.coverImage.style.top}`}} 
+     style={owner.coverImage&&{ transform:`scale(${owner.coverImage.style.scale})`,position:'relative' ,top:`${owner.coverImage.style.top}px`}} 
      alt='background-image' />
      </div>
     <div   className='update-background-container  '>
@@ -137,10 +137,9 @@ user._id&&owner._id&&<div className="container container-fluid ">
 
   <img  className='user-profile-image' draggable='false' ref={profilePictureRef}
       src={owner._id?profileImageSrc:'*'}
-      style={owner.profileImage&&{position:'relative',
-         transform:`scale(${owner.profileImage.style.scale*4 })`
-         , top:`${owner.profileImage.style.top} px`}}
-         
+      style={{
+        top:`${owner.profileImage.style.top/3}px`,
+         transform:`scale(${owner.profileImage.style.scale*4})`,objectFit:'contain',position:'relative'}}
          alt="user-profile-picture" />
   </div>
   <div className={`profile-picture-options-container `}>
