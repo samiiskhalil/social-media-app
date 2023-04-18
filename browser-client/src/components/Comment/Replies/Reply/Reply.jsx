@@ -8,17 +8,17 @@ useEffect(() => {
     // console.log(beforeElement.content);
     if(!leftLine.current)
     return
-        leftLine.current.style.left='0'
-      let repliesContainer  =leftLine.current.parentNode.parentNode
-    //   leftLine.current.style.minWidth
-      console.log(repliesContainer)  
+    let repliesContainer  =leftLine.current.parentNode.parentNode
+    let replyContainer  =leftLine.current.parentNode
+    leftLine.current.style.width=`${(repliesContainer.offsetWidth/2)-(replyContainer.offsetWidth/2)}px`
+      //   console.log(offsetWidth)  
       
   }, []);
 return (
     <>
     {
      <>   
-        <div  className="reply-container position-relative m-4  p-2" style={{marginLeft:'10%',backgroundColor:'rgba(240,240,240,1)'}} >
+        <div  className="reply-container position-relative m-4  p-2" style={{position:'relative',backgroundColor:'rgba(240,240,240,1)'}} >
           <span ref={leftLine} className="left-line"> </span>
             {reply._id?<>
                     <div className="reply-container">
