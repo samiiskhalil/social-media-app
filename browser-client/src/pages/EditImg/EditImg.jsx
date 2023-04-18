@@ -1,6 +1,5 @@
 import React from 'react'
 import store from 'store'
-import image from '../../resources/sami.jpg'
 import { useNavigate,useParams } from 'react-router'
 import { useState,useRef,useEffect } from 'react'
 import Cookies from 'js-cookie'

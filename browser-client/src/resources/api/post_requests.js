@@ -5,6 +5,18 @@ export default class postApi{
     constructor(){
 
     }
+    static async getLikes(postId){
+        try
+        {
+            const {data}=await axios.get(`${baseUrl}/posts/likes?postId=${postId}`,{
+                headers:{'Authorization':Cookies.get('token')}
+            })
+            return data        }
+        catch(err){
+            console.log(err.response.data)
+            return err.response.data
+        }
+    }
      static async getPost(postId)
      {
         try
@@ -51,6 +63,21 @@ export default class postApi{
         {
             console.log(err)
             return err.data
+        }
+     }
+     static async getComments(postId){
+        try{
+            console.log(postId)
+            const {data}=await axios.get(`http://localhost:1000/api/posts/comments?postId=${postId}`,{
+                headers:{
+                    'Authorization':Cookies.get('token')
+                }
+            })
+            return data
+        }
+        catch(err){
+            console.log(err.response)
+            return err.response.data
         }
      }
     }

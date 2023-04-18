@@ -1,5 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
+const baseUrl=`http://localhost:1000/api`
 class utilApi{
     constructor(){
 
@@ -46,5 +47,25 @@ return data
             return err.response.data
         }
     }
+    static async getUsers(ids)
+{
+try{
+    const {data}=await axios.get(`${baseUrl}/get-users`,{
+       
+        params:{
+            usersIds:ids
+        },
+        headers:{
+            'Authorization':Cookies.get('token')
+        } 
+    })
+    console.log(data)
+    return data
+}
+catch(err){
+    console.log(err.response.data)
+    return err.response.data
+}
+}
 }
 export default utilApi

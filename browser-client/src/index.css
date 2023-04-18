@@ -51,3 +51,27 @@ img{
     -moz-user-select: none; /* Firefox */
 
 }
+/* .user-link:hover{
+    background-color: rgba(0, 0, 0, 0.3);
+} */
+a:hover{
+color: balck;
+}
+.comment-container{
+    
+    border-radius: 30px;
+    background-color: rgba(242, 242, 242,0.9);
+}
+.comments-container{
+    border-left:rgba(0, 0, 0, 0.3) solid ;
+}
+.replies-container{
+    border-left:rgba(0, 0, 0, 0.3) solid ;
+}
+.left-line{
+    position: absolute;
+    top:50%;
+    transform: translateY(-50%);
+    background-color: black;
+    height: 3px;
+}

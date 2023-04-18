@@ -8,7 +8,6 @@ import './user.css'
 import Cookies from 'js-cookie'
 import '../../index.css'
 import {Posts,OverlayImage} from '../../components/index.js'
-import wallpaper from '../../resources/sami.jpg'
 import {useEffect,useRef,useState} from 'react'
 import userAPI from '../../resources/api/user_requests.js'
 import MakePost from '../../components/MakePost/MakePost.jsx'
@@ -139,7 +138,7 @@ user._id&&owner._id&&<div className="container container-fluid ">
       src={owner._id?profileImageSrc:'*'}
       style={{
         top:`${owner.profileImage.style.top/3}px`,
-         transform:`scale(${owner.profileImage.style.scale*4})`,objectFit:'contain',position:'relative'}}
+         transform:`scale(${owner.profileImage.style.scale*4.3})`,objectFit:'contain',position:'relative'}}
          alt="user-profile-picture" />
   </div>
   <div className={`profile-picture-options-container `}>
