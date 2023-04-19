@@ -6,10 +6,27 @@ const readFile=util.promisify(fs.readFile)
 const User = require('../models/userSchema.js');
 const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken');
+const { userInfo } = require('os')
 require('dotenv').config()
 class user{
   constructor(){
 
+  }
+  static async getUsers(req,res){
+    try{
+      const {usersIds}=  req.query
+      if(!usersIds.length)
+      return res.json({success:true,users:[]})
+    let users=[]
+      for (let i = 0; i < usersIds.length; i++) 
+        users.push(await User.findById(usersIds[i]))        
+      
+    return res.json({success:true,users})
+  }
+    catch(err){
+      console.log(err)
+      return res.json({success:false,err:err.message})
+    }
   }
   static async getFollowes(req,res){
     try{

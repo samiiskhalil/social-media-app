@@ -70,10 +70,10 @@ static async sendPost(req,res){
         try
         {
             let post=await Post.findById(req.query.postId)
-            if(!post.likes.length)
-                return res.json({success:false,err:'there are no likes'})
-            post =await post.populate('likes.user')
-           let users=post.likes.map(like=>like.user)
+            // if(!post.likes.length)
+                // return res.json({success:false,err:'there are no likes'})
+            post =await post.populate('likes')
+           let users=post.likes.map(like=>like)
             console.log(users)
             return res.json({success:true,users})
         }
@@ -251,9 +251,8 @@ static async commentReaction(req,res){
                 if(!comments)
                 return 0
                 for (let i = 0; i < comments.length; i++) {
-                    const populatedCommentsList= await comments[i]
-                   .populate('repliedBy') 
-            
+                     await comments[i]
+                   .populate('repliedBy')
                        getReplies(comments[i].repliedBy) 
                 }
             }

@@ -10,6 +10,7 @@ const router=express.Router()
 // if user is fresh then send latest posts
 router.get('/',auth.verifyToken
 )
+router.get('/get-users',auth.verifyToken,userController.getUsers)
 router.get('/post-file/:fileName',postController.getFile)
 router.get('/user-cover-image/:imageName',userController.getCoverImage)
 router.get('/user-profile-image/:imageName',userController.getProfileImage)

@@ -76,7 +76,7 @@ router.get('/comments',auth.verifyToken,postController.getPostComments)
 
 
 
-// router.get('/likes',auth.verifyToken,post.getLikes)
+router.get('/likes',auth.verifyToken,postController.getLikes)
 // router.delete('/',auth.verifyToken,post.deletePost )
 // //react to a post like or share
 // router.post('/comments',auth.verifyToken,post.createComment)

@@ -71,7 +71,9 @@ color: balck;
     border-left:rgba(0, 0, 0, 0.3) solid ;
 }
 .reply-container{
-    z-index: 4;
+    border-radius: 30px;
+    padding: 5px;
+    background-color:rgba(196, 196, 196, 0.3)  ;
 }
 /* .replies-container::before{
     position: absolute;

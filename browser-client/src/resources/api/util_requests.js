@@ -49,7 +49,9 @@ return data
     }
     static async getUsers(ids)
 {
-try{
+    if(!ids.length)
+        return 
+    try{
     const {data}=await axios.get(`${baseUrl}/get-users`,{
        
         params:{
