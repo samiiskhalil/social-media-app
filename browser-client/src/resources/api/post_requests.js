@@ -73,6 +73,7 @@ export default class postApi{
                     'Authorization':Cookies.get('token')
                 }
             })
+            console.log(data)
             return data
         }
         catch(err){

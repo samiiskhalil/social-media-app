@@ -1,27 +1,31 @@
 import {useState,useEffect,useRef} from 'react'
 import Replies from '../Replies'
+import store from 'store'
+import { commentApi } from '../../../../resources/api'
+import star from '../../../../resources/images/star.png'
 const Reply = ({comment,passedUser}) => {
 const [reply,setReply]=useState(comment)
 const [user,setUser]=useState(passedUser)
 const [showReplies,setShowReplies]=useState(false)
 const leftLine=useRef('')
-useEffect(() => {
-    // const beforeElement = window.getComputedStyle(replyRef.current, '::before');
-    // console.log(beforeElement.content);
-    if(!leftLine.current)
-    return
-    let repliesContainer  =leftLine.current.parentNode.parentNode
-    let replyContainer  =leftLine.current.parentNode
-    leftLine.current.style.width=`${(repliesContainer.offsetWidth/2)-(replyContainer.offsetWidth/2)}px`
-      //   console.log(offsetWidth)  
+// useEffect(() => {
+//     // const beforeElement = window.getComputedStyle(replyRef.current, '::before');
+//     // console.log(beforeElement.content);
+//     if(!leftLine.current)
+//     return
+//     let repliesContainer  =leftLine.current.parentNode.parentNode
+//     let replyContainer  =leftLine.current.parentNode
+//     leftLine.current.style.width=`${(repliesContainer.offsetWidth/2)-(replyContainer.offsetWidth/2)}px`
+//       //   console.log(offsetWidth)  
       
-  }, []);
+//   }, []);
   async function handleStarClick(){
-    const data=await commentApi.likeComment(reply._id,postId)
+    console.log(reply._id)
+    const data=await commentApi.likeComment(reply._id,reply.postId)
     if(!data.success)
     return
-    console.log(data)
-   }
+    setReply(pre=>({... pre,likedBy: data.comment.likedBy}))
+  }
   function handleShowReplies(){
     setShowReplies(pre=>!pre)
    }
@@ -48,8 +52,8 @@ style={{
 <div className=" p-3 d-flex flex-row justify-content-between reply-tail">
 
 <div  className="like-container">
-            <span className='svg-container' >
-               {reply.likedBy.some((id)=>id===user._id)?<img src={star} alt="star" height='20px' width='20px' />:<svg className={`${reply.likedBy.some(likeId=>likeId===store.get('user')._id)&&'liked-svg'}`}  onClick={handleStarClick} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16">
+            <span onClick={handleStarClick} className='svg-container' >
+               {reply.likedBy.some((id)=>id===store.get('user')._id)?<img src={star} alt="star" height='20px' width='20px' />:<svg className={`${reply.likedBy.some(likeId=>likeId===store.get('user')._id)&&'liked-svg'}`}  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16">
                  <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
 </svg>}
               </span>
@@ -71,7 +75,7 @@ style={{
 </div>
 
 </div>
-        {showReplies&&
+        {showReplies&&reply.repliedBy.length&&
 <Replies comments={reply.repliedBy}/>}
     </>
     )

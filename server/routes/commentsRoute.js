@@ -13,7 +13,7 @@ const userMiddleware = require('../middleware/userMiddleware.js');
 const communityMiddleware = require('../middleware/communityMiddleware.js');
 const router=express.Router()
 // get communty
-router.get('/',auth.verifyToken,communityMiddleware.getCommunity,userMiddleware.checkCommunityBlock,communityMiddleware.checkUserBlock)
+router.get('/replies',auth.verifyToken,communityMiddleware.getCommunity,userMiddleware.checkCommunityBlock,communityMiddleware.checkUserBlock)
 // create comment
 // if comment is a reply then find the orginal comment and handle error if found and add it to req object
 // hande user side effect and handle post side effect eventually send comment

@@ -248,12 +248,12 @@ static async commentReaction(req,res){
             console.log('aa')
                let comments=await Comment.where({repliedTo:''}&&{postId:req.query.postId})
                async function getReplies(comments){
-                if(!comments)
+                if(!comments.length)
                 return 0
                 for (let i = 0; i < comments.length; i++) {
                      await comments[i]
                    .populate('repliedBy')
-                       getReplies(comments[i].repliedBy) 
+                    await   getReplies(comments[i].repliedBy) 
                 }
             }
                 await getReplies(comments)

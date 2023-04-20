@@ -13,13 +13,21 @@ class Comment{
                 'Authorization':Cookies.get('token')
             }
             const {data}=await axios.patch(`${baseUrl}/likes`,{commentId,postId},{headers})
-            console.log(data)
+            // console.log(data)
             return data
         }
-        catch({response}){
-            console.log(response.data)
-            return response.data
+        catch(err){
+            console.log(err.response.data)
+            return err.response.data
         }
     }
+    // static async getReplies(commentId){
+    //     try{
+    //         headers={
+    //             'Authorization':Cookies.get('token')
+    //         }
+    //         const data=await axios.get(`${baseUrl}/`)
+    //     }
+    // }
 }
 export default Comment

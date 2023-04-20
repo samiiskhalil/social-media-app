@@ -49,9 +49,10 @@ return data
     }
     static async getUsers(ids)
 {
-    if(!ids.length)
-        return 
     try{
+        if(!ids.length)
+            return []
+            console.log(ids)
     const {data}=await axios.get(`${baseUrl}/get-users`,{
        
         params:{
@@ -61,7 +62,6 @@ return data
             'Authorization':Cookies.get('token')
         } 
     })
-    console.log(data)
     return data
 }
 catch(err){

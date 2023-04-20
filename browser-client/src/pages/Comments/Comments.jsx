@@ -13,20 +13,18 @@ useEffect(()=>{
     async function getComments(){
         const data =await postApi.getComments(params.postId)
         setComments(data.comments)    
+        console.log(data)
         setCommentsFlage(true)
     }
     getComments()
 },[])   
 function displayComments(comments){
-return comments.map((comment,i)=><Comment passedPostId={params.postId} key={comment._id} passedUser={users[i]} passedComment={comment} /> )
-
-
+return comments.map((comment,i)=><Comment postId={params.postId} key={comment._id} user={users[i]} passedComment={comment} /> )
 }
 useEffect(()=>{
   
   async function getUsers(){
 
-      console.log('as')
       let ids=comments.map(({user})=>user)
       const data=await utilApi.getUsers(ids)
       if(!data.success)
@@ -38,7 +36,7 @@ useEffect(()=>{
 },[comments])
 return (
 <>
-<div style={{minHeight:'100vh',minWidth:'100vw' }} className=' position-absolute' >
+<div style={{minHeight:'100vh',minWidth:'100vw' }} className=' position-relative' >
 
 {comments.length&&users.length?
 <div  className="container pt-4   position-relative comments-container ">
