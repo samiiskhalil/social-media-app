@@ -2,10 +2,11 @@ import React from 'react'
 import { useState,useEffect } from 'react'
 import { useParams } from 'react-router'
 import postApi from '../../resources/api/post_requests'
-import {Comment} from '../../components/index.js'
+import {Comment,CommentForm} from '../../components/index.js'
 import utilApi from '../../resources/api/util_requests'
 const Comments = () => {
     const params=useParams()
+const [showCommentFormFlage,setShowCommentFormFlage]=useState(true)
 const [users,setUsers]=useState([])
 const [comments,setComments]=useState([])
 const [commentsFlage,setCommentsFlage]=useState(false)
@@ -34,10 +35,11 @@ useEffect(()=>{
     getUsers() 
 // setUsers(ids)
 },[comments])
+const updateCommentFormFlage=()=>setShowCommentFormFlage(pre=>!pre)
 return (
 <>
 <div style={{minHeight:'100vh',minWidth:'100vw' }} className=' position-relative' >
-
+{showCommentFormFlage&&<CommentForm updateCommentFormFlage={updateCommentFormFlage} />}
 {comments.length&&users.length?
 <div  className="container pt-4   position-relative comments-container ">
 <div className="row">
