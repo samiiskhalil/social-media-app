@@ -21,8 +21,8 @@ export default class postApi{
      {
         try
         {
-            const {response}=await axios.get(`${baseUrl}/posts?postId=${postId}`)
-            return response.data
+            const {data}=await axios.get(`${baseUrl}/posts?postId=${postId}`)
+            return data
         }
         catch(err){
             return err.response.data
@@ -79,6 +79,38 @@ export default class postApi{
         catch(err){
             console.log(err.response)
             return err.response.data
+        }
+     }
+     static async deletePost(postId) {
+        try{
+
+            const headers={
+                Authorization:Cookies.get('token')
+            }
+            const {data}=await axios.delete(`${baseUrl}/posts?postId=${postId}`,{
+                headers
+            })
+            return data
+    }
+        catch({response}){
+            console.log(response)
+            return response.data
+        }
+     }
+     static async updatePost(postId,describtion) {
+        try{
+            console.log(describtion)
+            const headers={
+                Authorization:Cookies.get('token')
+            }
+            const {data}=await axios.patch(`${baseUrl}/posts`,{
+                postId,describtion
+            },{headers})
+            return data
+    }
+        catch({response}){
+            console.log(response)
+            return response.data
         }
      }
     }

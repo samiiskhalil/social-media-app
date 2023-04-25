@@ -24,11 +24,11 @@ const Users = () => {
 
     <div  className="profile-image-container">
 
-<img  className='user-profile-image' draggable='false'
-    src={user.profileImage.imageName?`http://localhost:1000/api/user-profile-image/${user.profileImage.imageName}?userId=${user._id}`:'loading'}
+<img  className='user-profile-image' draggable='false' 
+    src={user._id?`http://localhost:1000/api/user-profile-image/${user.profileImage.imageName}?userId=${user._id}`:'*'}
     style={{
       top:`${user.profileImage.style.top/3}px`,
-       transform:`scale(${user.profileImage.style.scale*4})`,objectFit:'contain',position:'relative'}}
+       transform:`scale(${user.profileImage.style.scale*6})`,objectFit:'contain',position:'relative'}}
        alt="user-profile-picture" />
 </div>
         </Link></li>                    

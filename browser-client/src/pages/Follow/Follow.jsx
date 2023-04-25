@@ -26,6 +26,10 @@ const Follow = () => {
 console.log(followes)
   return (<>
        {(followers.length) ||(followes.length)?<div className="container">
+ <h1>
+
+  {`http://localhost:1000/api/user-profile-image/${followers[1].profileImage.imageName}?userId=${followers[1].id}` }
+ </h1>
       <div className="row mt-4 d-flex direction-column justify-content-center align-items-center  ">
         <div className="col">
           <div className=''>
@@ -39,7 +43,7 @@ console.log(followes)
               </p>
               <div className="profile-image-container">
 
-              <img className='user-profile-image' src={user.profileImage.imageName?`http://localhost:1000/api/user-profile-image/${user.profileImage.imageName}?userId=${user.id}`:'*'} alt="profile image" />
+              <img className='user-profile-image' src={user.profileImage.imageName?`http://localhost:1000/api/user-profile-image/${user.profileImage.imageName}?userId=${user._id}`:'*'} alt="profile image" />
               </div>
             </Link>
               </li>
@@ -51,7 +55,7 @@ console.log(followes)
                 </p>
                 <div className="profile-image-container">
   
-                <img className='user-profile-image' src={user.profileImage.imageName?`http://localhost:1000/api/user-profile-image/${user.profileImage.imageName}?userId=${user.id}`:'*'} alt="profile image" />
+                <img  className='user-profile-image' src={`http://localhost:1000/api/user-profile-image/${user.profileImage.imageName}?userId=${user.id}`} alt="profile image" />
                 </div>
               </Link>
                 </li>

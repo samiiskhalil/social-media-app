@@ -3,7 +3,7 @@ import postApi from '../../resources/api/post_requests'
 import store from 'store'
 import userAPI from '../../resources/api/user_requests'
 import { useParams,Navigate} from 'react-router'
-const MakePost = ({updateUser,communityId,sharedPostId}) => {
+const MakePost = ({updateUser,communityId,sharedPostId,updateFormFlage}) => {
     const params=useParams()
     const [image,setImage]=useState()
     const [imageSrc,setImageSrc]=useState('')
@@ -16,7 +16,7 @@ const MakePost = ({updateUser,communityId,sharedPostId}) => {
     const imageRef=useRef('')
     const textRef=useRef('')
     async function handleMakePost(){
-    let data=await postApi.makePost(post)
+    let data=await postApi.makePost(post,sharedPostId)
       if(!data.success)
       // throw err
       textRef.current.value=''  
@@ -24,6 +24,8 @@ const MakePost = ({updateUser,communityId,sharedPostId}) => {
       setImageSrc('')
       data=await userAPI.getUser(store.get('user')._id)
       console.log('aaaaa')
+      if(sharedPostId)
+      updateFormFlage()
        if(!data.success)
       {setSuccess(false)
       console.log('no no')}
@@ -41,8 +43,8 @@ const MakePost = ({updateUser,communityId,sharedPostId}) => {
           [name]: value,
         }));
       };
-      console.log(store.get('user').posts.length)
-    return (
+
+      return (
     <div className="row">
         <div className="col card p-3 shadow pd d-flex justify-content-center flex-column align-items-start">
         <h3>make a post now </h3>

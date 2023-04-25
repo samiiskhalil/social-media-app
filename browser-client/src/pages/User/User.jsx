@@ -11,11 +11,12 @@ import {Posts,OverlayImage} from '../../components/index.js'
 import {useEffect,useRef,useState} from 'react'
 import userAPI from '../../resources/api/user_requests.js'
 import MakePost from '../../components/MakePost/MakePost.jsx'
+import utilApi from '../../resources/api/util_requests.js'
 const User = () => {
   const [imageSrc,setImageSrc]=useState()
   const [errMsg,setErrMsg]=useState('')
   const [success,setSuccess]=useState(true)
-  const [owner,setOwner]=useState({_id:''})
+  const [owner,setOwner]=useState({_id:'',profileImage:{imageName:'',style:{top:'',scale:''}},coverImage:{imageName:'',style:{top:'',scale:''}}})
   const [profileImageSrc,setProfileImageSrc]=useState()
   const [coverImageSrc,setCoverImageSrc]=useState()
   const [user,setUser]=useState({_id:null})
@@ -37,7 +38,6 @@ const User = () => {
       navigate('../../login')
       
     }
-
     setUser(store.get('user'))
     },[])
   useEffect(()=>{
@@ -98,6 +98,22 @@ const User = () => {
       store.set('user',updatedUser)
 
     }
+    async function handleViewFollowes(){
+      const data=await utilApi.getFollowes(owner._id)
+      if(!data.success)
+      console.log('no no')
+      store.set('users',data.followes)
+      navigate('/users')
+      
+    }
+    async function handleViewFollowers(){
+      const data=await utilApi.getFollowers(owner._id)
+      if(!data.success)
+      console.log('no no')
+      store.set('users',data.followers)
+      navigate('/users')
+
+    }
 return (
 <>
 {
@@ -123,7 +139,7 @@ user._id&&owner._id&&<div className="container container-fluid ">
 
     <input for='background-image' accept='image/*'   onChange={(e)=>handleImgUpload(backgroundImageUploadRef,'background-image')} 
     ref={backgroundImageUploadRef}  placeholder='upload' className='upload-background'  
-    type="file" name="background" id="background" />
+    type="image" name="background" id="background" />
     upload
     </label>
    </div>
@@ -138,7 +154,7 @@ user._id&&owner._id&&<div className="container container-fluid ">
       src={owner._id?profileImageSrc:'*'}
       style={{
         top:`${owner.profileImage.style.top/3}px`,
-         transform:`scale(${owner.profileImage.style.scale*4.3})`,objectFit:'contain',position:'relative'}}
+         transform:`scale(${owner.profileImage.style.scale*6})`,objectFit:'contain',position:'relative'}}
          alt="user-profile-picture" />
   </div>
   <div className={`profile-picture-options-container `}>
@@ -164,11 +180,11 @@ user._id&&owner._id&&<div className="container container-fluid ">
       <div style={{ minWidth:'70vw' }} className="  d-flex align-items-end justify-content-center flex-column ">
       <h1 className='user-name text-xxl'>{owner.firstName} {owner.lastName}</h1>
      <div  className=" mt-3 d-flex flex-row justify-content-between align-items-center">
-      <div style={{ width:'50vw' }} className="border border-3">
-        <Link  to='user/../../follow/followers'>
+      <div  style={{ width:'50vw' }} className="border border-3">
+        <Link onClick={handleViewFollowers} >
         <p>{`follwers : ${owner._id&&owner.followers.length}`}</p>
         </Link>
-        <Link  to='user/../../follow/followes'>
+        <Link onClick={handleViewFollowes} >
         <p>{`followes : ${owner._id&&owner.followes.length}`}</p>
         </Link>
       </div>
@@ -182,7 +198,7 @@ user._id&&owner._id&&<div className="container container-fluid ">
       <div style={{ width:'100vw',backgroundColor:'rgba(0,0,0,0.03)' }} className='mt-5'>
 
         <h1>{ownerFlage?'your posts':'posts'}</h1>
-  <Posts posts={owner.posts} />
+  <Posts user={user} posts={owner.posts} />
 
       </div>
     </div>

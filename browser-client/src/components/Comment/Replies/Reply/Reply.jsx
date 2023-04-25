@@ -1,24 +1,17 @@
 import {useState,useEffect,useRef} from 'react'
 import {CommentForm} from '../../../index.js'
 import store from 'store'
+import Replies from '../Replies.jsx'
 import { commentApi } from '../../../../resources/api'
 import star from '../../../../resources/images/star.png'
 const Reply = ({comment,passedUser}) => {
 const [reply,setReply]=useState(comment)
-const [showForm,setShowForm]=useState(false)
+const [showReplies,setShowReplies]=useState(false)
 const [user,setUser]=useState(passedUser)
+const [formFlage,setFormFlage]=useState(false)
 const leftLine=useRef('')
-// useEffect(() => {
-//     // const beforeElement = window.getComputedStyle(replyRef.current, '::before');
-//     // console.log(beforeElement.content);
-//     if(!leftLine.current)
-//     return
-//     let repliesContainer  =leftLine.current.parentNode.parentNode
-//     let replyContainer  =leftLine.current.parentNode
-//     leftLine.current.style.width=`${(repliesContainer.offsetWidth/2)-(replyContainer.offsetWidth/2)}px`
-//       //   console.log(offsetWidth)  
-      
-//   }, []);
+const [flage,setFlage]=useState(false)
+
   async function handleStarClick(){
     console.log(reply._id)
     const data=await commentApi.likeComment(reply._id,reply.postId)
@@ -29,22 +22,31 @@ const leftLine=useRef('')
   function handleShowReplies(){
     setShowReplies(pre=>!pre)
    }
-return (
+   const appendReplies=(newReply)=>{
+    setReply(pre=>{return {...pre,repliedBy:[... reply.repliedBy,newReply]}})
+    console.log('vvvvzzzz')
+    setShowReplies(true)
+   }
+   useEffect(()=>{
+    setFlage(pre=>!pre)
+  },[reply])
+   const updateCommentFormFlage=()=>setFormFlage(pre=>!pre)
+   return (
     <>
    <div className="  card  m-3  reply-container  d-flex   justify-content-start flex-column align-items-start " style={{ width:'60%',maxWidth:'400px',minWidth:'200px' }} >
     <span className="left-line"></span>
 <div style={{ width:'100%' }} className="reply-header  d-flex flex-row align-items-center justify-content-start  p-1 " >
 <h5 style={{ marginRight:'50px' }} className=''>{user.firstName} {user.lastName}</h5>
+<div style={{ width:'40px',height:'40px' }} className="profile-image">
 
-<div  style={{  height:'40px',width:'40px' }}  className="profile-image-container">
-
-<img  className='user-profile-image' draggable='false'
-src={user.profileImage.imageName?`http://localhost:1000/api/user-profile-image/${user.profileImage.imageName}?userId=${user._id}`:'loading'}
-style={{
-  top:`${user.profileImage.style.top/3}px`,
-  transform:`scale(${user.profileImage.style.scale*3})`,objectFit:'contain',position:'relative'}}
-  alt="user-profile-picture" />
-</div>
+<img  className=' border position-relative '  
+style={{ 
+  top:`${user.profileImage.style.top*6/40}px`
+  ,
+  objectFit:'contain',
+  scale:String(Number(user.profileImage.style.scale*1.3))
+   }} src={user.profileImage?`http://localhost:1000/api/user-profile-image/${user.profileImage.imageName}?userId=${user._id}`:'*'} height='100'  alt="profile-image" />  
+    </div>
 </div>
 <div style={{ width:'100%' }} className=" d-flex flex-row justidy-content-start p-2 reply-body">
          {reply.content}
@@ -63,9 +65,11 @@ style={{
 
 
 
-<div className='reply-container' >
+<div className='inner-reply-container' >
 <span  className='svg-container' >
-<svg onClick={()=>setShowForm(pre=>!pre)}  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+<svg onClick={()=>{updateCommentFormFlage()
+return store.set('repliedComment',reply)
+}}  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
 <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
 </svg>
 </span>
@@ -75,8 +79,14 @@ style={{
 </div>
 
 </div>
-        {showReplies&&reply.repliedBy.length&&
-<Replies comments={reply.repliedBy}/>}
+        {showReplies&&
+<span style={{ marginLeft:'50px' }}>
+<Replies updateCommentFormFlage={updateCommentFormFlage} appendReplies={appendReplies} comments={reply.repliedBy}/>
+
+</span>
+}
+{formFlage&&<CommentForm  appendReplies={appendReplies} updateCommentFormFlage={updateCommentFormFlage}  postId={comment.postId}/>}
+
     </>
     )
 }

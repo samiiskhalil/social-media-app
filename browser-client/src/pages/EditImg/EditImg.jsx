@@ -130,10 +130,10 @@ updataImage()
 <div className="row">
 <div className="col ">
 
-  <div ref={containerRef} className={` ${imageType}`}>
+  <div style={{ marginTop:'150px',height:'300px',width:'300px' }} ref={containerRef} className={` ${imageType}`}>
 
 
-<img style={{ objectFit:'contain',transform:`scale(${imgSize})` }} draggable='false' onMouseUp={handleMouseUp} onMouseMove={handleMouseMove} className='edited-image' ref={imgRef} initpos={{ x:0,y:0 }}
+<img style={{ transform:`scale(${imgSize})` }} draggable='false' onMouseUp={handleMouseUp} onMouseMove={handleMouseMove} className='edited-image' ref={imgRef} initpos={{ x:0,y:0 }}
 offset={{y:0}}  currentpos={{y:0 }} 
 lastoffset={{y:0}} src={`blob:http://localhost:5173/${imageSrc}`} alt="image"
 onMouseDown={handleMouseDown} 

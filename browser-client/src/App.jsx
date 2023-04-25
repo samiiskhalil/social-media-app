@@ -3,7 +3,6 @@ import React from 'react'
 import {Comments,EditImg,Users,Search,Logout,Follow,User,Login,Signup,Home} from './pages/index.js'
 import {  NavBar } from './components/index.js'
 import {useNavigate,Routes,Route} from 'react-router-dom'
-
 const App = () => {
   return (
 <>

@@ -4,7 +4,7 @@ import Post from './Post/Post.jsx'
 import { useEffect,useState } from 'react'
 import postApi from '../../resources/api/post_requests.js'
 
-const Posts = ({posts}) => {
+const Posts = ({posts,user}) => {
 
   // make api call to posts
   return (
