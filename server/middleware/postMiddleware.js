@@ -135,12 +135,14 @@ class postMiddleware{
     }
     static async updatePostDescribtion(req,res,next){
         try{
+            console.log(req.post)
             req.post.describtion=req.body.describtion
             let post=req.post
             await post.save()
             return res.json({success:true,post})
         }
         catch(err){
+            console.log(err)
             return res.json({success:false,err:err.message})
         }
     }
@@ -148,6 +150,7 @@ class postMiddleware{
         try{
             let {user}=req
         let post=await Post.findById(req.body.postId||req.query.postId)
+            req.post=post
         if(!post)
         return res.json({success:false,err:'post was not found'})    
         if(post.publisher.toString()!==user.id)
@@ -192,13 +195,9 @@ class postMiddleware{
         try{
             if(!req.headers['shared-post-id'])
             return next()
-            if(req.user.posts.some(postId=>postId.toString()===req.headers['shared-post-id'].toString()))
-            return res.json({success:false,err:'you are the publisher of the post'})
             let ogPost=await Post.findById(req.headers['shared-post-id'])
             if(!ogPost.shares.length)
             return next()
-            if(ogPost.shares.some(share=>share.user.toString()===req.user.id.toString()))
-            return res.json({succcess:false,err:'you already shared the post'})
             return next()
         }   
  

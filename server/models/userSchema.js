@@ -24,17 +24,17 @@ const userSchema= new mongoose.Schema({
 posts:[{type:mongoose.SchemaTypes.ObjectId,ref:'Post'}]
     ,
     profileImage:{
-            imageName:String,
+            imageName:{type:String,default:''},
             style:{
-                top:String,
-                scale:Number
+                top:{type:String,default:''},
+                scale:{type:String,default:''}
             }            
     },
     coverImage:{
-            imageName:String,
+            imageName:{type:String,default:''},
             style:{
-                top:String,
-                scale:Number
+                top:{type:String,default:''},
+                scale:{type:String,default:''}
             }            
     },
    

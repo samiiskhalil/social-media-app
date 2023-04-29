@@ -7,5 +7,7 @@ import Users from './Users/Users.jsx'
 import Login from './Login/Login.jsx'
 import EditImg from './EditImg/EditImg.jsx'
 import Follow from './Follow/Follow.jsx'
+import CommunityForm from './CommunityForm/CommunityForm.jsx'
 import Comments from './Comments/Comments.jsx'
-export {EditImg,Search,Home,Logout,Users,Comments,Signup,User,Follow,Login}
+import Community from './Community/Community.jsx'
+export {EditImg,CommunityForm,Search,Home,Logout,Users,Comments,Community,Signup,User,Follow,Login}

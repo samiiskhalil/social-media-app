@@ -1,15 +1,18 @@
 import React from 'react'
 
-import {Comments,EditImg,Users,Search,Logout,Follow,User,Login,Signup,Home} from './pages/index.js'
+import {Community,Comments,EditImg,Users,Search,Logout,Follow,User,Login,Signup,Home,CommunityForm} from './pages/index.js'
 import {  NavBar } from './components/index.js'
 import {useNavigate,Routes,Route} from 'react-router-dom'
 const App = () => {
   return (
 <>
+<div className="position-relative">
 
 <Routes  >
   <Route path='/' element={<NavBar/>} >
     <Route index element={<Home/>} />
+    <Route path='/community/:communityId' element={<Community/>} />
+    <Route path='/create-community' element={<CommunityForm/>} />
     <Route path='/users/' element={<Users/>} />
     <Route path='user/follow/:type' element={<Follow/>} />
     <Route path='user/:id' element={<User/>} />
@@ -23,6 +26,7 @@ const App = () => {
 
 <Route path='/edit-image/:imageSrc' element={<EditImg/>}/>
 </Routes>
+</div>
 </>
     )
 }

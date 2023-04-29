@@ -1,5 +1,6 @@
 import React from 'react'
 import store from 'store';
+import communityApi from '../../resources/api/community_requests';
 import utilApi from '../../resources/api/util_requests';
 import { useState,useRef,useEffect } from 'react'
 import userAPI from '../../resources/api/user_requests';
@@ -8,12 +9,15 @@ import StickyBox from "react-sticky-box";
 import './NavBar.css'
 import {useLocation,NavLink,Outlet, useNavigate} from 'react-router-dom'
 import Cookies from 'js-cookie'
+import OverLay from '../Overlay/OverLay';
 const NavBar = () => {
   const navigate=useNavigate()
   const [followers,setFollowers]=useState([])
   const [followes,setFollowes]=useState([])
   const [results,setResults]=useState([])
   const [searchQuery,setSearchQuery]=useState()
+  const [dropListFlage,setDropListFlage]=useState(false)
+  const [communityName,setCommunityName]=useState('')
   let location=useLocation()
   let searchRef=useRef('')
   const params=useParams()
@@ -23,21 +27,19 @@ const NavBar = () => {
     e.preventDefault()
     const results=await userAPI.searchQeury(searchQeury)
    
-    console.log(results)
   }
-  useEffect(()=>console.log(results))
 return (<>
 
 <StickyBox className='sticky-nav' style={{ top:'0px',zIndex:'99999999'}}  >
 
 
-<nav className=" shadow navbar  navbar-light bg-light">
+<nav className=" shadow navbar position-relative navbar-light bg-light">
   <div className="container-fluid">
     <button className="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span className="navbar-toggler-icon"></span>
     </button>
     <div className="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+      <ul className="  navbar-nav me-auto mb-2 mb-lg-0">
         <li className="nav-item">
           <a  className="nav-link">
 
@@ -55,6 +57,15 @@ return (<>
             <Link to={'/logout'} >log out</Link>
           </a>
                   </li>
+         <hr />
+         <li style={{ maxWidth:'300px' }} onClick={()=>setDropListFlage(pre=>!pre)} className='nav-link font-weight-bold'>communities</li>
+         {dropListFlage&&<ul style={{ maxWidth:'300px' }} class="list-group">
+  <li class="list-group-item">A fourth item</li>
+  <li class="list-group-item">And a fifth one</li>
+  <hr />
+  <li onClick={()=>navigate('/create-community')} class="list-group-item">create community</li>
+</ul>}
+                  
       </ul>
       <form className="d-flex position-relative">
         <input ref={searchRef} onChange={(e)=>{setSearchQuery(e.target.value)

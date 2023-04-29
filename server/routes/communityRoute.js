@@ -76,5 +76,5 @@ userModelSideEffectHandler.removeManagedCommunity,userModelSideEffectHandler.rem
 communityController.sendCommunity)
 // block/unblock users only by managers
 router.patch('/block',auth.verifyToken,auth.verifyCommunityManager,userMiddleware.getBlockedUser,communityMiddleware.blockUser,communityController.sendCommunity)
-
+router.get('/check-name',auth.verifyToken,communityController.checkCommunityExists)
 module.exports=router

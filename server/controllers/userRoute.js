@@ -36,7 +36,7 @@ class user{
       let user=await User.findById(userId)
       for (let i = 0; i < user.followes.length; i++) {
         let follow=await User.findById(user.followes[i])
-        followes.push({profileImage:follow.profileImage,firstName:follow.firstName,lastName:follow.lastName,id:follow.id})
+        followes.push({profileImage:follow.profileImage,firstName:follow.firstName,lastName:follow.lastName,_id:follow.id})
       }
       return res.json({success:true,followes})
     }
@@ -54,7 +54,7 @@ class user{
       let user=await User.findById(userId)
       for (let i = 0; i < user.followers.length; i++) {
         let follower=await User.findById(user.followers[i])
-        followers.push({profileImage:follower.profileImage,firstName:follower.firstName,lastName:follower.lastName,id:follower.id})
+        followers.push({profileImage:follower.profileImage,firstName:follower.firstName,lastName:follower.lastName,_id:follower.id})
       }
       return res.json({success:true,followers})
     }

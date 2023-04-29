@@ -3,7 +3,6 @@ import axios from 'axios'
 import userApi from '../../resources/api/user_requests.js'
 import { Navigate, useNavigate } from 'react-router'
 import { useRef,useEffect,useState } from 'react'
-import './signup.css'
 import store from 'store'
 import Cookies from 'js-cookie'
 const Signup = () => {

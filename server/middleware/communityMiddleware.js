@@ -414,6 +414,11 @@ class communityMiddleware{
     static async createCommunity(req,res,next){
         try
         {
+            if(!req.body.communityName||!req.body.describtion)
+            return res.json({success:false,err:'you did not send full information about the community'})
+            const existingCommunity=await Community.findOne({communityName:req.body.communityName})
+            if(existingCommunity.id)
+            return res.json({success:false,err:'a community by this name already exists choose another one'})  
             let community=await Community.create({
                 communityName:req.body.communityName,
                 describtion:req.body.describtion,

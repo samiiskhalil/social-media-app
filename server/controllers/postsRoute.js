@@ -246,7 +246,8 @@ static async commentReaction(req,res){
         try
         {
             console.log('aa')
-               let comments=await Comment.where({repliedTo:''}&&{postId:req.query.postId})
+            let comments=await Comment.find({postId:req.query.postId,repliedTo:null}) 
+
                async function getReplies(comments){
                 if(!comments.length)
                 return 0
@@ -257,6 +258,8 @@ static async commentReaction(req,res){
                 }
             }
                 await getReplies(comments)
+                // console.log(comments)
+            //    comments= comments.reverse()
                 return res.json({success:true,comments})
          }
         catch(err){
@@ -268,7 +271,7 @@ static async commentReaction(req,res){
             const post=await Post.findById(req.query.postId)
             if(!post)
             return res.json({success:false,err:'post was not found'})
-            res.json({sucess:true,post:post})
+            res.json({success:true,post:post})
         }
         catch(err){
             console.log(err.message)

@@ -11,7 +11,7 @@ const Posts = ({posts,user}) => {
   <div className="row" >
     <div className="col d-flex flex-column align-items-center justify-content-center">
 
-    {posts.map(post=>< Post post={post} key={post._id} />)}
+    {posts.map(post=>< Post post={post} user={user} key={post._id} />)}
     </div>
 
   </div>

@@ -4,10 +4,9 @@ import store from 'store'
 import { Await, Link,useNavigate, useParams } from 'react-router-dom'
 import EditImg from '../EditImg/EditImg.jsx'
 import axios from 'axios'
-import './user.css'
 import Cookies from 'js-cookie'
 import '../../index.css'
-import {Posts,OverlayImage} from '../../components/index.js'
+import {Posts} from '../../components/index.js'
 import {useEffect,useRef,useState} from 'react'
 import userAPI from '../../resources/api/user_requests.js'
 import MakePost from '../../components/MakePost/MakePost.jsx'
@@ -139,7 +138,7 @@ user._id&&owner._id&&<div className="container container-fluid ">
 
     <input for='background-image' accept='image/*'   onChange={(e)=>handleImgUpload(backgroundImageUploadRef,'background-image')} 
     ref={backgroundImageUploadRef}  placeholder='upload' className='upload-background'  
-    type="image" name="background" id="background" />
+    type="file" name="background" id="background" />
     upload
     </label>
    </div>

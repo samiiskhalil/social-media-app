@@ -26,6 +26,20 @@ class communityController{
             return res.json({success:false,err:err.message})
         }
     }
+    static async checkCommunityExists(req,res){
+        try{
+            if(!req.query.communityName)
+            return res.json({success:false,err:'no community name was sent'})
+                const community=await Community.findOne({communityName:req.query.communityName})
+                if(!community.id)
+                    return res.json({success:true,msg:'no community was found'})
+                  return res.json({success:false,err:'this name name is taken'})  
+                }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
     static async getCommunity(req,res,next){
         try{
                 const community=await Community.findById(req.community.id)
