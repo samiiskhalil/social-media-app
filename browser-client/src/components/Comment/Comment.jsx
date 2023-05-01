@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import store from 'store'
-import './comment.css'
 import { useEffect,useState,useRef} from 'react'
 import Comments from '../../pages/Comments/Comments'
 import {commentApi} from '../../resources/api/index.js'

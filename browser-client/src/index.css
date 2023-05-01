@@ -21,7 +21,6 @@ a {
 .svg-container:hover{
     background-color: rgba(244, 244, 244,0.9);
     }
-
 .svg-container svg{
     z-index: 11;
     position: relative;    
@@ -230,18 +229,8 @@ img{
     min-height: 100vh;
 
 }
-@media only screen and (max-width: 300px) {
-    .form-group{
-        padding: 0;
-        margin: 0;
-    }
-    .form-floating{
-        width: 100px;
-    }
-    .form-control{
-        width: 100px;
-    }
-    
+@media screen and (max-width:300px) {
+
 }
 .overlay-container{
     display: flex;
@@ -729,14 +718,7 @@ img{
         align-items: center;
         flex-wrap: nowrap;
     }
-    .search-icon{
-        /* z-index: 10000;
-        cursor: pointer;
-        top: 14px;
-        position: absolute;
-        right: 10px; */
-    }
-    /* //////////////////////////////////// */
+ 
     nav{
     
         position: absolute;

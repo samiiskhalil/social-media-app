@@ -6,7 +6,6 @@ import { useState,useRef,useEffect } from 'react'
 import userAPI from '../../resources/api/user_requests';
 import { Link, useParams } from 'react-router-dom';
 import StickyBox from "react-sticky-box";
-import './NavBar.css'
 import {useLocation,NavLink,Outlet, useNavigate} from 'react-router-dom'
 import Cookies from 'js-cookie'
 import OverLay from '../Overlay/OverLay';

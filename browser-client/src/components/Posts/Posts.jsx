@@ -1,5 +1,4 @@
 import React from 'react'
-import './posts.css'
 import Post from './Post/Post.jsx'
 import { useEffect,useState } from 'react'
 import postApi from '../../resources/api/post_requests.js'

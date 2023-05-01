@@ -106,6 +106,7 @@ class user{
   static async sendFollow(req,res,next){
     try{
       const {friend}=req
+      console.log(friend)
       return res.json({success:true,followes:friend})
     }
     catch(err){

@@ -3,7 +3,6 @@ import store from 'store'
 import { useNavigate,useParams } from 'react-router'
 import { useState,useRef,useEffect } from 'react'
 import Cookies from 'js-cookie'
-import './editImg.css'
 import userAPI from '../../resources/api/user_requests'
 const EditImg = () => {
   const [errMsg,setErrMsg]=useState()

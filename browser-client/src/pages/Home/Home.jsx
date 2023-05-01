@@ -3,7 +3,6 @@ import Cookies from 'js-cookie'
 import store from 'store'
 import axios from 'axios'
 import utilApi from '../../resources/api/util_requests.js'
-import './home.css'
 import { useNavigate } from 'react-router'
 const Home = () => {
   const [user,setUser]=useState({})

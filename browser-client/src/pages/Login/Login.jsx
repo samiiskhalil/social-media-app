@@ -1,4 +1,3 @@
-import './login.css'
 import store from 'store'
 import Cookies from 'js-cookie'
 import { useState } from 'react'
