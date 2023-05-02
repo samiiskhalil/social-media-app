@@ -1,3 +1,6 @@
+.hide{
+    display: none;
+}
 a {
     color: black;
 }
@@ -800,4 +803,28 @@ img{
         display: flex;
         justify-content: space-between;
         align-items: center;
+    }
+    .selected-admins-container{
+        background-color: white;
+        display: flex;
+        justify-content: start;
+    }
+    .selected-admin-container{
+        /* overflow: hidden; */
+        margin: 10px;
+        padding-inline: 6px;
+        border-radius: 10px;
+        background-color: rgb(213, 213, 213);
+        position: relative;
+        padding-top: 8px;
+        }
+    .cancel-admin svg{
+       position: absolute;
+        top: 0;
+        border-radius: 4px;
+        height: 13px;
+        aspect-ratio: 1/1;
+        right: 0;
+        cursor: pointer;
+        background-color: #ff5858;
     }

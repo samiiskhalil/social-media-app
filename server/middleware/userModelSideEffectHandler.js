@@ -93,7 +93,7 @@ class userModelSideEffectHandler{
                                     await joiner.save()                      
                                    return next()
                                 }
-                                return res.json({success:false,err:'no community was found in your record'})
+                                return res.json({success:false,err:'no community was found in joiner record'})
                             }
         catch(err){
             console.log(err)

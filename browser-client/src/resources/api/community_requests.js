@@ -1,16 +1,276 @@
 import Cookies from "js-cookie"
-const baseUrl='http://locahost:1000/api'
+import axios from "axios"
+const baseUrl='http://localhost:1000/api'
 export default class communityApi{
     constructor(){
 
     }
-    static async createCommunity(community){
-        try
-        {
+
+    static async memberJoin(communityId,blockedUserId){
+        try{
+            const headers={
+                'Authorization':Cookies.get('token'),
+            }
+            const {data}=await axios.post(`${baseUrl}/community/members`,{communityId},{headers})
+            return data
+            }
+        catch(err){
+
+            return err.response.data
+        }
+    }
+    static async communityBlock(communityId,blockedUserId){
+        try{
+            const headers={
+                'Authorization':Cookies.get('token'),
+            }
+            const {data}=await axios.patch(`${baseUrl}/community/block`,{blockedUserId,communityId},{headers})
+            return data
+            }
+        catch(err){
+
+            return err.response.data
+        }
+    }
+    static async getImage(communityId,imageName){
+        try{
+            const headers={
+                'Authorization':Cookies.get('token'),
+            }
+            const {data}=await axios.get(`${baseUrl}/community/image/${imageName}?communityId=${communityId}`,{headers})
+            return data
+            }
+        catch(err){
+
+            return err.response.data
+        }
+    }
+    static async deleteImage(communityId,imageName){
+        try{
+            const headers={
+                'Authorization':Cookies.get('token'),
+            }
+            const {data}=await axios.delete(`${baseUrl}/community/image/${imageName}?communityId=${communityId}`,{headers})
+            return data
+            }
+        catch(err){
+
+            return err.response.data
+        }
+    }
+    static async removeMember(communityId,joinerId,role){
+        try{
+
             const headers={
                 'Authorization':Cookies.get('token')
             }
-            const {data}=await axios.get(`${baseUrl}/community?communityName=${communityName}`,{headers})
+            const {data}=await axios.delete(`${baseUrl}/community/members?communityId=${communityId}`,{communityId,joinerId},{headers})
+            return data
+            }
+        catch(err){
+
+            return err.response.data
+        }
+    }
+    static async updateImage(communityId,image){
+        try{
+            const formData=new FormData()
+            formData.append('communityId',communityId)
+            formData.append('image',image)
+            const headers={
+                'Authorization':Cookies.get('token'),
+            }
+            const {data}= await axios.patch(`${baseUrl}/community/image`,formData,{headers})
+            return data
+            }
+        catch(err){
+
+            return err.response.data
+        }
+    }
+    static async removeMemberByRole(communityId,joinerId,role){
+        try{
+
+            const headers={
+                'Authorization':Cookies.get('token'),
+                'community-role':role
+            }
+            const {data}=await axios.delete(`${baseUrl}/community/members/role?communityId=${communityId}&joinerId=${joinerId}`,{communityId,joinerId},{headers})
+            return data
+            }
+        catch(err){
+
+            return err.response.data
+        }
+    }
+    static async roleApproveJoin(communityId,joinerId,role){
+        try{
+
+            const headers={
+                'Authorization':Cookies.get('token'),
+                'community-role':role
+            }
+            const {data}=await axios.post(`${baseUrl}/community/members/join`,{communityId,joinerId},{headers})
+            return data
+            }
+        catch(err){
+
+            return err.response.data
+        }
+    }
+    static async userRemoveReq(communityId,joinerId){
+        try{
+
+            const headers={
+                'Authorization':Cookies.get('token'),
+            }
+            const {data}=await axios.delete(`${baseUrl}/community/members/join?communityId=${communityId}&joinerId=${joinerId}`,{headers})
+            return data
+            }
+        catch(err){
+
+            return err.response.data
+        }
+    }
+
+    static async roleRemoveReq(communityId,joinerId,role){
+        try{
+
+            const headers={
+                'Authorization':Cookies.get('token'),
+                'community-role':role
+            }
+            const {data}=await axios.delete(`${baseUrl}/community/members/role/join?communityId=${communityId}&joinerId=${joinerId}`,{headers})
+            return data
+            }
+        catch(err){
+
+            return err.response.data
+        }
+    }
+    static async reqJoin(communityId){
+        try{
+
+            const headers={
+                'Authorization':Cookies.get('token')
+            }
+            const {data}= await axios.post(`${baseUrl}/community/members/join`,{communityId},{headers})
+            return data
+            }
+        catch(err){
+
+            return err.response.data
+        }
+    }
+
+    static async deletePost(postId){
+        try{
+
+            const headers={
+                'Authorization':Cookies.get('token')
+            }
+            const {data}=await axios.delete(`${baseUrl}/community/posts?postId=${postId}`,{headers})
+            return data
+            }
+        catch(err){
+
+            return err.response.data
+        }
+    }
+    static async changePublicity(communityId){
+        try{
+
+            const headers={
+                'Authorization':Cookies.get('token')
+            }
+            const {data}=await axios.patch(`${baseUrl}/community/manager/publicity`,{communityId},{headers})
+            return data
+            }
+        catch(err){
+
+            return err.response.data
+        }
+    }
+    static async changePostApproval(communityId){
+        try{
+
+            const headers={
+                'Authorization':Cookies.get('token')
+            }
+            const {data}=await axios.patch(`${baseUrl}/community/manager/post-approval`,{communityId},{headers})
+            return data
+            }
+        catch(err){
+
+            return err.response.data
+        }
+    }
+    static async addAdmins(communityId,adminsId){
+        try{
+
+            const headers={
+                'Authorization':Cookies.get('token')
+            }
+            const {data}=await axios.post(`${baseUrl}/community/admins`,{communityId,adminsId},{headers})
+            return data
+            }
+        catch(err){
+
+            return err.response.data
+        }
+    }
+    static async removeAdmin(communityId,adminsId){
+        try{
+
+            const headers={
+                'Authorization':Cookies.get('token')
+            }
+            const {data}=await axios.patch(`${baseUrl}/community/remove`,{communityId,adminsId},{headers})
+            return data
+            }
+        catch(err){
+
+            return err.response.data
+        }
+    }
+    static async switchManager(communityId,newManagerId){
+        try{
+
+            const headers={
+                'Authorization':Cookies.get('token')
+            }
+            const {data}= await axios.patch(`${baseUrl}/community/manager`,{communityId,newManagerId},{headers})
+            return data
+            }
+        catch(err){
+
+            return err.response.data
+        }
+    }
+    static async getCommunity(id){
+        try{
+            const headers={
+                'Authorization':Cookies.get('token')
+            }
+            const {data}=await axios.get(`${baseUrl}/community?communityId=${id}`)
+            console.log(data)
+            return data
+        }
+        catch(err){
+            console.log(err)
+
+            return err.response.data
+        }
+    }
+    static async createCommunity(communityName,describtion,admins){
+        try
+        {
+            const adminsId=admins.map(admin=>admin._id)
+            const headers={
+                'Authorization':Cookies.get('token')
+            }
+            const {data}=await axios.post(`${baseUrl}/community`,{communityName,describtion,adminsId},{headers})
+            console.log('as')
             return data
          }
         catch({response}){

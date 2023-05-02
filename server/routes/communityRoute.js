@@ -15,7 +15,7 @@ router.post('/',auth.verifyToken,userMiddleware.checkManagerNotAdmin,userMiddlew
 communityMiddleware.createCommunity,
 userModelSideEffectHandler.addAdminedCommunity
 ,userModelSideEffectHandler.addManagedCommunity
-,auth.generateToken,communityController.getCommunity)
+,communityController.getCommunity)
 // get community
 // need to populate posts thoughs
 router.get('/',communityController.sendCommunity)
