@@ -66,7 +66,8 @@ async function handleCreateCommunity(e){
         return
     }
     let user=store.get('user')
-    user.communities.push(data.community._id)
+    user.managedCommunities.push(data.community._id)
+    console.log(user.managedCommunities,data.community._id)
     store.set('user',user)
     navigate(`../community/${data.community._id}`)
 }

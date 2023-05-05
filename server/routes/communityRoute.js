@@ -65,7 +65,7 @@ router,delete('/admin',auth.verifyToken,communityMiddleware.getCommunity,auth.ve
 // change commnity params
 router.patch('/manager/publicity',auth.verifyToken,auth.verifyCommunityManager,communityMiddleware.getCommunity,communityMiddleware.convertPublicity,communityController.sendCommunity)
 router.patch('/manager/post-approval',auth.verifyToken,auth.verifyCommunityManager,communityMiddleware.getCommunity,communityMiddleware.convertPostApproval,communityController.sendCommunity)
-router.get('/image/:imageName',auth.verifyToken,communityMiddleware.getCommunity,communityController.getImage)
+router.get('/image/:imageName',communityMiddleware.getCommunity,communityController.getImage)
 router.delete('/image/:imageName',auth.verifyToken,auth.verifyCommunityManager,communityMiddleware.getCommunity,communityMiddleware.deleteImage,communityController.sendCommunity)
 router.patch('/image',auth.verifyToken,auth.verifyCommunityManager,communityMiddleware.getCommunity,communityMiddleware.saveImage,communityController.sendCommunityCoverImageName)
 router.delete('/',auth.verifyToken,auth.verifyCommunityManager,communityMiddleware.getCommunity,

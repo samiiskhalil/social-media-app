@@ -42,9 +42,12 @@ class communityController{
     }
     static async getCommunity(req,res,next){
         try{
-                const community=await Community.findById(req.community.id)
-                if(!community)
+                let community=await Community.findById(req.community.id)
+                if(!community._id)
                 return res.json({success:false,err:'no community was found'})
+                if(community.admins.length)
+                    community=await community.populate('admins')
+                community=await community.populate('manager')
                 return res.json({success:true,community})
         }
         catch(err){
@@ -55,8 +58,16 @@ class communityController{
     static async sendCommunity(req,res,next){
         try{
             console.log('done')
-            const community=await Community.findById(req.query.communityId||req.body.communityId)
-            return res.json({success:true,community})
+            let community=await Community.findById(req.query.communityId||req.body.communityId)
+            if(!community._id)
+            return res.json({success:false,err:'no community was found'})
+            if(community.admins.length)
+                community=await community.populate('admins')
+           
+                community=await community.populate('manager')
+            if(community.members.length)
+            community=await community.populate('members')
+                return res.json({success:true,community})
         }
         catch(err){
             console.log(err)

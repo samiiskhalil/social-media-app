@@ -84,7 +84,6 @@ class authentication{
         }
     static async verifyToken(req,res,next){
         try{
-            console.log(req.body)
             const bearer =req.headers['authorization']
             const token=bearer.split(' ')[1]
             if(!token)

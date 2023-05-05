@@ -313,7 +313,7 @@ img{
         background-color: aliceblue;
         cursor: pointer;
     }
-    .background-image-container{
+    .background-image-container, .community-background-image-container{
         margin-top: 14px;
         position: relative;
         left: 0;
@@ -327,7 +327,7 @@ img{
         height: 50vh;
     }
     
-    .background-image{position: relative;
+    .background-image, .community-background-image{position: relative;
         object-fit: contain;
     }
     .cursor-default{
@@ -828,3 +828,47 @@ img{
         cursor: pointer;
         background-color: #ff5858;
     }
+    .community-container{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        width: 100vw;
+    }
+    .community-header{
+        /* position: relative; */
+        width: 80vw;
+        display: flex;
+        justify-content: center;
+        align-items: start;
+        flex-direction: column;
+        position: relative;
+        }
+.community-cover-image-container{
+    position: relative;
+    height: 300px;
+width: 80vw;
+overflow: hidden;
+background-color: black; 
+}
+.community-cover-image{
+    width: 100%;
+    height: 100%;
+object-fit:contain;
+}
+.community-cover-btn{
+        position: absolute;
+    height: 50px;
+    width: 50px;
+    aspect-ratio: 1/1;
+    right: 10px;
+    bottom: -15%;
+} 
+.manager-btn{
+    position: fixed;
+    top: 30px;
+    transform: scale(.7);
+    left: 10px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+}

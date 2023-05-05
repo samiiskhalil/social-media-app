@@ -11,22 +11,41 @@ import Cookies from 'js-cookie'
 import OverLay from '../Overlay/OverLay';
 const NavBar = () => {
   const navigate=useNavigate()
+  const [addListFlage,setAddListFlage]=useState(false)
+  const [removeListFlage,setRemoveListFlage]=useState(false)
   const [followers,setFollowers]=useState([])
   const [followes,setFollowes]=useState([])
   const [results,setResults]=useState([])
   const [searchQuery,setSearchQuery]=useState()
   const [dropListFlage,setDropListFlage]=useState(false)
   const [communityName,setCommunityName]=useState('')
+  const [community,setCommunity]=useState({_id:''})
+  const communityPublicityRef=useRef()
+  const postApproval=useRef()
   let location=useLocation()
   let searchRef=useRef('')
   const params=useParams()
-
+  
+  useEffect(()=>{
+    
+    params.communityId&&communityApi.getCommunity(params.communityId).then(data=>setCommunity(data.community)).catch(err=>console.log(err))
+  },[])
   async function handleSearch(e)
   {
     e.preventDefault()
     const results=await userAPI.searchQeury(searchQeury)
    
   }
+  async function changePublicity(e){
+    const data=await communityApi.changePublicity(params.communityId)
+    setCommunity(data.community)
+  }
+  async function changePostApproval(e){
+    
+  console.log(e.target.checked)
+    const data=await communityApi.changePostApproval(params.communityId)
+    setCommunity(data.community)
+   } 
 return (<>
 
 <StickyBox className='sticky-nav' style={{ top:'0px',zIndex:'99999999'}}  >
@@ -66,7 +85,38 @@ return (<>
 </ul>}
                   
       </ul>
-      <form className="d-flex position-relative">
+      <hr />
+      {store.get('user').managedCommunities.some(id=>id===params.communityId)?<><div className="mt-4 d-flex flex-row flex-wrap justify-content-evenly community-options">
+            <div className="dropdown">
+
+                <button onClick={()=>setAddListFlage(pre=>!pre)} className='btn m-1 btn-primary m-0'>add admins</button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <ul class="list-group">
+            {community.members.map(member=><li className='list-group-item'>
+                      member
+            </li>)}
+</ul>
+  </div>
+            </div>
+                <button onClick={()=>removeListFlage(pre=>!pre)} className='btn m-1 btn-warning m-0'>remove admins</button>
+                <button className='btn m-1 btn-danger m-0'>resign</button>
+                <button className='btn m-1 btn-danger m-0'>remove group</button>
+            
+              </div>
+      <div style={{ marginLeft:'' }} className="mt-4 d-flex flex-row flex-wrap justify-content-start community-options">
+      <div   className="form-check form-switch">
+  <input style={{  }} checked={community.public} onChange={changePublicity} className="form-check-input" type="checkbox" role="switch" id="communityPublicity"/>
+  <label className="form-check-label"  htmlFor="communityPublicity">community publicity</label>
+</div>
+              </div>
+      <div style={{ marginLeft:'' }} className="mt-4 d-flex flex-row flex-wrap justify-content-start community-options">
+      <div   className="form-check form-switch">
+  <input style={{  }}  className="form-check-input" onChange={changePostApproval} type="checkbox" checked={community.postApproval} role="switch" id="postApproval"/>
+  <label className="form-check-label" htmlFor="postApproval">post approval</label>
+</div>
+              </div>
+              </>:null}
+      <form style={{}} className="d-flex position-relative">
         <input ref={searchRef} onChange={(e)=>{setSearchQuery(e.target.value)
         if(e.target.value==='')
         setResults([])
@@ -142,9 +192,11 @@ return (<>
               </>  
               </>
           </ul>
+
         </div>:null}
       </form>
     </div>
+              
   </div>
 </nav>
 

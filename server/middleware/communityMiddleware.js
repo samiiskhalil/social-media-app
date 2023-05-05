@@ -125,6 +125,7 @@ class communityMiddleware{
             community.coverImageName=imageName
             await community.save()
             req.community=community
+            console.log(req.files,req.body)
             return next()
         }   
         catch(err){
@@ -346,7 +347,10 @@ class communityMiddleware{
     {
         let {community,newManager}=req
         community.manager=newManager
+        community.members.push({memberId:newManager.id})
+        
         await community.save()
+
         req.community=community
         return next()
     }
@@ -424,7 +428,10 @@ class communityMiddleware{
                 communityName:req.body.communityName,
                 describtion:req.body.describtion,
                 admins:[... req.body.adminsId],
-                manager:req.user.id
+                manager:req.user.id,
+                members:[{memberId:[... req.user.id]}],
+                public:req.body.publicity||false,
+                postApproval:req.body.postApproval||false
             })
             req.manager=community.manager
             req.community=community
@@ -442,8 +449,9 @@ class communityMiddleware{
             let {admins}=req
             console.log(admins,'asdasdsa')
             for (let i = 0; i < admins.length; i++) 
-                community.admins.push(admins[i].id)                
-        
+                {community.admins.push(admins[i].id)                
+                   community.members.push({memberId:admins[i].id}) 
+                }
             community.save()  
             req.community=community
             return next()  

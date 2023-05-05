@@ -77,14 +77,13 @@ export default class communityApi{
             const formData=new FormData()
             formData.append('communityId',communityId)
             formData.append('image',image)
-            const headers={
-                'Authorization':Cookies.get('token'),
-            }
+            const headers={'Authorization':Cookies.get('token')}
             const {data}= await axios.patch(`${baseUrl}/community/image`,formData,{headers})
+            console.log(data)
             return data
             }
         catch(err){
-
+            console.log(err)
             return err.response.data
         }
     }
@@ -184,10 +183,11 @@ export default class communityApi{
                 'Authorization':Cookies.get('token')
             }
             const {data}=await axios.patch(`${baseUrl}/community/manager/publicity`,{communityId},{headers})
+            console.log(data)
             return data
             }
         catch(err){
-
+            console.log(err.response)
             return err.response.data
         }
     }

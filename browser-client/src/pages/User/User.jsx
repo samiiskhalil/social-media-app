@@ -119,7 +119,6 @@ return (
 user._id&&owner._id&&<div className="container container-fluid ">
 <div className="row">
   <div className="col">
-{user.posts.length}
 <div className="images-holder">
   <div className="background-image-container">
 
