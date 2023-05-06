@@ -11,6 +11,8 @@ import Cookies from 'js-cookie'
 import OverLay from '../Overlay/OverLay';
 const NavBar = () => {
   const navigate=useNavigate()
+  const [removedAdmins,setRemovedAdmins]=useState([])
+  const [chosenAdmins,setChosenAdmins]=useState([])
   const [addListFlage,setAddListFlage]=useState(false)
   const [removeListFlage,setRemoveListFlage]=useState(false)
   const [followers,setFollowers]=useState([])
@@ -27,9 +29,8 @@ const NavBar = () => {
   const params=useParams()
   
   useEffect(()=>{
-    
     params.communityId&&communityApi.getCommunity(params.communityId).then(data=>setCommunity(data.community)).catch(err=>console.log(err))
-  },[])
+  },[location])
   async function handleSearch(e)
   {
     e.preventDefault()
@@ -46,6 +47,13 @@ const NavBar = () => {
     const data=await communityApi.changePostApproval(params.communityId)
     setCommunity(data.community)
    } 
+ function handleClickMember(e,memberId){
+  if(e.target.classList.some(name=>name==='manager-item'))
+  return 
+    if(e.target.classList.some(name=>name==='admin-item'))
+        setRemovedAdmins(pre=>[... pre,memberId])
+
+}
 return (<>
 
 <StickyBox className='sticky-nav' style={{ top:'0px',zIndex:'99999999'}}  >
@@ -86,19 +94,19 @@ return (<>
                   
       </ul>
       <hr />
-      {store.get('user').managedCommunities.some(id=>id===params.communityId)?<><div className="mt-4 d-flex flex-row flex-wrap justify-content-evenly community-options">
-            <div className="dropdown">
+      {community._id&&store.get('user').managedCommunities.some(id=>id===params.communityId)?<><div className="mt-4 d-flex flex-row flex-wrap justify-content-evenly community-options">
+            <div className="dropdown position-relative">
 
-                <button onClick={()=>setAddListFlage(pre=>!pre)} className='btn m-1 btn-primary m-0'>add admins</button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <ul class="list-group">
-            {community.members.map(member=><li className='list-group-item'>
-                      member
+                <button onClick={()=>setAddListFlage(pre=>!pre)} className='btn m-1 btn-primary m-0'>update admins</button>
+                {addListFlage?<div style={{zIndex:'99999999999999999' ,background:'white',top:'30px',left:'0',width:'',height:'' }} className=" position-absolute " aria-labelledby="dropdownMenuButton">
+                <ul style={{ width:'100%' }} className="list-group">
+            {community.members.map(({memberId})=><li  onClick={(e)=>handleClickMember(e,memberId)}   style={{ width:'100%'}} className={`member list-group-item ${community.manager._id===memberId._id&&'manager-item'} ${community.admins.some(({_id})=>_id===memberId._id)&&'admin-item'} ${chosenAdmins.some(id=>id===memberId._id)&&'chosen-admin-item'} ${removedAdmins.some(({_id})=>_id===memberId._id)&&'removed-admin-item'}`}>
+                   {`${memberId.firstName} ${memberId.lastName}`}
             </li>)}
 </ul>
-  </div>
+  </div>:null}
             </div>
-                <button onClick={()=>removeListFlage(pre=>!pre)} className='btn m-1 btn-warning m-0'>remove admins</button>
+                <button onClick={()=>setRemoveListFlage(pre=>!pre)} className='btn m-1 btn-warning m-0'>remove admins</button>
                 <button className='btn m-1 btn-danger m-0'>resign</button>
                 <button className='btn m-1 btn-danger m-0'>remove group</button>
             

@@ -872,3 +872,13 @@ object-fit:contain;
     aspect-ratio: 1/1;
     border-radius: 50%;
 }
+
+.manager-item{
+    background-color: rgb(193, 229, 255);
+}
+.admin-item{
+    background-color: rgb(180, 248, 180);
+}
+.removed-admin-item{
+    background-color: #ff8c8c;
+}

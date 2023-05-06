@@ -424,12 +424,16 @@ class communityMiddleware{
            console.log(existingCommunity)
             if(existingCommunity!==null)
             return res.json({success:false,err:'a community by this name already exists choose another one'})  
+           let members=[req.user.id]
+           members=members.concat(req.body.adminsId)
+           members=members.map(member=>({memberId:member}))
+           console.log(members)
             let community=await Community.create({
                 communityName:req.body.communityName,
                 describtion:req.body.describtion,
                 admins:[... req.body.adminsId],
                 manager:req.user.id,
-                members:[{memberId:[... req.user.id]}],
+                members:members,
                 public:req.body.publicity||false,
                 postApproval:req.body.postApproval||false
             })
@@ -452,7 +456,7 @@ class communityMiddleware{
                 {community.admins.push(admins[i].id)                
                    community.members.push({memberId:admins[i].id}) 
                 }
-            community.save()  
+         await  community.save()  
             req.community=community
             return next()  
         }

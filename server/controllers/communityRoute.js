@@ -66,8 +66,9 @@ class communityController{
            
                 community=await community.populate('manager')
             if(community.members.length)
-            community=await community.populate('members')
-                return res.json({success:true,community})
+            community=await community.populate('members.memberId')
+              console.log(community.members) 
+            return res.json({success:true,community})
         }
         catch(err){
             console.log(err)
