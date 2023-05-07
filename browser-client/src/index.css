@@ -310,7 +310,6 @@ img{
         margin-top: 0;
     }
     li:hover{
-        background-color: aliceblue;
         cursor: pointer;
     }
     .background-image-container, .community-background-image-container{
@@ -881,4 +880,7 @@ object-fit:contain;
 }
 .removed-admin-item{
     background-color: #ff8c8c;
+}
+.chosen-admin-item{
+    background-color: rgb(255, 255, 150);
 }

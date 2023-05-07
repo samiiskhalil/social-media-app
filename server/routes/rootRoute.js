@@ -28,12 +28,11 @@ router.get('/users-communities',async(req,res)=>{
     })
         let communities=await Community.find()
         communities= communities.map(community=>{
-        return
-    ({
-        id:community.id,
-        communityName:community.communityName
+        return {
+        _id:community.id,
+        communityName:community.communityName}
     })
-    })
+    console.log(communities)
     return res.json({success:true,communities,users})
     }
     catch(err)
@@ -71,12 +70,13 @@ try
     })
     results.users=[... users]
     // find communities
-    let communities=await Community.find({communityName:searchQuery})
+    let communities=await Community.find()
     communities=communities.filter(community=>{
         if(community.communityName.includes(searchQuery))
             return true
     })
-    communities=communities.map(community=>community.communityName)
+    console.log(communities)
+    communities=communities.map(community=>({communityName:community.communityName,_id:community.id}))
     results.communities=[... communities]
     console.log(results)
     return res.json({success:true,results})

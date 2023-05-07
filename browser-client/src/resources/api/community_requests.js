@@ -219,13 +219,14 @@ export default class communityApi{
             return err.response.data
         }
     }
-    static async removeAdmin(communityId,adminsId){
+    static async removeAdmins(communityId,adminsId){
         try{
 
             const headers={
                 'Authorization':Cookies.get('token')
             }
-            const {data}=await axios.patch(`${baseUrl}/community/remove`,{communityId,adminsId},{headers})
+            const {data}=await axios.patch(`${baseUrl}/community/admins/remove`,{communityId,adminsId},{headers})
+            console.log(data)
             return data
             }
         catch(err){

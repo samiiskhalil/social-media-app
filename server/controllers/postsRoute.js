@@ -33,11 +33,24 @@ static async sendPost(req,res){
         return res.json({success:true,post:req.post})
     }
     catch(err){
-        return res,json({success:false,err:err.message})
+        return res.json({success:false,err:err.message})
     }
 }
-
-
+static async sendUserPosts(req,res){
+    try
+    {
+        console.log('a')
+        const user=await User.findById(req.params.userId)
+        if(!user.id)
+        return res.json({success:false,err:'no user was found'})
+        const {posts}=await user.populate('posts')
+        return res.json({success:true,posts})
+    }
+    catch(err){
+        console.log(err)
+        return res.json({success:false,err:err.message})
+    }
+}
     //
 
 

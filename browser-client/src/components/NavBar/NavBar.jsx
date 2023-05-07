@@ -48,14 +48,41 @@ const NavBar = () => {
     setCommunity(data.community)
    } 
  function handleClickMember(e,memberId){
-  if(e.target.classList.some(name=>name==='manager-item'))
+  if(e.target.classList.contains('manager-item'))
   return 
-    if(e.target.classList.some(name=>name==='admin-item'))
+    if(e.target.classList.contains('admin-item'))
+       {
+        if(removedAdmins.some(({_id})=>_id===memberId._id)){
+
+          setRemovedAdmins(pre=>[... pre.filter((admin)=>admin._id!==memberId._id)])
+               }
+               
+      else
         setRemovedAdmins(pre=>[... pre,memberId])
+        e.target.classList.toggle('removed-admin-item')
+        }
+        if(!e.target.classList.contains('admin-item')&&!e.target.classList.contains('manager-item')){
+          if(e.target.classList.contains('chosen-admin-item'))
+                setChosenAdmins(pre=>[... pre.filter(({_id})=>_id!==memberId._id)])
+          else
+          setChosenAdmins(pre=>[... pre,memberId])
+          e.target.classList.toggle('chosen-admin-item')
+              }
+
 
 }
-return (<>
+async function handleConfrimUpdateAdmins(){
+  let data
+  if(chosenAdmins.length)
+    data=await communityApi.addAdmins(community._id,chosenAdmins.map(admin=>admin))
+    if(removedAdmins.length)
+    data=await communityApi.removeAdmins(community._id,removedAdmins.map(admin=>admin))
+  console.log(data)
+    // window.location.reload();
 
+  }
+return (<>
+<h1>{results.length}</h1>
 <StickyBox className='sticky-nav' style={{ top:'0px',zIndex:'99999999'}}  >
 
 
@@ -99,15 +126,18 @@ return (<>
 
                 <button onClick={()=>setAddListFlage(pre=>!pre)} className='btn m-1 btn-primary m-0'>update admins</button>
                 {addListFlage?<div style={{zIndex:'99999999999999999' ,background:'white',top:'30px',left:'0',width:'',height:'' }} className=" position-absolute " aria-labelledby="dropdownMenuButton">
-                <ul style={{ width:'100%' }} className="list-group">
-            {community.members.map(({memberId})=><li  onClick={(e)=>handleClickMember(e,memberId)}   style={{ width:'100%'}} className={`member list-group-item ${community.manager._id===memberId._id&&'manager-item'} ${community.admins.some(({_id})=>_id===memberId._id)&&'admin-item'} ${chosenAdmins.some(id=>id===memberId._id)&&'chosen-admin-item'} ${removedAdmins.some(({_id})=>_id===memberId._id)&&'removed-admin-item'}`}>
+                <ul style={{ width:'100%' }} className="list-group position-relative ">
+                  <button style={{ bottom:'-60%',right:'-50%' }} onClick={handleConfrimUpdateAdmins} className='btn btn-primary position-absolute' > confirm </button>
+            {community.members.map(({memberId})=><li  onClick={(e)=>handleClickMember(e,memberId)}
+               style={{ width:'100%'}} 
+               className={` list-group-item ${community.manager._id===memberId._id&&'manager-item'} ${community.admins.some(({_id})=>_id===memberId._id)&&'admin-item'} 
+            ${chosenAdmins.some(id=>id===memberId._id)&&'chosen-admin-item'} ${removedAdmins.some(({_id})=>_id===memberId._id)&&'removed-admin-item'}`}>
                    {`${memberId.firstName} ${memberId.lastName}`}
             </li>)}
 </ul>
   </div>:null}
             </div>
-                <button onClick={()=>setRemoveListFlage(pre=>!pre)} className='btn m-1 btn-warning m-0'>remove admins</button>
-                <button className='btn m-1 btn-danger m-0'>resign</button>
+                <button className='btn m-1 btn-warning m-0'>resign</button>
                 <button className='btn m-1 btn-danger m-0'>remove group</button>
             
               </div>
@@ -138,7 +168,7 @@ return (<>
               return true
             })
           }
-          let communities=store.get('communities')||[]
+          let communities=store.get('communities').length||[]
           if(communities.length){
 
             communities= communities.filter(community=>community.communityName.includes(e.target.value))
@@ -160,9 +190,13 @@ return (<>
         {Object.keys(results).length?<div onClick={()=>{setResults({})
       searchRef.current.value=''
       }} style={{ top:'90px',minWidth:'200px',width:'30vw',maxWidth:'400px' }} className="list-container position-absolute  left-0">
-          <ul className='list-group positoin-absolute' >
+          <ul style={{ overflow:'visible' }} className='list-group positoin-absolute' >
               <>
               <>
+            { results.users.length&&<li  className='list-group-item'>
+                        <h2 style={{ color:'steelblue' }}>users</h2>
+
+                    </li>}
               {
 
                 results.users.map((user,i)=>{
@@ -181,12 +215,17 @@ return (<>
                 }
               </>                
               <>
+              {results.communities.length&&<li  className='list-group-item'>
+
+              <h2 style={{ color:'steelblue' }}>communities</h2>
+             </li>}
               {
                 
-                results.communities.map((community,i)=>{
+                results.communities
+                .map((community,i)=>{
                   return  <li key={i} className='list-group-item'>
                         <a href="#" className=" text-dark list-group-item list-group-item-action">
-                            <Link to={`user/${user.id}`} >
+                            <Link to={`community/${community._id}`} >
                                <h4 className='text-dark'>
                                  {community.communityName}
                                </h4>

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router'
 import utilApi from '../../resources/api/util_requests'
 import communityApi from '../../resources/api/community_requests'
 const CommunityForm = () => {
+    const[reqEnd,setReqEnd]=useState(false)
     const [users,setUsers]=useState([])
     const [user,setuUer]=useState(store.get('user'))
     const [selectedAdmins,setSelectedAdmins]=useState([])
@@ -27,6 +28,7 @@ const CommunityForm = () => {
     useEffect(()=>{
         async function getUsers(){
             const data=await utilApi.getFollowers(user._id)
+            setReqEnd(true)
             if(!data.success)
             return
             
@@ -73,7 +75,7 @@ async function handleCreateCommunity(e){
 }
 return (
       <>
-      {users.length?
+      {reqEnd?
       <div style={{ background:'#ddd',height:'100vh' }} className="d-flex justify-content-center">
 
       <div style={{borderRadius:'30px',background:'white',width:'80%',minHeight:'80%'  }} className=" d-flex flex-column m-3 justify-content-between  align-items-center shadow  ">
@@ -104,7 +106,7 @@ return (
 <button onClick={(e)=>handleCreateCommunity(e)} className="btn">create community</button>
         </form>
         </div>
-      </div>:null
+      </div>:'yet'
 }
     </>
         )

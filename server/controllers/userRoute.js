@@ -134,9 +134,6 @@ catch(err){
         let user=await User.findById(userId)
         if(!user)
         user=req.user
-        if(user.posts)
-        user=await user.populate('posts')
-        user.posts=user.posts.filter(post=>!post.community.communityId)
         // await user.save()
         res.json({success:true,user:user})
       }

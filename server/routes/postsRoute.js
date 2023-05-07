@@ -11,6 +11,8 @@ const communityMiddleware = require('../middleware/communityMiddleware.js');
 const router=express.Router()
 // get post
 router.get('/',postController.getPost)
+//get user posts
+router.get('/get-user-posts/:userId',postController.sendUserPosts)
 // when a post is created 
 // verify token
 //check if its shared or not 

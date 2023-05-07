@@ -346,8 +346,10 @@ class communityMiddleware{
     try
     {
         let {community,newManager}=req
+        if(community.members.every(({memberId})=>memberId.toString()!==newManager.id))
+        return res.json({success:false,err:'the new manager must be a member first'})
         community.manager=newManager
-        community.members.push({memberId:newManager.id})
+        
         
         await community.save()
 
@@ -377,6 +379,9 @@ class communityMiddleware{
         try
         {
             let {admins,community}=req
+            console.log('adsadasd')
+            console.log(req.admins)
+            console.log(req.body.adminsId)
             if(!admins.length)
             return next()
             for (let i = 0; i < community.admins.length; i++)
@@ -384,6 +389,8 @@ class communityMiddleware{
                         if(admins[j].id===community.admins[i].toString())
                             community.admins.splice(i,1)
             await  community.save()
+            req.community=community
+            console.log(community)
             console.log('asd')
             return next()
                         }
@@ -454,9 +461,13 @@ class communityMiddleware{
             console.log(admins,'asdasdsa')
             for (let i = 0; i < admins.length; i++) 
                 {community.admins.push(admins[i].id)                
-                   community.members.push({memberId:admins[i].id}) 
                 }
-         await  community.save()  
+            for (let i = 0; i < admins.length; i++) 
+                if(community.admins.every(id=>id!==admins[i].id))
+                community.admins.push(admins[i].id)                
+                
+         
+                await  community.save()  
             req.community=community
             return next()  
         }
