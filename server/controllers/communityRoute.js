@@ -88,5 +88,16 @@ class communityController{
             return res.json({success:false,err:err.message})
         }
     }
+    static async deleteCommunity(req,res){
+        try
+        {
+            const community=await Community.findByIdAndDelete(req.query.communityId)
+            return res.json({success:true,community})
+        }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
 }
 module.exports=communityController

@@ -73,7 +73,7 @@ router.delete('/',auth.verifyToken,auth.verifyCommunityManager,communityMiddlewa
 userMiddleware.getAdmins,userModelSideEffectHandler.removeAdmins,
 userModelSideEffectHandler.removeManagedCommunity,userModelSideEffectHandler.removeMembers
 ,communityMiddleware.deleteImage,
-communityController.sendCommunity)
+communityController.deleteCommunity)
 // block/unblock users only by managers
 router.patch('/block',auth.verifyToken,auth.verifyCommunityManager,userMiddleware.getBlockedUser,communityMiddleware.blockUser,communityController.sendCommunity)
 router.get('/check-name',auth.verifyToken,communityController.checkCommunityExists)

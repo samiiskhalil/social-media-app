@@ -202,8 +202,8 @@ class userMiddleware{
             let admins=[]
             let {community}=req
             const {adminsId}=req.body
-            if(!adminsId.length)
-            return res.json({success:false,err:'no admins were sent'})
+            if(adminsId)
+            if(adminsId.length)
             for (let i = 0; i < adminsId.length; i++) {
                 let user=await User.findById(adminsId[i])
                 if(!user)

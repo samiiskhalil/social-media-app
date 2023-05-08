@@ -1,4 +1,5 @@
 const Community=require('../models/communitySchema.js')
+const User=require('../models/userSchema.js')
 const express=require('express')
 const fs=require('fs')
 const {resolve}=require('path')
@@ -104,7 +105,9 @@ class communityMiddleware{
     static async deleteImage(req,res,next){
         try
         {
-            const {imageName}=req.params
+            const imageName=req.params.imageName||req.community.coverImageName
+            if(!imageName)
+            return next()
             const imagePath=resolve(__dirname,'..','uploaded-files','communities-images',req.query.communityId||req.body.communityId,imageName)
             if(await !exists(imagePath))
                 return res.json({success:false,err:'file was found'})
@@ -238,7 +241,11 @@ class communityMiddleware{
         try
         {    
             console.log('adsa')
-            let {community,joiner}=req
+            let {community}=req
+            let joiner=await User.findById(req.query.joinerId||req.body.joinerId)
+            if(!joiner.id)
+            return res.json({success:false,err:'have not found the joiner'})
+            console.log(joiner)
                 community.waitingList=community.waitingList.filter(({userId})=>userId.toString()!==joiner.id)
                 await community.save()
                 return next()
@@ -404,7 +411,7 @@ class communityMiddleware{
         try
         {
             
-            if(!req.query.comunityId&&!req.body.communityId)
+            if(!req.query.communityId&&!req.body.communityId)
            {
             console.log('no community was found')
               req.community=null  
@@ -458,12 +465,12 @@ class communityMiddleware{
             {
             let {community}=req
             let {admins}=req
-            console.log(admins,'asdasdsa')
+            console.log(community)
             for (let i = 0; i < admins.length; i++) 
                 {community.admins.push(admins[i].id)                
                 }
             for (let i = 0; i < admins.length; i++) 
-                if(community.admins.every(id=>id!==admins[i].id))
+                if(community.admins.every(id=>id.toString()!==admins[i].id))
                 community.admins.push(admins[i].id)                
                 
          

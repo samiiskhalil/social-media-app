@@ -41,7 +41,7 @@ static async sendUserPosts(req,res){
     {
         console.log('a')
         const user=await User.findById(req.params.userId)
-        if(!user.id)
+        if(!user)
         return res.json({success:false,err:'no user was found'})
         const {posts}=await user.populate('posts')
         return res.json({success:true,posts})

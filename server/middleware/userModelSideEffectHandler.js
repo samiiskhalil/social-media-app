@@ -55,7 +55,7 @@ class userModelSideEffectHandler{
             let {community}=req
             for (let i = 0; i < community.members.length; i++)
             {
-                let member=await User.findById(comunnity.members[i].memberId)
+                let member=await User.findById(community.members[i].memberId)
                 member.communities=member.communities.filter(({communityId})=>communityId.toString()!==community.id)
                 await member.save()
             }
@@ -217,8 +217,9 @@ class userModelSideEffectHandler{
     static async removeManagedCommunity(req,res,next){
         try
         {
+            console.log(req.community)
             let user=await User.findById(req.user.id)
-            user.managedCommunities= user.managedCommunities.filter(async(communityId=>communityId.toString()!==req.community.id))
+            user.managedCommunities= user.managedCommunities.filter((async(communityId)=>communityId.toString()!==req.community.id))
             await user.save()
             req.user=user
             return next()
