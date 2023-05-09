@@ -17,12 +17,12 @@ export default class  userAPI{
     static async getTheUser(userToken){
     try{
 
-        let {response}= await  axios.get('http://localhost:1000/api/users/user',{
-            Headers:{
+        let {data}= await  axios.get('http://localhost:1000/api/users/user',{
+            headers:{
                 "authorization":`${Cookies.get('token')}`
             }
         })
-        return response.data
+        return data
     }
     catch(err){
         return err.response.data
@@ -106,6 +106,21 @@ static async follow(userId){
             
         }
         const {data}=await axios.patch('http://localhost:1000/api/user/followers',{userId},{headers})
+        return data
+    }
+    catch(err){
+        console.log(err)
+        return err.response.data
+    }
+}
+static async getUserPosts(userId){
+    try{
+
+        let headers={
+            authorization:Cookies.get('token'),
+            
+        }
+        const {data}=await axios.get(`http://localhost:1000/api/posts/get-user-posts/${userId}`,{userId})
         return data
     }
     catch(err){

@@ -10,14 +10,24 @@ const postModelSideEffectHandler = require('../middleware/postModelSideEffecthan
 const { verifyCommunityAdmin, verifyCommunityRole } = require('../middleware/authentication.js')
 const postController = require('../controllers/postsRoute.js')
 const router=express.Router()
+// get community posts
+router.get('/posts',auth.verifyToken,communityController.sendCommunityPosts)
+router.get('/unapproved/posts',auth.verifyToken,communityController.sendCommunityUnapprovedPosts)
+// approve post
+router.patch('/posts',auth.verifyToken,communityController.approvePost)
+
 // create community
 router.post('/',auth.verifyToken,userMiddleware.checkManagerNotAdmin,userMiddleware.getAdmins,
 communityMiddleware.createCommunity,
 userModelSideEffectHandler.addAdminedCommunity
 ,userModelSideEffectHandler.addManagedCommunity
 ,communityController.getCommunity)
+
+
 // get community
+
 // need to populate posts thoughs
+
 router.get('/',communityController.sendCommunity)
 // add admins 
 router.post('/admins',auth.verifyToken,auth.verifyCommunityManager,userMiddleware.checkManagerNotAdmin,

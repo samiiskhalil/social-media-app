@@ -98,6 +98,7 @@ class userMiddleware{
         try
         {
             let {joiner,community}=req
+            
             if(joiner.adminedCommunities.some(cid=>cid.toString()===community.id))
             return res.json({success:false,err:'you are an admin'})
             if(joiner.managedCommunities.some(cid=>cid.toString()===community.id))

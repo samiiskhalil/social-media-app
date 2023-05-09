@@ -1,9 +1,11 @@
 import store from "store"
 import { Link } from 'react-router-dom';
+import {MakePost} from '../../components/index'
 import { useNavigate } from "react-router"
 import communityApi from "../../resources/api/community_requests"
 import { useEffect,useState,useRef } from "react"
 import { Await, useParams } from "react-router"
+import userApi from '../../resources/api/user_requests'
 const Community = () => {
   const params=useParams()
   const [managerFlage,setManagerFlage]=useState(()=>store.get('user').managedCommunities.some(id=>id===params.communityId))
@@ -25,6 +27,7 @@ const Community = () => {
     store.set('community',data.community)
   }
   getCommunity()
+  userApi.getUser(store.get('user')._id).then(data=>setUser(data.user)).catch(err=>console.log(err))
  },[]) 
  const handleImgUpload=async (e)=>{
   const file = e.target.files[0]
@@ -41,7 +44,45 @@ setImgSrc(`http://localhost:1000/api/community/image/${community.coverImageName}
 
   }
   },[community])
-  
+ async function handleReqJoin(){
+  let data
+  if(community.public){
+    if(community.members.every(({memberId})=>memberId._id!==store.get('user')._id))
+    data=await communityApi.memberJoin(community._id)
+    if(community.members.some(({memberId})=>memberId._id===store.get('user')._id))
+    data=await communityApi.removeMember(community._id)
+  }
+  if(!community.public){
+
+    if(community.waitingList.every(({userId})=>userId!==store.get('user')._id))
+    data =await communityApi.reqJoin(community._id)    
+    if(community.waitingList.some(({userId})=>userId===store.get('user')._id))
+    data=await communityApi.userRemoveReq(community._id,store.get('user')._id)
+  }
+  if(!data.success)
+      return
+  setCommunity(data.community)
+  userApi.getUser(store.get('user')._id).then(data=>setUser(data.user)).catch(err=>console.log(err))
+
+
+ }
+ console.log(community)
+ function userAction(){
+  if(!community.public){
+
+    if(community.waitingList.some(({userId})=>userId===store.get('user')._id))
+    return'remove join request'
+    if(community.waitingList.every(({userId})=>userId!==store.get('user')._id))
+    return 'send join request'
+  }
+   if(community.public){
+
+     if(community.members.every(({memberId})=>memberId._id!==store.get('user')._id))
+     return 'join community'
+     if(community.members.some(({memberId})=>memberId._id===store.get('user')._id))
+     return 'leave community'
+    }   
+}
  return (
     community._id?<div className="community-container">
         {/* <button onClick={()=>navigate(`/manage-community/${community._id}`)} className=" btn-primary btn manager-btn">manage</button> */}
@@ -89,14 +130,15 @@ alt='background-image' />
 )
 }
 </ul>:null}
-
-  </span>
+  {community.manager._id!==user._id&&community.admins.every(admin=>admin._id!==user._id)&&<button onClick={handleReqJoin} style={{ marginLeft:'10px' }} className="p-3  btn-primary btn  " >{userAction()}</button>}
+    </span>
   <section style={{ width:'40%' }} className="d-flex flex-column">
-  <h3>{community.communityName}</h3>
+<span style={{  }} className="d-flex align-items-center  " >  <h3>{community.communityName}</h3> <p  style={{ whiteSpace:'nowrap',marginTop:'10px',marginLeft:'20px' }}>{`${community.members.length} members`}</p> </span>
   <p style={{ fontSize:'.8rem' }}>{community.describtion}</p>
   </section>
   </section>
         </div>
+        <MakePost setCommunity={setCommunity} communityId={community._id} />
     </div>:null
     )
 }

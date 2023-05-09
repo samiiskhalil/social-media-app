@@ -11,6 +11,8 @@ import Cookies from 'js-cookie'
 import OverLay from '../Overlay/OverLay';
 const NavBar = () => {
   const navigate=useNavigate()
+  const [approveJoinFlage,setApproveJoinFlage]=useState(false)
+  const [resignFlage,setResignFlage]=useState(false)
   const [removedAdmins,setRemovedAdmins]=useState([])
   const [chosenAdmins,setChosenAdmins]=useState([])
   const [addListFlage,setAddListFlage]=useState(false)
@@ -29,8 +31,21 @@ const NavBar = () => {
   const params=useParams()
   
   useEffect(()=>{
-    params.communityId&&communityApi.getCommunity(params.communityId).then(data=>setCommunity(data.community)).catch(err=>console.log(err))
+    params.communityId&&communityApi.getCommunity(params.communityId).then(data1=>{
+      let community=data1.community
+      utilApi.getUsers(community.waitingList.map(({userId})=>userId)).then(data2=>{
+        let items=community.waitingList
+              for (let i = 0; i < items.length; i++) 
+                    items[i].userId=data2.users[i]  
+              setCommunity({... community,waitingList:items})
+              
+            }).catch(err=>console.log(err))
+
+    }).catch(err=>console.log(err))
+    
+    
   },[location])
+
   async function handleSearch(e)
   {
     e.preventDefault()
@@ -78,10 +93,43 @@ async function handleConfrimUpdateAdmins(){
     if(removedAdmins.length)
     data=await communityApi.removeAdmins(community._id,removedAdmins.map(admin=>admin))
   console.log(data)
-    // window.location.reload();
+    window.location.reload();
 
   }
+  async function handleSwitchManager(admin){
+    const data=await communityApi.switchManager(community._id,admin._id)
+    window.location.reload()
+  }
+  async function handleRemoveGroup(e){
+    e.preventDefault()
+    const data=await communityApi.deleteCommunity(community._id)
+    if(!data.success)
+    return
+    navigate(`/user/${community.manager._id}`)
+  }
+async function handleAcceptMember(member){
+  let role
+    if(community.manager._id===store.get('user')._id)
+      role= 'manager'
+    else
+     role= 'admin'
+  
+  const data=await communityApi.roleApproveJoin(community._id,member._id,role)
+  console.log(data)
+  setCommunity(data.community)
+}
+async function handleRejectMember(member){
+  let role
+  if(community.manager._id===store.get('user')._id)
+    role= 'manager'
+  else
+   role= 'admin'
+
+const data=await communityApi.roleRemoveReq(community._id,member._id,role)
+setCommunity(data.community)
+}
 return (<>
+   
 <h1>{results.length}</h1>
 <StickyBox className='sticky-nav' style={{ top:'0px',zIndex:'99999999'}}  >
 
@@ -137,8 +185,17 @@ return (<>
 </ul>
   </div>:null}
             </div>
-                <button className='btn m-1 btn-warning m-0'>resign</button>
-                <button className='btn m-1 btn-danger m-0'>remove group</button>
+              <span className='position-relative' >
+
+                <button style={{ overflow:'visible' }} onClick={()=>setResignFlage(pre=>!pre)} className=' position-relative btn m-1 btn-warning m-0'>resign
+                </button>
+                {resignFlage&&<ul style={{ minWidth:'220px',top:'40px',zIndex:'9999999' }} className="list-group position-absolute  ">
+  <h5  className='m-1 p-1' style={{ background:'rgba(0,255,0,0.5)' }} >chose the new manager</h5>
+          {community.admins.map(admin=><li onClick={handleSwitchManager} className='list-group-item chose-admin-item' >{admin.firstName} {admin.lastName}</li>)}
+</ul> }
+              </span>
+              
+                <button onClick={handleRemoveGroup} className='btn m-1 btn-danger m-0'>remove group</button>
             
               </div>
       <div style={{ marginLeft:'' }} className="mt-4 d-flex flex-row flex-wrap justify-content-start community-options">
@@ -154,6 +211,18 @@ return (<>
 </div>
               </div>
               </>:null}
+              <hr />
+            { community._id&&!community.public&&(community.admins.some(admin=>admin._id===store.get('user')._id)||community.manager._id)===store.get('user')._id&& <div className="d-flex flex-row justify-content-evenly">
+                
+              <span className='position-relative' >
+                  <button onClick={()=>setApproveJoinFlage(pre=>!pre)} className="btn btn-success  ">approve join requests</button>
+                {approveJoinFlage&&<ul style={{ zIndex:'999999',left:'60px',bottom:'-30px' }} className="list-group position-absolute">
+       {community.waitingList.map(({userId})=> <li style={{ minWidth:'200px' }} className='d-flex justify-content-between align-items-center list-group-item' > <Link  to={`user/${userId._id}`} ><p>{userId.firstName} {userId.lastName}</p> </Link><span className='d-flex justify-content-between'><span onClick={()=>handleAcceptMember(userId)} className='accept-member'></span><span onClick={()=>handleRejectMember(userId)} className='reject-member' ></span></span></li>)}
+       </ul>}
+               </span>
+
+                <button onClick={()=>navigate(`waiting-posts/${community._id}`)} className="btn btn-success ">approve posts</button>
+              </div>}
       <form style={{}} className="d-flex position-relative">
         <input ref={searchRef} onChange={(e)=>{setSearchQuery(e.target.value)
         if(e.target.value==='')

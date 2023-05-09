@@ -12,6 +12,7 @@ import userAPI from '../../resources/api/user_requests.js'
 import MakePost from '../../components/MakePost/MakePost.jsx'
 import utilApi from '../../resources/api/util_requests.js'
 const User = () => {
+  const [posts,setPosts ]=useState([])
   const [imageSrc,setImageSrc]=useState()
   const [errMsg,setErrMsg]=useState('')
   const [success,setSuccess]=useState(true)
@@ -42,6 +43,8 @@ const User = () => {
   useEffect(()=>{
     async function checkUser(){
         let {user}=await userAPI.getUser(params.id)
+        let {posts}=await userAPI.getUserPosts(params.id)
+        setPosts(posts)
        console.log(user)
       setOwnerFlage(false)
        if(params.id===store.get('user')._id)
@@ -196,7 +199,7 @@ user._id&&owner._id&&<div className="container container-fluid ">
       <div style={{ width:'100vw',backgroundColor:'rgba(0,0,0,0.03)' }} className='mt-5'>
 
         <h1>{ownerFlage?'your posts':'posts'}</h1>
-  <Posts user={user} posts={owner.posts} />
+  {posts.length?<Posts user={user} posts={posts} />:null}
 
       </div>
     </div>

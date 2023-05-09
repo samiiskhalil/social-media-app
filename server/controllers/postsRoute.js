@@ -44,6 +44,7 @@ static async sendUserPosts(req,res){
         if(!user)
         return res.json({success:false,err:'no user was found'})
         const {posts}=await user.populate('posts')
+        posts=posts.filter(post=>!post.community.communityId)
         return res.json({success:true,posts})
     }
     catch(err){

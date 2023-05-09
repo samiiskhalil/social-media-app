@@ -31,7 +31,8 @@ public:{
         required:true,
         type:String
     },
-    posts:[{postId:{type:mongoose.SchemaTypes.ObjectId,ref:'Post'},approved:{
+    posts:[{postId:{type:mongoose.SchemaTypes.ObjectId,ref:'Post'}
+    ,approved:{
         type:Boolean,
         default:false
     }}],

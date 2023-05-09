@@ -884,3 +884,91 @@ object-fit:contain;
 .chosen-admin-item{
     background-color: rgb(255, 255, 150);
 }
+.chose-admin-item:hover{
+    background-color: hsla(214, 100%, 72%, 0.356);
+}
+.accept-member{
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+display: block;
+position: relative;
+}
+.accept-member:hover{
+    background-color: aliceblue;
+}
+
+.reject-member{
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    position: relative;
+    display: block;
+}
+.reject-member:hover{
+    background-color: aliceblue;
+
+}
+.accept-member::after{
+    width: 2px;
+    content: '';
+    height: 8px;
+    background-color: black;
+    display: block;
+    position: absolute;
+    right: 50%;
+    top: 50%;
+    border-radius: 4px;
+    transform-origin: center;
+    transform: rotate(-30deg) translateX(-50%) translateY(-50%);
+
+}
+.accept-member::before{
+    width: 2px;
+    content: '';
+    height: 20px;
+    border-radius: 5px;
+    background-color: black;
+    display: block;
+    position: absolute;
+    right: 50%;
+    transform-origin: center;
+    top: 40%;
+    transform: rotate(45deg) translateX(-50%) translateY(-50%);
+
+    
+}
+.accept-member::after:hover{
+
+background-color: red;
+}
+.reject-member::after{
+    width: 2px;
+    content: '';
+    height: 20px;
+    background-color: black;
+    display: block;
+    position: absolute;
+    right: 50%;
+    top: 50%;
+    border-radius: 4px;
+    transform-origin: 0 0;
+    transform: rotate(-45deg) translateX(-50%) translateY(-50%);
+
+}
+.reject-member::before{
+    width: 2px;
+    content: '';
+    height: 20px;
+    border-radius: 5px;
+    background-color: black;
+    display: block;
+    position: absolute;
+    right: 50%;
+    transform-origin: 0 0;
+    transform: rotate(45deg) translateX(-50%) translateY(-50%);
+
+    
+    top: 50%;
+}
+

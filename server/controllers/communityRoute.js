@@ -10,7 +10,69 @@ class communityController{
     constructor(){
 
     }
- 
+    static async sendCommunityPosts(req,res,next){
+        try
+        {
+        const community=await Community.findById(req.query.communityId)
+        const {user}=req
+        community.posts=community.posts.filter(post=>post.approved)
+        community=await community.populate('posts.postId')    
+
+
+        if(!community.public)
+            
+                if(community.members.some(({memberId})=>memberId.toString()===user.id))
+                        return res.json({success:success,posts:community.posts})                                                                                        
+                return res.json({success:false,err:'you are not a member'})
+            return res.json({success:true,posts:community.posts})    
+        }   
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async approvePost(req,res,next){
+        try
+        {
+            if(!req.body.postId)
+                return res.json({success:false,err:'no post id was sent'})
+            const community=await Community.findById(req.body.communityId)
+            const {user}=req
+            const {postId}=req.body
+            
+            if(user.id!==community.manager.toString()&&community.admins.every(admin=>admin.toString()!==user.id))
+                return res.json({success:false,err:'you are not an admin niether the manager'})
+            for (let i = 0; i < community.posts.length; i++) 
+                    if(community.posts[i].postId.toString()===postId)
+                        community.posts[i].approved=true                
+            return res.json({success:true,postId})
+        }   
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async sendCommunityUnapprovedPosts(req,res,next){
+        try
+        {
+        const community=await Community.findById(req.query.communityId)
+        const {user}=req
+        community.posts=community.posts.filter(post=>!post.approved)
+        community=await community.populate('posts.postId')    
+
+
+            
+                if(community.admins.some(admin=>admin.toString()===user.id))
+                    return res.json({success:success,posts:community.posts})
+                if(community.manager.toString()===user.id)                                                                                                               
+                    return res.json({success:success,posts:community.posts})
+                return res.json({success:false,err:'you are not the manager neither an admin'})
+        }   
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
     static async getImage(req,res,next){
         try
         {
@@ -57,7 +119,6 @@ class communityController{
     }
     static async sendCommunity(req,res,next){
         try{
-            console.log('done')
             let community=await Community.findById(req.query.communityId||req.body.communityId)
             if(!community._id)
             return res.json({success:false,err:'no community was found'})
@@ -67,7 +128,6 @@ class communityController{
                 community=await community.populate('manager')
             if(community.members.length)
             community=await community.populate('members.memberId')
-              console.log(community.members) 
             return res.json({success:true,community})
         }
         catch(err){

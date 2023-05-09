@@ -6,7 +6,7 @@ export default class communityApi{
 
     }
 
-    static async memberJoin(communityId,blockedUserId){
+    static async memberJoin(communityId){
         try{
             const headers={
                 'Authorization':Cookies.get('token'),
@@ -58,13 +58,13 @@ export default class communityApi{
             return err.response.data
         }
     }
-    static async removeMember(communityId,joinerId,role){
+    static async removeMember(communityId,joinerId){
         try{
 
             const headers={
                 'Authorization':Cookies.get('token')
             }
-            const {data}=await axios.delete(`${baseUrl}/community/members?communityId=${communityId}`,{communityId,joinerId},{headers})
+            const {data}=await axios.delete(`${baseUrl}/community/members?communityId=${communityId}`,{headers})
             return data
             }
         catch(err){
@@ -109,11 +109,11 @@ export default class communityApi{
                 'Authorization':Cookies.get('token'),
                 'community-role':role
             }
-            const {data}=await axios.post(`${baseUrl}/community/members/join`,{communityId,joinerId},{headers})
+            const {data}=await axios.post(`${baseUrl}/community/members/role/join`,{communityId,joinerId},{headers})
             return data
             }
         catch(err){
-
+console.log(err)
             return err.response.data
         }
     }
@@ -272,6 +272,20 @@ export default class communityApi{
             }
             const {data}=await axios.post(`${baseUrl}/community`,{communityName,describtion,adminsId},{headers})
             console.log('as')
+            return data
+         }
+        catch({response}){
+            console.log(response.data)
+            return response.data
+        }
+    }
+    static async deleteCommunity(communityId){
+        try
+        {
+            const headers={
+                'Authorization':Cookies.get('token')
+            }
+            const {data}=await axios.delete(`${baseUrl}/community?communityId=${communityId}`,{headers})
             return data
          }
         catch({response}){
