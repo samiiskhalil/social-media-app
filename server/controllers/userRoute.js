@@ -12,6 +12,32 @@ class user{
   constructor(){
 
   }
+  static async patchUser(req,res){
+    try{
+      let {user}=req
+      const objectFileds=Object.keys(req.body)
+      for (let i = 0; i < objectFileds.length; i++)
+      if(req.body[objectFileds[i]]==='')
+        return res.json({success:false,err:'you connot send empty fields'})
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      for (let i = 0; i < objectFileds.length; i++) 
+       if(objectFileds[i]==='email')   
+        {
+          if(!emailRegex.test(req.body.email))
+            return res.json({success:false,err:'invalid email'})
+          let otherUser=await User.find({email:req.body.email})
+          if(otherUser.length)
+            return res.json({success:false,err:'another user is using this email'})
+        }
+
+          objectFileds.forEach(field=>user[field]=req.body[field])
+      return res.json({success:true,user})
+  }
+    catch(err){
+      console.log(err)
+      return res.json({success:false,err:err.message})
+    }
+  }
   static async getUsers(req,res){
     try{
       const {usersIds}=  req.query

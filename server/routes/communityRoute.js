@@ -11,8 +11,8 @@ const { verifyCommunityAdmin, verifyCommunityRole } = require('../middleware/aut
 const postController = require('../controllers/postsRoute.js')
 const router=express.Router()
 // get community posts
-router.get('/posts',auth.verifyToken,communityController.sendCommunityPosts)
-router.get('/unapproved/posts',auth.verifyToken,communityController.sendCommunityUnapprovedPosts)
+router.get('/get-posts',auth.verifyToken,communityController.sendCommunityPosts)
+router.get('/unapproved/get-posts',auth.verifyToken,communityController.sendCommunityUnapprovedPosts)
 // approve post
 router.patch('/posts',auth.verifyToken,communityController.approvePost)
 

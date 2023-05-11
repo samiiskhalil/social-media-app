@@ -13,7 +13,7 @@ class communityController{
     static async sendCommunityPosts(req,res,next){
         try
         {
-        const community=await Community.findById(req.query.communityId)
+        let community=await Community.findById(req.query.communityId)
         const {user}=req
         community.posts=community.posts.filter(post=>post.approved)
         community=await community.populate('posts.postId')    
@@ -22,7 +22,7 @@ class communityController{
         if(!community.public)
             
                 if(community.members.some(({memberId})=>memberId.toString()===user.id))
-                        return res.json({success:success,posts:community.posts})                                                                                        
+                        return res.json({success:true,posts:community.posts})                                                                                        
                 return res.json({success:false,err:'you are not a member'})
             return res.json({success:true,posts:community.posts})    
         }   
@@ -44,7 +44,8 @@ class communityController{
                 return res.json({success:false,err:'you are not an admin niether the manager'})
             for (let i = 0; i < community.posts.length; i++) 
                     if(community.posts[i].postId.toString()===postId)
-                        community.posts[i].approved=true                
+                        community.posts[i].approved=true  
+            await community.save()                          
             return res.json({success:true,postId})
         }   
         catch(err){
@@ -55,7 +56,7 @@ class communityController{
     static async sendCommunityUnapprovedPosts(req,res,next){
         try
         {
-        const community=await Community.findById(req.query.communityId)
+        let community=await Community.findById(req.query.communityId)
         const {user}=req
         community.posts=community.posts.filter(post=>!post.approved)
         community=await community.populate('posts.postId')    
@@ -65,7 +66,7 @@ class communityController{
                 if(community.admins.some(admin=>admin.toString()===user.id))
                     return res.json({success:success,posts:community.posts})
                 if(community.manager.toString()===user.id)                                                                                                               
-                    return res.json({success:success,posts:community.posts})
+                    return res.json({success:true,posts:community.posts})
                 return res.json({success:false,err:'you are not the manager neither an admin'})
         }   
         catch(err){

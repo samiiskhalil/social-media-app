@@ -168,6 +168,7 @@ class postMiddleware{
         if(!describtion&&!req.files[0])
         return res.json({success:false,err:'you have sent nothing'})
         let communityId=null
+        console.log(describtion)
         let {community}=req
         if(community)
         communityId=community.id

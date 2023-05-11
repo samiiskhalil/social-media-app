@@ -43,8 +43,10 @@ static async sendUserPosts(req,res){
         const user=await User.findById(req.params.userId)
         if(!user)
         return res.json({success:false,err:'no user was found'})
-        const {posts}=await user.populate('posts')
+        let {posts}=await user.populate('posts')
         posts=posts.filter(post=>!post.community.communityId)
+        posts=posts.map(async(post)=>await post.populate('publisher'))
+        
         return res.json({success:true,posts})
     }
     catch(err){
@@ -261,14 +263,15 @@ static async commentReaction(req,res){
         {
             console.log('aa')
             let comments=await Comment.find({postId:req.query.postId,repliedTo:null}) 
-
                async function getReplies(comments){
                 if(!comments.length)
                 return 0
                 for (let i = 0; i < comments.length; i++) {
                      await comments[i]
                    .populate('repliedBy')
-                    await   getReplies(comments[i].repliedBy) 
+                   await comments[i].populate('user')
+                    comments[i].user={_id:comments[i].user.id,firstName:comments[i].user.firstName,lastName:comments[i].user.lastName,profileImage:comments[i].user.profileImage}
+                   await   getReplies(comments[i].repliedBy) 
                 }
             }
                 await getReplies(comments)
