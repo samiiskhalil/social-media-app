@@ -37,7 +37,7 @@ postMiddleware.updatePostDescribtion,postController.sendPost)
 // like a post 
 // update likes 
 // handle user likes update side effect
-router.patch('/like',auth.verifyToken,postMiddleware.updateLikes,userModelSideEffectHandler.updateLikes,postController.sendPost)
+router.patch('/like',auth.verifyToken,postMiddleware.getPost,postMiddleware.getPostPublisher,postMiddleware.updateLikes,userModelSideEffectHandler.updateLikes,postController.sendPost)
 
 // delet posts
 // get the post

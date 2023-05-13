@@ -54,20 +54,6 @@ static async sendUserPosts(req,res){
         return res.json({success:false,err:err.message})
     }
 }
-    //
-
-
-
-
-
-
-
-
-
-
-
-
-    //
 
     static async getShares(req,res){
         try{
@@ -86,8 +72,6 @@ static async sendUserPosts(req,res){
         try
         {
             let post=await Post.findById(req.query.postId)
-            // if(!post.likes.length)
-                // return res.json({success:false,err:'there are no likes'})
             post =await post.populate('likes')
            let users=post.likes.map(like=>like)
             console.log(users)
@@ -119,9 +103,6 @@ static async sendUserPosts(req,res){
                 (commentId=>commentId.toString()!==comment.id.toString())
                 await parentComment.save()
             } 
-              //input is comment.repliedBy [array] 
-                //original comment must be deleted
-                // removes comment from repliedBy with father comment
                 const recursiveDeleteComment=async (oldList,k)=>{
                         let newList=[] 
                             for (let i = 0; i < oldList.length; i++) {
@@ -133,7 +114,6 @@ static async sendUserPosts(req,res){
                                 
                             }                                 
                             
-                                // console.log(list)
                             if(!newList.length)
                             {
                             console.log('out')
@@ -275,8 +255,6 @@ static async commentReaction(req,res){
                 }
             }
                 await getReplies(comments)
-                // console.log(comments)
-            //    comments= comments.reverse()
                 return res.json({success:true,comments})
          }
         catch(err){
@@ -318,42 +296,6 @@ static async commentReaction(req,res){
             return res.json({success:false,err:err.message})
         }
     }
-    // // delete post and comment
-    // static async deletePost(req,res){
-    //     try{
-    //         const postId=req.query.postId
 
-    //             const comments=await Comment.find({postId:postId}) 
-    //             console.log(comments.length)
-    //             comments.forEach(async(comment)=>{
-    //                 await comment.delete()
-    //                 //delete comment from user record
-    //                 console.log('removeing user comments')
-    //               await  commentsMiddleware.removeCommentFromUserComments(req.userId,comment.id)
-    //             })
-             
-    //             // remove post from user record
-    //             console.log('removing post from user')
-    //        await      postMiddleware.deletePostFromUserRecord(req.userId,postId)
-    //             // submit that the post was reomved from posts that shared it
-    //             console.log('removing post from post')
-    //            await postMiddleware.removePostFromPostRecord(postId)
-    //             // delete post
-    //             const post=await Post.findByIdAndDelete(postId)
-    //             if(!post)
-    //             return res.json({success:false,err:'post was alreaday deleted'})
-    //             post.files.forEach(async(file)=>{
-
-    //                 await rmdir(`./uploaded-files/posts-files/${postId}`,{recursive:true})
-
-    //             })
-    //             return res.json({success:true,post})
-    //         }
-    //     catch(err){
-    //         console.log(err)
-    //         return res.json({success:false,err:err.message})
-    //     }
-
-    // }
 }
 module.exports=postController

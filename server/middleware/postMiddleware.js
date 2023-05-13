@@ -5,6 +5,7 @@ const util = require('util');
 const { post } = require('../routes/postsRoute.js');
 const rmdir=util.promisify(fs.rm)
 const readFile = util.promisify(fs.readFile)
+const axios=require('axios')
 const writeFile=util.promisify(fs.writeFile)
 const mkdir=util.promisify(fs.mkdir)
 async function  saveFiles(files,postId){
@@ -22,7 +23,30 @@ async function  saveFiles(files,postId){
 class postMiddleware{
     constructor() {
         
-    }static async getPosts(req,res,next){
+    }
+    static async classifyDescribtion(req,res,next){
+        try
+        {
+            }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async getPostPublisher(req,res,next){
+        try
+        {
+            const {post}=req
+            const publihser=await User.findById(post.publisher)
+            req.publihser=publihser
+            return next()
+            }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async getPosts(req,res,next){
         try
         {
             let {user}=req
@@ -109,7 +133,7 @@ class postMiddleware{
     }
     static async updateLikes(req,res,next){
         try{
-            let post=await Post.findById(req.body.postId)
+            let {post}=req
             // like is a user id
             //check if liked
             if(post.likes.some(like=>like.toString()===req.user.id))

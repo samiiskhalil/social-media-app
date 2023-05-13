@@ -60,7 +60,16 @@ communities:[{communityId:{type:mongoose.SchemaTypes.ObjectId,ref:'Community'},a
     type:Boolean,
     default:false
 }}],
-interests:[String],
+interests:{
+    business:{type:Number,default:0}
+    ,scienceAndEnviroment:{type:Number,default:0}
+    ,technology:{type:Number,default:0}
+    ,health:{type:Number,default:0}
+    ,travel:{type:Number,default:0},
+    entertainmentAndArts:{type:Number,default:0}
+    ,sport:{type:Number,default:0},
+    politics:{type:Number,default:0}
+},
 photosUrl:[String],
 email:{
     type:String,
