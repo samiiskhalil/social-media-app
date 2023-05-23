@@ -1,6 +1,7 @@
 const User= require('../models/userSchema.js')
 const fs=require('fs')
 const util=require('util')
+const Notification=require('../models/postSchema.js')
 const bcrypt = require('bcrypt');
 const mkdir=util.promisify(fs.mkdir)
 const readdir=util.promisify(fs.readdir)
@@ -186,7 +187,26 @@ class userMiddleware{
              },
               phoneNumber,
               sex,
-              email
+              email,
+              interests:{
+                business:[{socre:0}]
+                ,scienceAndEnviroment:[{socre:0}]
+                ,technology:[{socre:0}]
+                ,health:[{socre:0}]
+                ,travel:[{socre:0}],
+                entertainmentAndArts:[{socre:0}]
+                ,sport:[{socre:0}],
+                basketBall:[{socre:0}],
+                football:[{socre:0}],
+                tennis:[{socre:0}],
+                fashion:[{socre:0}],
+                news:[{socre:0}],
+                food:[{socre:0}],
+                music:[{socre:0}],
+                car:[{socre:0}],
+                politics:[{socre:0}],
+            
+              }
           })
           req.user=user
           await user.save()

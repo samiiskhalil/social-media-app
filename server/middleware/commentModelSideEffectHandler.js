@@ -1,4 +1,6 @@
 const Comment =require('../models/commentSchema.js')
+const Notification=require('../models/postSchema.js')
+
 class commentModelSideEffectHandler{
     constructor(){
 

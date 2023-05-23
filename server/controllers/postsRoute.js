@@ -13,6 +13,7 @@ const mkdir=util.promisify(fs.mkdir)
 const postMiddleware=require('../middleware/postModelSideEffecthandler.js');
 const commentsMiddleware = require('../middleware/commentMiddleware.js');
 const { ClickAwayListener } = require('@mui/material');
+const interestsMiddleWare = require('../middleware/interestsMiddleware.js');
 async function  saveFiles(files,postId){
     let filesNames=[]
     let dir=`./uploaded-files/posts-files/${postId}`
@@ -26,7 +27,42 @@ async function  saveFiles(files,postId){
     return filesNames
 }
 class postController{
+    static async sendPosts(req,res){
+        try
+        {
+            let posts=[] 
+            let post={}
+            let seq=0
+            let {derivatives,query,user}=req
+            const seqs=Object.keys(query)
+            let limit=req.headers['limit']
+            for (let j = 0; j < derivatives.length; j++) {
+                
+            const postsNumber=Math.round(limit*derivatives[j].probability)
+                for (let i = 1; i <=postsNumber; i++){
+                    if(!query[derivatives[j].interest]){
+                        continue
+                    }
+                    seq= Number(query[derivatives[j].interest])+i
+                    post=await Post.findOne({postCategorySeq:seq,category:derivatives[j].interest}).limit(postsNumber)
+                    if(post)
+                    posts.push(post)
+                    
+                }
+            }
+            console.log(posts)
+            if(posts.length<limit){
 
+                const addPosts=await Post.find().limit(posts.length-limit)
+                posts.push(addPosts)
+            }
+            return res.json({success:true,posts})
+        }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
 static async sendPost(req,res){
     try
     {
@@ -242,6 +278,9 @@ static async commentReaction(req,res){
         try
         {
             console.log('aa')
+            const post=await Post.findById(req.postId)
+            if(!post.id)
+                return res.json({success:false,err:'no post was found'})
             let comments=await Comment.find({postId:req.query.postId,repliedTo:null}) 
                async function getReplies(comments){
                 if(!comments.length)
@@ -255,6 +294,7 @@ static async commentReaction(req,res){
                 }
             }
                 await getReplies(comments)
+                await interestsMiddleWare.updateScore(post.categorey,'viewComments',req.user)
                 return res.json({success:true,comments})
          }
         catch(err){

@@ -1,12 +1,13 @@
 const mongoose = require('mongoose')
 const notificationSchema=new mongoose.Schema({
     seq: { type: Number},
+    user:{type:mongoose.SchemaTypes.ObjectId,ref:'User'},
     sent:{type:Boolean,default:false,require:true},
        notifier:{type:mongoose.SchemaTypes.ObjectId,
         ref:'User'
        },
        subject:{
-        tool:String,
+        model:String,
         action:String,
         id:String
        },
@@ -26,4 +27,4 @@ notificationSchema.pre('save',function(next){
         return next()
     }
 })
-module.exports=mongoose.model('notification',notificationSchema)
+module.exports=mongoose.model('Notification',notificationSchema)

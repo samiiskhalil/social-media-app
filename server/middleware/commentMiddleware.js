@@ -1,5 +1,8 @@
 const Comment=require('../models/commentSchema.js')
+const axios = require('axios');
+const Notification=require('../models/notificationSchema.js')
 const User=require('../models/userSchema.js')
+const interestsMiddleWare = require('./interestsMiddleware.js')
 
 class commentsMiddleware{
     constructor(){
@@ -108,15 +111,18 @@ class commentsMiddleware{
 static async updateCommentLikes(req,res,next){
     try
     {
-    let {comment,user}=req
+    let {comment,user,post}=req
     // check if user liked
     if(comment.likedBy.some(userId=>userId.toString()===user.id))
     {   // remove like
+        await interestsMiddleWare.updateScore(post.category,comment.positivity?'unlikePositiveComment':'unlikeNegativeComment',user)
         req.like=false
         comment.likedBy=comment.likedBy.filter(userId=>userId.toString()!==user.id)
     await comment.save()
     return next()}
     // otherwise like
+    await interestsMiddleWare.updateScore(post.category,comment.positivity?'likePositiveComment':'likeNegativeComment',user)
+
     req.like=true
     comment.likedBy.push(user.id)
     await comment.save()
@@ -158,13 +164,17 @@ static async checkForOgComment(req,res,next){
     static async createComment(req,res,next){
         try
         {
-          
+            let {post}=req 
+            const {data}=await axios.get(`http://127.0.0.1:5000/api/ai/comment?comment=${req.body.content}`)           
             let comment =await Comment.create({
                 user:req.user.id,
                 postId:req.body.postId,
                 content:req.body.content,
-                repliedTo:req.body.repliedCommentId||null
+                repliedTo:req.body.repliedCommentId||null,
+                positivity:data
             })
+            await interestsMiddleWare.updateScore(post.category,comment.positivity?'positiveComment':'negativeComment',req.user)
+            const notification=await Notification.create({user:req.uesr.id,subject:{model:'Comment',action:'createComment',id:comment.id}})
             req.comment=comment
             return next()
         }

@@ -12,6 +12,7 @@ const commentSchema=new mongoose.Schema(
         repliedBy:[{type:mongoose.SchemaTypes.ObjectId,ref:'Comment'}],
         repliedTo:String,
         likedBy:[{type:mongoose.SchemaTypes.ObjectId,ref:'User'}],
+        positivity:Boolean
 
     }
 ,{versionKey:false,timestamps:true})    

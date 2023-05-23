@@ -1,9 +1,12 @@
 const Post=require('../models/postSchema.js')
+const interestsMiddleWare=require('./interestsMiddleware.js')
+const Notification=require('../models/notificationSchema.js')
 const fs = require('fs')
 const path=require('path')
 const util = require('util');
 const { post } = require('../routes/postsRoute.js');
 const rmdir=util.promisify(fs.rm)
+const FormData = require('form-data');
 const readFile = util.promisify(fs.readFile)
 const axios=require('axios')
 const writeFile=util.promisify(fs.writeFile)
@@ -24,9 +27,52 @@ class postMiddleware{
     constructor() {
         
     }
-    static async classifyDescribtion(req,res,next){
+    static async updateSeq(req,res,next){
+        try{
+            let post=req.post
+            console.log(post)
+            const posts=await Post.find({category:post.category})
+            post.postCategorySeq=posts.length+1
+            await post.save()
+            return next()
+        }
+        catch(err){
+            console.log(err)
+            return res.json({success:false,err:err.message})
+        }
+    }
+    static async classifyPost(req,res,next){
         try
         {
+            let {post}=req
+            let user=req.user
+            if(!req.files.length)
+            {
+                console.log(req.post.describtion)
+                console.log('assssss')
+                const {data}=await axios.get(`http://127.0.0.1:5000/api/ai/text?text=${req.post.describtion}`)
+                console.log('kkkkkkkkkk')
+                await    interestsMiddleWare.updateScore(data,req.action,req.user)
+                post.category=data
+                await post.save()
+                req.post=post
+                console.log(post.category)
+                return next()
+            }
+            const file = req.files[0];
+            const formData = new FormData();
+            formData.append('image',file.buffer, {
+              filename: file.originalname,
+            });
+              const {data} = await axios.post('http://127.0.0.1:5000/api/ai/image', formData, {
+                headers: {'content-type':'multipart/form-data',
+         } });
+         await interestsMiddleWare.updateScore(data,req.action,req.user)
+         post.category=data
+         await post.save()
+         req.post=post
+
+         return next()
             }
         catch(err){
             console.log(err)
@@ -68,7 +114,7 @@ class postMiddleware{
         try
         {   
             const post=await Post.findById(req.body.postId||req.query.postId)
-            if(!post)
+            if(!post.id)
             return res.json({success:false,err:'post was not found'})
             req.post=post
             return next()
@@ -123,8 +169,13 @@ class postMiddleware{
         try
         {
             let {postsList}=req
-            postsList.forEach(async(post)=>await post.delete())
-           console.log('ssssssssdddddddddddddddd')
+            const {user}=req
+            postsList.forEach(async(post)=>{
+                await post.delete()
+                await interestsMiddleWare.updateScore(post.category,'deletePost',req.user)
+                const notification=await Notification.create({user:post.publisher,subject:{model:'Post',action:'deletePost',id:req.query.postId}})
+            })
+
             return next()
         }
         catch(err){
@@ -138,17 +189,22 @@ class postMiddleware{
             //check if liked
             if(post.likes.some(like=>like.toString()===req.user.id))
              {
-                 post.likes = post.likes.filter(like=>like.toString()!==req.user.id)
-                   await post.save()
+                // user unlikes it
+                req.action='unlikePost'
+                post.likes = post.likes.filter(like=>like.toString()!==req.user.id)
+                await post.save()
                    req.post=post
-                   req.like=false
+                   req.like=false 
+                   await interestsMiddleWare.updateScore(post.category,req.action,req.user)
                    return next()
-            }     
-            // otherwise user like
+                }     
+                // otherwise user likes it
+                req.action='likePost'
             post.likes.push(req.user.id)
             await post.save()
             req.post=post
             req.like=true
+            await interestsMiddleWare.updateScore(post.category,req.action,req.user)
             return next()
 
         }
@@ -163,6 +219,7 @@ class postMiddleware{
             req.post.describtion=req.body.describtion
             let post=req.post
             await post.save()
+            const notification=await Notification.create({user:req.user.id,subject:{model:'Post',action:'updatePost',id:req.post.id}})
             return res.json({success:true,post})
         }
         catch(err){
@@ -188,6 +245,10 @@ class postMiddleware{
     }
     static async createPost(req,res,next){
     try{
+        const ogPost=req.ogPost
+        req.action='createPost'
+        if(req.headers['shared-post-id'])
+            req.action='sharePost'
         const {describtion}=req.body
         if(!describtion&&!req.files[0])
         return res.json({success:false,err:'you have sent nothing'})
@@ -208,7 +269,9 @@ class postMiddleware{
         }
          await post.save()
          req.post=post
-         return next()
+         const notification1=await Notification.create({user:ogPost.publihser,subject:{model:'Comment',action:'sharedPost',id:post.id},notifier:req.user.id})   
+         console.log(notification,'sdfsfdsfds')
+          return next()
     }
     catch(err){
         console.log(err)

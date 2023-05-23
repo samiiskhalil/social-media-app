@@ -1,7 +1,9 @@
 const Community=require('../models/communitySchema.js')
 const User=require('../models/userSchema.js')
 const express=require('express')
+const Notification=require('../models/postSchema.js')
 const fs=require('fs')
+const axios = require('axios');
 const {resolve}=require('path')
 let {promisify}=require('util')
 const unlink=promisify(fs.unlink)
@@ -9,7 +11,8 @@ const readdir=promisify(fs.readdir)
 const mkdir=promisify(fs.mkdir)
 const exists=promisify(fs.exists)
 const writeFile=promisify(fs.writeFile)
-const auth=require('../middleware/authentication.js')
+const auth=require('../middleware/authentication.js');
+const interestsMiddleWare = require('./interestsMiddleware.js');
 async function saveCommunityImage(imageFile,dir){
     try{
         let imagesNames=[]
@@ -213,6 +216,7 @@ class communityMiddleware{
             if(community.members.some(({memberId})=>memberId.toString()===joiner.id))
                 return res.json({success:false,err:'user is already a member'})
             community.members.push({memberId:joiner.id})
+            await interestsMiddleWare.updateScore(community.category,'joinCommunity',joiner)
             await community.save()    
             req.community=community
             return next()    
@@ -414,7 +418,6 @@ class communityMiddleware{
             if(!req.query.communityId&&!req.body.communityId)
            {
             console.log('no community was found')
-              req.community=null  
                return next()
            }
             const community=await Community.findById(req.body.communityId||req.query.communityId)
@@ -442,6 +445,7 @@ class communityMiddleware{
            members=members.concat(req.body.adminsId)
            members=members.map(member=>({memberId:member}))
            console.log(members)
+           let {data}=await axios.get(`http://127.0.0.1:5000/api/ai/text?text=${req.body.describtion}`)
             let community=await Community.create({
                 communityName:req.body.communityName,
                 describtion:req.body.describtion,
@@ -449,10 +453,12 @@ class communityMiddleware{
                 manager:req.user.id,
                 members:members,
                 public:req.body.publicity||false,
-                postApproval:req.body.postApproval||false
+                postApproval:req.body.postApproval||false,
+                category:data
             })
             req.manager=community.manager
             req.community=community
+            await interestsMiddleWare.updateScore(community.category,'createCommunity',req.user)
         return next()
         }
         catch(err){

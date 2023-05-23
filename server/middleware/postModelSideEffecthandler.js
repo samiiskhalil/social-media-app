@@ -125,6 +125,7 @@ return next()
             originalPost.shares.push({user:req.userId,post:req.post.id})
             await originalPost.save()
             console.log(originalPost)
+            req.ogPost=originalPost
            return next()
         }
         catch(err){

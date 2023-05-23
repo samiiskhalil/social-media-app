@@ -19,7 +19,7 @@ app.use(cors({
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 }))
 
-app.use(express.json())
+  app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(upload.any())
 app.use('/api',rootRouter)

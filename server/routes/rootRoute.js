@@ -5,11 +5,11 @@ const auth=require('../middleware/authentication.js')
 const userController=require('../controllers/userRoute')
 const postController=require('../controllers/postsRoute.js')
 const communitySchema = require('../models/communitySchema.js')
+const interestsMiddleWare = require('../middleware/interestsMiddleware.js')
 const router=express.Router()
 // will get posts after the latest post user has got 
 // if user is fresh then send latest posts
-router.get('/',auth.verifyToken
-)
+router.get('/get-posts',auth.verifyToken,interestsMiddleWare.calcInterests,postController.sendPosts)
 router.get('/get-users',auth.verifyToken,userController.getUsers)
 router.get('/post-file/:fileName',postController.getFile)
 router.get('/user-cover-image/:imageName',userController.getCoverImage)

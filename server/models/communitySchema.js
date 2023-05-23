@@ -11,6 +11,7 @@ coverImageName:{
     type:String,
     default:null
 },
+category:String,
 public:{
     type:Boolean,
     default:false

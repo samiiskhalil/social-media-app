@@ -14,7 +14,6 @@ const postSchema=new mongoose.Schema({
     default:false
   }}
     ,
-    
 describtion:{
     type:String,
 },
@@ -38,6 +37,8 @@ comments:[{type:mongoose.SchemaTypes.ObjectId,ref:'Comment'}],
 shares:[{user:{type:mongoose.SchemaTypes.ObjectId,ref:'User'},
 post:{type:mongoose.SchemaTypes.ObjectId,ref:'Post'}
 }],
-
+category:String,
+postCategorySeq:Number
 },{versionKey:false,timestamps:true})
-module.exports=mongoose.model('Post',postSchema)
+
+    module.exports=mongoose.model('Post',postSchema)

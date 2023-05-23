@@ -61,14 +61,22 @@ communities:[{communityId:{type:mongoose.SchemaTypes.ObjectId,ref:'Community'},a
     default:false
 }}],
 interests:{
-    business:{type:Number,default:0}
-    ,scienceAndEnviroment:{type:Number,default:0}
-    ,technology:{type:Number,default:0}
-    ,health:{type:Number,default:0}
-    ,travel:{type:Number,default:0},
-    entertainmentAndArts:{type:Number,default:0}
-    ,sport:{type:Number,default:0},
-    politics:{type:Number,default:0}
+    business:[{score:{type:Number,default:0},date:{type:Date,default:new Date().now}}]
+    ,scienceAndEnviroment:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
+    ,technology:[{score:{type:Number,default:0},date:{type:Date,default:Math.round(Date.now()/0100)}}]
+    ,health:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
+    ,travel:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}],
+    entertainmentAndArts:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
+    ,sport:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}],
+    politics:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
+    ,basketBall:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
+    ,football:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
+    ,tennis:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
+    ,fashion:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
+    ,news:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
+    ,food:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
+    ,music:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
+    ,car:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
 },
 photosUrl:[String],
 email:{
@@ -76,7 +84,7 @@ email:{
 
 },phoneNumber:{
     type:Number
-}
+},notifications:[{type:mongoose.SchemaTypes.ObjectId,ref:'Notification'}]
 ,postsLiked:[{type:mongoose.SchemaTypes.ObjectId,ref:'Post'}],
 
 commentsLiked:[{type:mongoose.SchemaTypes.ObjectId,ref:'Comment'}],

@@ -13,17 +13,18 @@ const userMiddleware = require('../middleware/userMiddleware.js');
 const communityMiddleware = require('../middleware/communityMiddleware.js');
 const router=express.Router()
 // get communty
-router.get('/replies',auth.verifyToken,communityMiddleware.getCommunity,userMiddleware.checkCommunityBlock,communityMiddleware.checkUserBlock)
+// router.get('/replies',auth.verifyToken,communityMiddleware.getCommunity,userMiddleware.checkCommunityBlock,communityMiddleware.checkUserBlock)
 // create comment
 // if comment is a reply then find the orginal comment and handle error if found and add it to req object
 // hande user side effect and handle post side effect eventually send comment
-router.post('/',auth.verifyToken,commentMiddleware.checkForOgComment,commentMiddleware.createComment,commentModelSideEffectHandler.addCommentToOgComment
+router.post('/',auth.verifyToken,postMiddleware.getPost,commentMiddleware.checkForOgComment,commentMiddleware.createComment,commentModelSideEffectHandler.addCommentToOgComment
 ,postModelSideEffectHandler.addComment,userModelSideEffectHandler.addComment,commentController.sendComment)
 
 // edit comment 
 router.patch('/',auth.verifyToken,commentMiddleware.checkAuth,commentMiddleware.updateComment,commentController.sendComment)
 // like a comment
-router.patch('/likes',auth.verifyToken,commentMiddleware.verifyComment,commentMiddleware.updateCommentLikes,userModelSideEffectHandler.addLikedComment,commentController.sendComment)
+// score updated
+router.patch('/likes',auth.verifyToken,postMiddleware.getPost,commentMiddleware.verifyComment,commentMiddleware.updateCommentLikes,userModelSideEffectHandler.addLikedComment,commentController.sendComment)
 // get comment and it's replies then delete users then remove the list from the post 
 router.delete('/',auth.verifyToken,
 commentMiddleware.checkAuth,

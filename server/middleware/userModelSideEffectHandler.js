@@ -1,8 +1,10 @@
 const User=require('../models/userSchema.js')
 const Comment=require('../models/commentSchema.js')
 const fs=require('fs')
+const Notification=require('../models/postSchema.js')
 const util=require('util')
 const { json } = require('body-parser')
+const interestsMiddleWare = require('./interestsMiddleware.js')
 const mkdir=util.promisify(fs.mkdir)
 const readFile=util.promisify(fs.readFile)
 const writeFile=util.promisify(fs.writeFile)
@@ -127,6 +129,7 @@ class userModelSideEffectHandler{
             return res.json({success:false,err:'you already on the list'})
             user.communities.push({communityId:community.id})
             await user.save()
+            await interestsMiddleWare.updateScore(community.category,'joinCommunity',user)
             return next()
             
         }
@@ -399,6 +402,8 @@ class userModelSideEffectHandler{
           user.postsLiked=user.postsLiked.filter(postId=>postId.toString()!==req.post.id.toString())
         
         await user.save()
+        const notification=await Notification.create({user:req.post.publisher,subject:{model:'Post',action:'likePost',id:req.post.id},notifier:req.user.id})
+        
             return next()
         }
         catch(err){

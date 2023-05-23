@@ -25,8 +25,8 @@ postMiddleware.createPost,
 //check if post was shared then add publisher id to og post shares
 postModelSideEffectHandler.addPosterIdToOriginalPostShares,
 userModelSideEffectHandler.addPostToPublisherPosts,
-communityMiddleware.addPost,
-postController.sendPost)
+communityMiddleware.addPost,postMiddleware.classifyPost,
+postMiddleware.updateSeq,postController.sendPost)
 
 // update post 
 // find post and check client is the author
@@ -56,8 +56,8 @@ communityMiddleware.removePostsList,
 postMiddleware.getComments,
 // input is post output is commentsList
 commentMiddleware.deleteComments,
-userModelSideEffectHandler.removeLikes
-,userModelSideEffectHandler.removeComments,
+userModelSideEffectHandler.removeLikes,
+userModelSideEffectHandler.removeComments,
 userModelSideEffectHandler.removePosts,
 userModelSideEffectHandler.removeLikedPosts,
 postModelSideEffectHandler.removePostsFromOgShares,

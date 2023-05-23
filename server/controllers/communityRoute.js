@@ -4,6 +4,7 @@ const {resolve}=require('path')
 const exists=promisify(fs.exists)
 const unlink=promisify(fs.unlink)
 const Community = require('../models/communitySchema.js');
+const interestsMiddleWare = require('../middleware/interestsMiddleware.js')
 class communityController{
 
 
@@ -24,7 +25,9 @@ class communityController{
                 if(community.members.some(({memberId})=>memberId.toString()===user.id))
                         return res.json({success:true,posts:community.posts})                                                                                        
                 return res.json({success:false,err:'you are not a member'})
-            return res.json({success:true,posts:community.posts})    
+                if(!req.user.id)
+                await interestsMiddleWare.updateScore(community.category,'viewCommunity',req.user)   
+        return res.json({success:true,posts:community.posts})    
         }   
         catch(err){
             console.log(err)
@@ -153,6 +156,7 @@ class communityController{
         try
         {
             const community=await Community.findByIdAndDelete(req.query.communityId)
+            await interestsMiddleWare.updateScore(community.category,'deleteCommunity',req.user)
             return res.json({success:true,community})
         }
         catch(err){
