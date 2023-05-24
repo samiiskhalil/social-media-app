@@ -5,6 +5,7 @@ const auth=require('../middleware/authentication.js')
 const userController=require('../controllers/userRoute')
 const postController=require('../controllers/postsRoute.js')
 const communitySchema = require('../models/communitySchema.js')
+const Notification=require('../controllers/notificationRoute.js')
 const interestsMiddleWare = require('../middleware/interestsMiddleware.js')
 const router=express.Router()
 // will get posts after the latest post user has got 

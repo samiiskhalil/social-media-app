@@ -1,7 +1,7 @@
 const User=require('../models/userSchema.js')
 const Comment=require('../models/commentSchema.js')
 const fs=require('fs')
-const Notification=require('../models/postSchema.js')
+const Notification=require('../models/notificationSchema.js')
 const util=require('util')
 const { json } = require('body-parser')
 const interestsMiddleWare = require('./interestsMiddleware.js')
@@ -130,6 +130,10 @@ class userModelSideEffectHandler{
             user.communities.push({communityId:community.id})
             await user.save()
             await interestsMiddleWare.updateScore(community.category,'joinCommunity',user)
+            await Notification.create({user:community.manager,subject:{model:'Community',action:'membershipRequest',id:community.id},notifier:req.user.id})
+            community.admins.forEach(async(admin)=>{
+                await Notification.create({user:admin,subject:{model:'Community',action:'membershipRequest',id:community.id},notifier:req.user.id})
+            })
             return next()
             
         }
@@ -157,6 +161,7 @@ class userModelSideEffectHandler{
             user.adminedCommunities=user.adminedCommunities.filter(commId=>commId.toString()!==community.id)
             await user.save()
             req.user=user
+            await Notification.create({user:req.user.id,subject:{model:'Community',action:'adminOut',id:communty.id}})
             return next()
         }
         catch(err){
@@ -174,8 +179,9 @@ class userModelSideEffectHandler{
                         if(admins[i].adminedCommunities[j].toString()===community.id)
                             admins[i].adminedCommunities.splice(j,1)
                 await admins[i].save()
+                await Notification.create({user:admins[i].id,subject:{model:'Community',action:'removeAdmin',id:community.id},notifier:req.user.id})
+
             }
-            console.log('adasdsad')
             return next()
         }
         catch(err){
@@ -190,6 +196,7 @@ class userModelSideEffectHandler{
             let{user}=req
             admins.forEach(async(admin)=>{admin.adminedCommunities.push(community.id)
             await admin.save()
+            await Notification.create({user:admin.id,subject:{model:'Community',action:'addedAdmin',id:community.id},notifier:req.user.id})
             })
             req.admins=admins
             req.community=community
@@ -254,6 +261,7 @@ class userModelSideEffectHandler{
         addedUser.followers.push(user.id)
         await addedUser.save()
         req.friend=addedUser
+        await Notification.create({user:addedUser.id,notifier:req.user.id,subject:{model:'User',action:'followUser',id:req.user.id}})
         return next()
     }
     catch(err){

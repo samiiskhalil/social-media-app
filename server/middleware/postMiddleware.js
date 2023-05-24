@@ -9,6 +9,7 @@ const rmdir=util.promisify(fs.rm)
 const FormData = require('form-data');
 const readFile = util.promisify(fs.readFile)
 const axios=require('axios')
+const User=require('../models/userSchema.js')
 const writeFile=util.promisify(fs.writeFile)
 const mkdir=util.promisify(fs.mkdir)
 async function  saveFiles(files,postId){
@@ -269,8 +270,10 @@ class postMiddleware{
         }
          await post.save()
          req.post=post
-         const notification1=await Notification.create({user:ogPost.publihser,subject:{model:'Comment',action:'sharedPost',id:post.id},notifier:req.user.id})   
-         console.log(notification,'sdfsfdsfds')
+         if(req.headers['shared-post-id'])
+            await Notification.create({user:ogPost.publisher,subject:{model:'Post',action:'sharedPost',id:post.id,notifier:req.user.id}})   
+
+         await Notification.create({user:req.user.id,subject:{model:'Post',action:'createPost',id:post.id}})   
           return next()
     }
     catch(err){

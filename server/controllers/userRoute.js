@@ -31,7 +31,9 @@ class user{
         }
 
           objectFileds.forEach(field=>user[field]=req.body[field])
-      return res.json({success:true,user})
+        await user.save()
+        await Notification.create({user:req.user.id,subject:{model:'User',action:'updatePorfile',id:req.user.id}})
+          return res.json({success:true,user})
   }
     catch(err){
       console.log(err)

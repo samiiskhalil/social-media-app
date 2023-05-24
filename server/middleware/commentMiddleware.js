@@ -85,6 +85,7 @@ class commentsMiddleware{
             comment.content=req.body.content
            await comment.save()
            req.comment=comment
+            const notification=await Notification.create({user:req.user.id,subject:{model:'Comment',action:'updateComment',id:comment.id}})
             return next()
 
         }
@@ -119,7 +120,9 @@ static async updateCommentLikes(req,res,next){
         req.like=false
         comment.likedBy=comment.likedBy.filter(userId=>userId.toString()!==user.id)
     await comment.save()
-    return next()}
+        await Notification.create({user:comment.user,subject:{model:'Comment',action:'likeComment',id:comment.id},notifier:req.user.id})
+        return next()
+}
     // otherwise like
     await interestsMiddleWare.updateScore(post.category,comment.positivity?'likePositiveComment':'likeNegativeComment',user)
 
@@ -164,7 +167,7 @@ static async checkForOgComment(req,res,next){
     static async createComment(req,res,next){
         try
         {
-            let {post}=req 
+            let {post,ogComment}=req 
             const {data}=await axios.get(`http://127.0.0.1:5000/api/ai/comment?comment=${req.body.content}`)           
             let comment =await Comment.create({
                 user:req.user.id,
@@ -174,8 +177,10 @@ static async checkForOgComment(req,res,next){
                 positivity:data
             })
             await interestsMiddleWare.updateScore(post.category,comment.positivity?'positiveComment':'negativeComment',req.user)
-            const notification=await Notification.create({user:req.uesr.id,subject:{model:'Comment',action:'createComment',id:comment.id}})
-            req.comment=comment
+            const notification=await Notification.create({user:post.publisher,subject:{model:'Post',action:'createComment',id:comment.id},notifier:req.user.id})
+            if(comment.repliedTo)
+                await Notification.create({user:ogComment.user,subject:{model:'Comment',action:'replyComment',id:comment.id},notifier:req.user.id})
+                req.comment=comment
             return next()
         }
         catch(err)

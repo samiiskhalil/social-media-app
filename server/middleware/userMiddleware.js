@@ -1,7 +1,7 @@
 const User= require('../models/userSchema.js')
 const fs=require('fs')
 const util=require('util')
-const Notification=require('../models/postSchema.js')
+const Notification=require('../models/notificationSchema.js')
 const bcrypt = require('bcrypt');
 const mkdir=util.promisify(fs.mkdir)
 const readdir=util.promisify(fs.readdir)
@@ -209,6 +209,7 @@ class userMiddleware{
               }
           })
           req.user=user
+        
           await user.save()
           return next()
         }

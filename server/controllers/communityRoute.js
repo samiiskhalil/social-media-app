@@ -2,7 +2,9 @@ const fs=require('fs')
 const {promisify}=require('util')
 const {resolve}=require('path')
 const exists=promisify(fs.exists)
+const Post=require('../models/postSchema.js')
 const unlink=promisify(fs.unlink)
+const Notification=require('../models/notificationSchema.js')
 const Community = require('../models/communitySchema.js');
 const interestsMiddleWare = require('../middleware/interestsMiddleware.js')
 class communityController{
@@ -37,6 +39,7 @@ class communityController{
     static async approvePost(req,res,next){
         try
         {
+            const post=await Post.findById(req.body.postId)
             if(!req.body.postId)
                 return res.json({success:false,err:'no post id was sent'})
             const community=await Community.findById(req.body.communityId)
@@ -48,7 +51,8 @@ class communityController{
             for (let i = 0; i < community.posts.length; i++) 
                     if(community.posts[i].postId.toString()===postId)
                         community.posts[i].approved=true  
-            await community.save()                          
+            await community.save()
+            await Notification.create({user:post.publisher,subject:{model:'Post',action:'approvePost',id:post.id},notifier:req.user.id})                          
             return res.json({success:true,postId})
         }   
         catch(err){

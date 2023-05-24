@@ -1,7 +1,7 @@
 const Community=require('../models/communitySchema.js')
 const User=require('../models/userSchema.js')
 const express=require('express')
-const Notification=require('../models/postSchema.js')
+const Notification=require('../models/notificationSchema.js')
 const fs=require('fs')
 const axios = require('axios');
 const {resolve}=require('path')
@@ -217,6 +217,7 @@ class communityMiddleware{
                 return res.json({success:false,err:'user is already a member'})
             community.members.push({memberId:joiner.id})
             await interestsMiddleWare.updateScore(community.category,'joinCommunity',joiner)
+            await Notification.create({user:req.user.id,subject:{model:'Community',action:'memberJoin',id:community.id}})
             await community.save()    
             req.community=community
             return next()    
@@ -311,6 +312,8 @@ class communityMiddleware{
             community.posts=community.posts.filter(({postId})=>postId.toString()!==post.id)
             await community.save()
             req.community=community
+            await Notification.create({user:req.user.id,subject:{model:'Community',action:'removePost',id:community.id},notifier:post.publisher})
+
             return next()
         }
         catch(err){
@@ -360,7 +363,8 @@ class communityMiddleware{
         if(community.members.every(({memberId})=>memberId.toString()!==newManager.id))
         return res.json({success:false,err:'the new manager must be a member first'})
         community.manager=newManager
-        
+        await Notification.create({user:newManager.id,subject:{model:'Community',action:'newManager',id:community.id},notifier:req.user.id})
+
         
         await community.save()
 
@@ -379,6 +383,7 @@ class communityMiddleware{
         community.admins= community.admins.filter(adminId=>adminId.toString()!==user.id)
         await community.save()
         req.community=community
+         
         return next()
     }
     catch(err){
@@ -399,6 +404,7 @@ class communityMiddleware{
                     for (let j = 0; j < admins.length; j++) 
                         if(admins[j].id===community.admins[i].toString())
                             community.admins.splice(i,1)
+                            await Notification.create({user:community.admins[i],subject:{model:'Community',action:"adminOut",id:community.id},notifier:req.user.id})
             await  community.save()
             req.community=community
             console.log(community)
