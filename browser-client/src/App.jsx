@@ -1,6 +1,6 @@
 import React from 'react'
-
-import {Community,Comments,EditImg,WaitingPosts,Users,Search,Logout,Follow,User,Login,Signup,Home,CommunityForm} from './pages/index.js'
+import { Community } from './components/index.js'
+import {Comments,EditImg,WaitingPosts,Users,Search,Logout,Follow,User,Login,Signup,Home,CommunityForm} from './pages/index.js'
 import {  NavBar } from './components/index.js'
 import {useNavigate,Routes,Route} from 'react-router-dom'
 const App = () => {

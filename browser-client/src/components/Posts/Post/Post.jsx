@@ -9,11 +9,13 @@ import { useNavigate } from 'react-router-dom'
 import store from 'store'
 import { Link } from 'react-router-dom'
 import MakePost from '../../MakePost/MakePost'
-const Post = ({post,updateCommentFormFlage,shared,numberOfComments}) => {
+import communityApi from '../../../resources/api/community_requests'
+const Post = ({communityDeletePost,communityApprovePost,post,updateCommentFormFlage,shared,numberOfComments,community}) => {
   const [currentPost,setCurrentPost]=useState(post)
   const [optionListFlage,setOptionListFlage]=useState(false)
   const [editModeFlage,setEditModeFlage]=useState(false)
   const [author,setAuthor]=useState(()=>{
+    
     if(store.get('owner')._id===post.publisher)
       return store.get('owner')
     if(store.get('user'._id===post.publisher))
@@ -23,6 +25,7 @@ const Post = ({post,updateCommentFormFlage,shared,numberOfComments}) => {
   })  
   // const [post,setPost]=useState(post)
   const postHeaderRef=useRef('')
+  const [currentCommunity,setCurrentCommunity]=useState({_id:''})
   const [changeFlage,setChangeFlage]=useState(false)
   const [showFormFlage,setShowFormFlage]=useState(false)
   const [sharedPost,setSharedPost]=useState({_id:''})
@@ -56,6 +59,7 @@ useEffect(()=>{
   async function getUser(){
     if(!author._id)
     {
+      console.log(post)
       const data=await userAPI.getUser(post.publisher)
       console.log(data)
       setAuthor(data.user)
@@ -128,11 +132,21 @@ async function handleDeletePost(){
 
   setCurrentPost(pre=>{return {... pre,deleted:true}})
 }
-console.log(currentPost._id)
+useEffect(()=>{
+if(community)
+  setCurrentCommunity(community)
+  return
+  if(post.community.communityId)
+  communityApi.getCommunity(post.community.communityId).then(data=>setCurrentCommunity(data.community)).catch(err=>console.log(err))
+},[])
+console.log(author)
 return (<>
             {author._id&&!currentPost.deleted?
 <>
             <div  style={{ minWidth:'300px',width:'70%',maxWidth:'600px' }} className=" align-items-center card shadow border m-4 d-flex flex-column justify-start align-items-start position-relative p-2">
+             {currentPost.community.communityId&&(currentCommunity.manager._id===store.get('user')._id||currentCommunity.admins.some(admin=>admin._id===store.get('user')._id))&&<div className='position-absolute d-flex justify-content-evenly ' style={{ top:'-80px',width:'100%',fontSize:'larger' }}>
+                <button onClick={()=>communityApprovePost(post._id)} className="btn btn-primary">approve</button> <button onClick={()=>communityDeletePost(post._id)} className="btn btn-danger">delete</button>
+              </div>}
                <div  className="w-100 d-flex flex-row flex-nowrap  justify-content-between align-items-center border-3 border-bottom ">
 
                 <Link to={`/user/${author._id}`} style={{ width:'80%'

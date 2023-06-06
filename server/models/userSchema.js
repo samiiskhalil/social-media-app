@@ -66,7 +66,7 @@ interests:{
     ,technology:[{score:{type:Number,default:0},date:{type:Date,default:Math.round(Date.now()/0100)}}]
     ,health:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
     ,travel:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}],
-    entertainmentAndArts:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
+    entertainment:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
     ,sport:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}],
     politics:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
     ,basketBall:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]

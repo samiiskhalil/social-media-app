@@ -44,7 +44,8 @@ const User = () => {
     async function checkUser(){
         let {user}=await userAPI.getUser(params.id)
         let {posts}=await userAPI.getUserPosts(params.id)
-        setPosts(posts)
+        console.log(posts)
+          setPosts(posts)
        console.log(user)
       setOwnerFlage(false)
        if(params.id===store.get('user')._id)

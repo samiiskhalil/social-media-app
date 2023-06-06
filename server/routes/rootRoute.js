@@ -6,6 +6,7 @@ const userController=require('../controllers/userRoute')
 const postController=require('../controllers/postsRoute.js')
 const communitySchema = require('../models/communitySchema.js')
 const Notification=require('../controllers/notificationRoute.js')
+const axios = require('axios');
 const interestsMiddleWare = require('../middleware/interestsMiddleware.js')
 const router=express.Router()
 // will get posts after the latest post user has got 
@@ -89,4 +90,15 @@ catch(err){
 } )
 router.get('/followers',auth.verifyToken,userController.getFollowers)
 router.get('/followes',auth.verifyToken,userController.getFollowes)
+router.post('/classify-text',auth.verifyToken,async (req,res)=>{
+    try{
+   const category= await axios.get(`http://127.0.0.1:5000/api/ai/messages`,{messages:req.body.messages})
+   await interestsMiddleWare.updateScore(category,'messages',req.user)
+   return res.json({success:true})
+    }
+    catch(err){
+        console.log(err)
+        return res.json({success:false,err:err.message})
+    }
+})
 module.exports=router

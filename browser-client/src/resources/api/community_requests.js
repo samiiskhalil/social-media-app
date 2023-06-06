@@ -162,18 +162,19 @@ console.log(err)
         }
     }
 
-    static async deletePost(postId){
+    static async deletePost(communityId,postId,role){
         try{
 
             const headers={
-                'Authorization':Cookies.get('token')
+                'Authorization':Cookies.get('token'),
+                "community-role":role
             }
-            const {data}=await axios.delete(`${baseUrl}/community/posts?postId=${postId}`,{headers})
+            const {data}=await axios.delete(`${baseUrl}/community/posts?postId=${postId}&communityId=${communityId}`,{headers})
             return data
             }
         catch(err){
 
-            return err.response.data
+            return err
         }
     }
     static async changePublicity(communityId){
@@ -291,6 +292,48 @@ console.log(err)
         catch({response}){
             console.log(response.data)
             return response.data
+        }
+    }
+    static async approvePost(communityId,postId){
+        try
+        {
+            const headers={
+                'Authorization':Cookies.get('token')
+            }
+            const {data}=await axios.patch(`${baseUrl}/community/posts`,{communityId,postId},{headers})
+            return data
+         }
+        catch(err){
+            console.log(err)
+            return err
+        }
+    }
+    static async getPosts(communityId){
+        try
+        {
+            const headers={
+                'Authorization':Cookies.get('token')
+            }
+            const {data}=await axios.get(`${baseUrl}/community/get-posts?communityId=${communityId}`,{headers})
+            return data
+         }
+        catch(err){
+            console.log(err.response)
+            return err.response
+        }
+    }
+    static async getUnapprovedPosts(communityId){
+        try
+        {
+            const headers={
+                'Authorization':Cookies.get('token')
+            }
+            const {data}=await axios.get(`${baseUrl}/community/unapproved/get-posts?communityId=${communityId}`,{headers})
+            return data
+         }
+        catch(err){
+            console.log(err.response)
+            return err.response
         }
     }
 }

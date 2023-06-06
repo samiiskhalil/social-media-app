@@ -1,5 +1,6 @@
 import store from "store"
 import { Link } from 'react-router-dom';
+import {Posts} from "../../components/index";
 import {MakePost} from '../../components/index'
 import { useNavigate } from "react-router"
 import communityApi from "../../resources/api/community_requests"
@@ -19,12 +20,13 @@ const Community = () => {
  const navigate=useNavigate()
  useEffect(()=>{
   async function getCommunity(){
-    const data=await communityApi.getCommunity(params.communityId)
-   console.log(data)
-    if(!data.success)
-    console.log('a')
-    setCommunity(data.community)
-    store.set('community',data.community)
+    const data1=await communityApi.getCommunity(params.communityId)
+    if(!data1.success)
+       console.log('a')
+    const data2=await communityApi.getPosts(data1.community.id)
+    if(!data2.success)
+       console.log('a')
+    setCommunity({...data1.community,posts:data2.posts})
   }
   getCommunity()
   userApi.getUser(store.get('user')._id).then(data=>setUser(data.user)).catch(err=>console.log(err))
@@ -82,7 +84,7 @@ setImgSrc(`http://localhost:1000/api/community/image/${community.coverImageName}
      if(community.members.some(({memberId})=>memberId._id===store.get('user')._id))
      return 'leave community'
     }   
-}
+}console.log(community)
  return (
     community._id?<div className="community-container">
         {/* <button onClick={()=>navigate(`/manage-community/${community._id}`)} className=" btn-primary btn manager-btn">manage</button> */}
@@ -139,6 +141,7 @@ alt='background-image' />
   </section>
         </div>
         <MakePost setCommunity={setCommunity} communityId={community._id} />
+   <posts />
     </div>:null
     )
 }
