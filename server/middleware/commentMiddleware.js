@@ -109,14 +109,47 @@ class commentsMiddleware{
             return res.json({success:false,err:err.message})
         }
     }
+static async updateCommentDislikes(req,res,next){
+    try
+    {
+    let {comment,user,post}=req
+    // if user liked then remove
+    comment.likedBy= comment.likedBy.filter(id=>id.toString()!==req.user.id)
+    // check if user liked
+    if(comment.dislikedBy.some(userId=>userId.toString()===user.id))
+    {   // remove like
+        await interestsMiddleWare.updateScore(post.category,comment.positivity?'undislikePositiveComment':'undislikeNegativeComment',user)
+        req.dislike=false
+        comment.dislikedBy=comment.dislikedBy.filter(userId=>userId.toString()!==user.id)
+    await comment.save()
+        await Notification.create({user:comment.user,subject:{model:'Comment',action:'dislikeComment',id:comment.id},notifier:req.user.id})
+        return next()
+}
+    // otherwise like
+    await interestsMiddleWare.updateScore(post.category,comment.positivity?'dislikePositiveComment':'dislikeNegativeComment',user)
+
+    req.dislike=true
+    comment.dislikedBy.push(user.id)
+    await comment.save()
+    req.comment=comment
+    return next()
+    }
+    catch(err){
+        console.log(err)
+        return res.json({success:false,err:err.message})
+    }
+}
 static async updateCommentLikes(req,res,next){
     try
     {
     let {comment,user,post}=req
-    // check if user liked
+    // check if disliked
+    comment.dislikedBy= comment.dislikedBy.filter(id=>id.toString()!==req.user.id)
+
+    // check if user disliked
     if(comment.likedBy.some(userId=>userId.toString()===user.id))
     {   // remove like
-        await interestsMiddleWare.updateScore(post.category,comment.positivity?'unlikePositiveComment':'unlikeNegativeComment',user)
+        await interestsMiddleWare.updateScore(post.category,comment.positivity?'undislikePositiveComment':'undislikeNegativeComment',user)
         req.like=false
         comment.likedBy=comment.likedBy.filter(userId=>userId.toString()!==user.id)
     await comment.save()
@@ -133,6 +166,7 @@ static async updateCommentLikes(req,res,next){
     return next()
     }
     catch(err){
+        console.log(err)
         return res.json({success:false,err:err.message})
     }
 }
@@ -174,9 +208,10 @@ static async checkForOgComment(req,res,next){
                 postId:req.body.postId,
                 content:req.body.content,
                 repliedTo:req.body.repliedCommentId||null,
-                positivity:data
+                badComment:!data
             })
-            await interestsMiddleWare.updateScore(post.category,comment.positivity?'positiveComment':'negativeComment',req.user)
+            
+            await interestsMiddleWare.updateScore(post.category,!comment.badComment?'positiveComment':'negativeComment',req.user)
             const notification=await Notification.create({user:post.publisher,subject:{model:'Post',action:'createComment',id:comment.id},notifier:req.user.id})
             if(comment.repliedTo)
                 await Notification.create({user:ogComment.user,subject:{model:'Comment',action:'replyComment',id:comment.id},notifier:req.user.id})

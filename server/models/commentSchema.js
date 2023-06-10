@@ -8,9 +8,11 @@ const commentSchema=new mongoose.Schema(
         },
         postId:{type:mongoose.SchemaTypes.ObjectId,ref:'Post'}
         ,
+        badComment:{type:Boolean,default:true},
         //comment
         repliedBy:[{type:mongoose.SchemaTypes.ObjectId,ref:'Comment'}],
         repliedTo:String,
+        dislikedBy:[{type:mongoose.SchemaTypes.ObjectId,ref:'User'}],
         likedBy:[{type:mongoose.SchemaTypes.ObjectId,ref:'User'}],
         positivity:Boolean
 

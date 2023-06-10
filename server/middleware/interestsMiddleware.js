@@ -86,6 +86,12 @@ class interestsMiddleWare{
         try{
             
             const actionsScores={
+                undislikeNegativeComment:-3,
+                dislikeNegativeComment:3,
+                undislikePositiveComment:3,
+                dislikePositiveComment:-3,
+                dislikePost:-4,
+                undislikePost:6,
                 messages:6,
             deleteCommunity:-17,
                 viewCommunity:6,
@@ -140,7 +146,7 @@ class interestsMiddleWare{
                         console.log('last point is',scoreFunction[scoreFunction.length-1])
                         const newLastPoint=calcNewLast(scoreFunction[scoreFunction.length-1])    
                     scoreFunction.push(newLastPoint)
-                    const wantedDate= subtractTimeFromDate(new Date(),4,'day')
+                    const wantedDate= subtractTimeFromDate(new Date(),1,'hour')
 
                     let index=findValue(scoreFunction,wantedDate)
                     const pointI=calcPoint(scoreFunction[index+1].score,scoreFunction[index+1].date.getTime(),scoreFunction[index].score,scoreFunction[index].date.getTime(),wantedDate.getTime())

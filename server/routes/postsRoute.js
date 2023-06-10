@@ -38,6 +38,7 @@ postMiddleware.updatePostDescribtion,postController.sendPost)
 // update likes 
 // handle user likes update side effect
 router.patch('/like',auth.verifyToken,postMiddleware.getPost,postMiddleware.getPostPublisher,postMiddleware.updateLikes,userModelSideEffectHandler.updateLikes,postController.sendPost)
+router.patch('/dislike',auth.verifyToken,postMiddleware.getPost,postMiddleware.getPostPublisher,postMiddleware.updateDisikes,postController.sendPost)
 
 // delet posts
 // get the post
@@ -78,7 +79,7 @@ router.get('/comments',auth.verifyToken,postController.getPostComments)
 
 
 
-router.get('/likes',auth.verifyToken,postController.getLikes)
+router.get('/likes',auth.verifyToken,postController.getReactions)
 // router.delete('/',auth.verifyToken,post.deletePost )
 // //react to a post like or share
 // router.post('/comments',auth.verifyToken,post.createComment)

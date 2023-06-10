@@ -23,6 +23,8 @@ sharedPost:{post:{type:mongoose.SchemaTypes.ObjectId,ref:'Post'},removed:{
   default:false
 } }
 ,
+badComments:{type:Boolean,default:false}
+,
 files:[{
     fileName:String,
   style:{
@@ -32,6 +34,7 @@ files:[{
   }  
 }],
 likes:[{type:mongoose.SchemaTypes.ObjectId,ref:'User'}],
+dislikes:[{type:mongoose.SchemaTypes.ObjectId,ref:'User'}],
 comments:[{type:mongoose.SchemaTypes.ObjectId,ref:'Comment'}],
 //people who shared
 shares:[{user:{type:mongoose.SchemaTypes.ObjectId,ref:'User'},

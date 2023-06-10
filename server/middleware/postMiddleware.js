@@ -185,9 +185,11 @@ class postMiddleware{
     }
     static async updateLikes(req,res,next){
         try{
-            let {post}=req
+            let {post,user}=req
             // like is a user id
             //check if liked
+            post.likes= post.likes.filter(id=>id.toString()!==req.user.id)
+
             if(post.likes.some(like=>like.toString()===req.user.id))
              {
                 // user unlikes it
@@ -211,6 +213,41 @@ class postMiddleware{
         }
         catch(err)
         {
+                return res.json({success:false,err:err.message})
+        }
+    }
+    static async updateDisikes(req,res,next){
+        try{
+            let {post,user}=req
+            // checki dslike
+            post.dislikes= post.dislikes.filter(id=>id.toString()!==req.user.id)
+
+            // like is a user id
+            //check if liked
+            if(post.dislikes.some(dislike=>dislike.toString()===req.user.id))
+             {
+                // user unlikes it
+                req.action='undislikePost'
+                post.dislikes = post.dislikes.filter(dislike=>dislike.toString()!==req.user.id)
+                await post.save()
+                   req.post=post
+                   req.dislike=false 
+                   await interestsMiddleWare.updateScore(post.category,req.action,req.user)
+                   return next()
+                }     
+                // otherwise user dislikes it
+                req.action='dislikePost'
+            post.dislikes.push(req.user.id)
+            await post.save()
+            req.post=post
+            req.dislike=true
+            await interestsMiddleWare.updateScore(post.category,req.action,req.user)
+            return next()
+
+        }
+        catch(err)
+        {
+            console.log(err)
                 return res.json({success:false,err:err.message})
         }
     }

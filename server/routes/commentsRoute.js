@@ -25,6 +25,7 @@ router.patch('/',auth.verifyToken,commentMiddleware.checkAuth,commentMiddleware.
 // like a comment
 // score updated
 router.patch('/likes',auth.verifyToken,postMiddleware.getPost,commentMiddleware.verifyComment,commentMiddleware.updateCommentLikes,userModelSideEffectHandler.addLikedComment,commentController.sendComment)
+router.patch('/dislikes',auth.verifyToken,postMiddleware.getPost,commentMiddleware.verifyComment,commentMiddleware.updateCommentDislikes,commentController.sendComment)
 // get comment and it's replies then delete users then remove the list from the post 
 router.delete('/',auth.verifyToken,
 commentMiddleware.checkAuth,

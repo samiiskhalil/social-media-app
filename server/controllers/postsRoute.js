@@ -104,14 +104,15 @@ static async sendUserPosts(req,res){
             return res.json({success:false,err:err.message})
         }
     }
-    static async getLikes(req,res){
+    static async getReactions(req,res){
         try
         {
             let post=await Post.findById(req.query.postId)
             post =await post.populate('likes')
-           let users=post.likes.map(like=>like)
-            console.log(users)
-            return res.json({success:true,users})
+            post=await post.populate('dislikes')
+           let likers=post.likes.map(like=>like)
+           let dislikers=post.dislikes.map(dislike=>dislike)
+            return res.json({success:true,likers,dislikers})
         }
         catch(err){
             return res.json({success:false,err:err.message})

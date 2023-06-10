@@ -105,10 +105,26 @@ return next()
             let post=await Post.findById(req.body.postId)
                 if(!post)
                 return res.json({success:false,err:'no post was found'})
-                console.log('asdas')
-                post.comments.push(req.comment.id)
+                post=await post.populate('comments')
+                post.comments.push(req.comment)
+                let counter=0
+                if(post.comments.length<20)
+                    post.badComments=false
+                if(post.comments.length>=20)
+                {for (let i = 0; i < post.comments.length; i++) 
+                {
+                    if(post.comments[i].badComment)
+                        counter++
+
+                }
+                if((counter/post.comments.length)>=0.5)
+                    post.badComments=true
+                if((counter/post.comments.length)<0.5)
+                    post.badComments=false
+
+            }
+                
                 await post.save()
-                console.log(req.comment.id)
               return next()
 
         }
