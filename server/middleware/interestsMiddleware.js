@@ -141,23 +141,18 @@ class interestsMiddleWare{
                    let scoreFunction= user.interests[interest]
                    if(!query[interest])
                         return
-                   if(scoreFunction.length===1||scoreFunction.length===0)
+                   if(scoreFunction.length===0)
                         return   
-                        console.log('last point is',scoreFunction[scoreFunction.length-1])
                         const newLastPoint=calcNewLast(scoreFunction[scoreFunction.length-1])    
                     scoreFunction.push(newLastPoint)
                     const wantedDate= subtractTimeFromDate(new Date(),1,'hour')
 
                     let index=findValue(scoreFunction,wantedDate)
                     const pointI=calcPoint(scoreFunction[index+1].score,scoreFunction[index+1].date.getTime(),scoreFunction[index].score,scoreFunction[index].date.getTime(),wantedDate.getTime())
-                    console.log(pointI)
-                    console.log(newLastPoint)
-                    console.log(scoreFunction[scoreFunction.length-2])
                     let derivative=(newLastPoint.score-pointI.yi)/(newLastPoint.date.getTime()-pointI.xi)*1000  
                 
                 // derivative=derivative.toFixed(3)
                 derivatives.push({value:derivative,interest})
-                    console.log(derivatives)
             })
               
             // Calculate the sum of all value properties

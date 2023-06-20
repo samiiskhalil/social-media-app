@@ -30,6 +30,7 @@ class postController{
     static async sendPosts(req,res){
         try
         {
+            let addPosts=[]
             let posts=[] 
             let post={}
             let seq=0
@@ -53,10 +54,11 @@ class postController{
             console.log(posts)
             if(posts.length<limit){
 
-                const addPosts=await Post.find().limit(posts.length-limit)
+                 addPosts=await Post.find().limit(posts.length-limit)
                 posts.push(addPosts)
+                
             }
-            return res.json({success:true,posts})
+            return res.json({success:true,posts,results:derivatives,randomPostsNumber:addPosts.length||0})
         }
         catch(err){
             console.log(err)
