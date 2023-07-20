@@ -61,9 +61,9 @@ communities:[{communityId:{type:mongoose.SchemaTypes.ObjectId,ref:'Community'},a
     default:false
 }}],
 interests:{
-    business:[{score:{type:Number,default:0},date:{type:Date,default:new Date().now}}]
+    business:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
     ,scienceAndEnviroment:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
-    ,technology:[{score:{type:Number,default:0},date:{type:Date,default:Math.round(Date.now()/0100)}}]
+    ,technology:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
     ,health:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
     ,travel:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}],
     entertainment:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]

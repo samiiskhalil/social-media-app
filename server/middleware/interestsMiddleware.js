@@ -1,11 +1,16 @@
 
 const User=require('../models/userSchema.js')
 function calcNewLast(p){
+    let newScore
     const currentTime=new Date()
     const diffTime = Math.abs(currentTime - p.date);
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    const newScore=p.score-2*diffDays
-    const newLast={score:newScore,date:currentTime}
+    if(p.score>=0)
+     newScore=p.score-2*diffDays
+     if(p.score<0)
+     newScore=p.score+2*diffDays
+
+     const newLast={score:newScore,date:currentTime}
     return newLast
     }
 function subtractTimeFromDate(date, amount, unit) {
@@ -40,9 +45,7 @@ console.log(y2,y1)
         const deltaI=x2-xi
         const delta=x2-x1
         const diffX=(delta-deltaI)/delta
-        console.log(diffX)
         const deltaY=y2-y1   
-        console.log((delta/deltaI)*deltaY+y1)
         const yi=deltaY*diffX+y1
 
         const pi={xi,yi}
@@ -145,16 +148,16 @@ class interestsMiddleWare{
                         return   
                         const newLastPoint=calcNewLast(scoreFunction[scoreFunction.length-1])    
                     scoreFunction.push(newLastPoint)
-                    const wantedDate= subtractTimeFromDate(new Date(),1,'hour')
+                    const wantedDate= subtractTimeFromDate(new Date(),5,'minute')
 
                     let index=findValue(scoreFunction,wantedDate)
                     const pointI=calcPoint(scoreFunction[index+1].score,scoreFunction[index+1].date.getTime(),scoreFunction[index].score,scoreFunction[index].date.getTime(),wantedDate.getTime())
+                    
+                    
                     let derivative=(newLastPoint.score-pointI.yi)/(newLastPoint.date.getTime()-pointI.xi)*1000  
-                
-                // derivative=derivative.toFixed(3)
-                derivatives.push({value:derivative,interest})
+                    derivatives.push({value:derivative,interest})
             })
-              
+              console.log(derivatives)
             // Calculate the sum of all value properties
             let totalSum = derivatives.reduce((sum, obj) => sum + obj.value, 0);
   

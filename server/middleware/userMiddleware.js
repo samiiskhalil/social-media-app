@@ -13,6 +13,7 @@ async function checkUserBlock(req,res,userId){
     try
     {
         let {user}=req
+        if(user.blockedUsers.length)
         if(user.blockedUsers.some(id=>is.toString()===userId.toString()))
             return true
             return false

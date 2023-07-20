@@ -328,7 +328,7 @@ class communityMiddleware{
             if(!community)
             return next()
             let approval=!community.postApproval
-            if(community.admins.some(id=>id.toString()===userId||community.manager.toString()===user.id))
+            if(community.admins.some(id=>id.toString()===user.id||community.manager.toString()===user.id))
             approval=true
             community.posts.push({postId:post.id,approved:approval})
             await community.save()

@@ -284,6 +284,7 @@ class postMiddleware{
     static async createPost(req,res,next){
     try{
         const ogPost=req.ogPost
+        console.log(req.ogPost,'sssssssssssssssssssssssssssssssssssssssssss')
         req.action='createPost'
         if(req.headers['shared-post-id'])
             req.action='sharePost'
@@ -323,7 +324,9 @@ class postMiddleware{
         try{
             if(!req.headers['shared-post-id'])
             return next()
+            
             let ogPost=await Post.findById(req.headers['shared-post-id'])
+            req.ogPost=ogPost
             if(!ogPost.shares.length)
             return next()
             return next()

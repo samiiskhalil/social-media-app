@@ -38,7 +38,7 @@ class postController{
             const seqs=Object.keys(query)
             let limit=req.headers['limit']
             for (let j = 0; j < derivatives.length; j++) {
-                
+                console.log(derivatives)
             const postsNumber=Math.round(limit*derivatives[j].probability)
                 for (let i = 1; i <=postsNumber; i++){
                     if(!query[derivatives[j].interest]){
@@ -51,7 +51,6 @@ class postController{
                     
                 }
             }
-            console.log(posts)
             if(posts.length<limit){
 
                  addPosts=await Post.find().limit(posts.length-limit)

@@ -11,6 +11,18 @@ const interestsMiddleWare = require('../middleware/interestsMiddleware.js')
 const router=express.Router()
 // will get posts after the latest post user has got 
 // if user is fresh then send latest posts
+router.get('/classify-dialog',auth.verifyToken,async(req,res)=>{
+    try{
+
+        const {data}=await axios.get(`http://127.0.0.1:5000/api/ai/dialog?dialog=${req.query.dialog}`)
+        console.log(data)
+        return res.json({success:true,classification:data})
+    }
+    catch(err){
+        console.log(err)
+        return res.json({success:false,err:err.message})
+    }
+})
 router.get('/get-posts',auth.verifyToken,interestsMiddleWare.calcInterests,postController.sendPosts)
 router.get('/get-users',auth.verifyToken,userController.getUsers)
 router.get('/post-file/:fileName',postController.getFile)

@@ -92,6 +92,7 @@ class authentication{
             req.userId=data.userId
             let user=await User.findById(data.userId)
             req.user=user
+            console.log(req.user)
             return next()
         }
         catch(err){

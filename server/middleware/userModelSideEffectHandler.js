@@ -35,6 +35,8 @@ class userModelSideEffectHandler{
         try
         {
             let {user,blockedUser,community}=req
+            console.log(req.user,'shoul')
+            if(user.blockedUsers.length)
             if(user.blockedUsers.some(id=>id.toString()===blockedUser.id))
                 {user.blockedUsers= user.blockedUsers.filter(id=>id.toString()!==blockedUser.id)
                     await user.save()
