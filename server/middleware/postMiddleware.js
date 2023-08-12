@@ -49,10 +49,8 @@ class postMiddleware{
             let user=req.user
             if(!req.files.length)
             {
-                console.log(req.post.describtion)
-                console.log('assssss')
+            
                 const {data}=await axios.get(`http://127.0.0.1:5000/api/ai/text?text=${req.post.describtion}`)
-                console.log('kkkkkkkkkk')
                 await    interestsMiddleWare.updateScore(data,req.action,req.user)
                 post.category=data
                 await post.save()
@@ -65,9 +63,17 @@ class postMiddleware{
             formData.append('image',file.buffer, {
               filename: file.originalname,
             });
-              const {data} = await axios.post('http://127.0.0.1:5000/api/ai/image', formData, {
+              let {data} = await axios.post('http://127.0.0.1:5000/api/ai/image', formData, {
                 headers: {'content-type':'multipart/form-data',
          } });
+         if(data==='basketball'||data==='football'||data==='tennis'||data==='swimming'||data==='car')
+         data='sport'
+         if(data==='fashion'||data==='music'||data=='food')
+         data='entertainment'
+         if(data==='news')
+         data='politics'
+         if(data==='technoogy')
+         data='tech'
          await interestsMiddleWare.updateScore(data,req.action,req.user)
          post.category=data
          await post.save()
