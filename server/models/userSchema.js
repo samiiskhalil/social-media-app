@@ -62,21 +62,10 @@ communities:[{communityId:{type:mongoose.SchemaTypes.ObjectId,ref:'Community'},a
 }}],
 interests:{
     business:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
-    ,scienceAndEnviroment:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
-    ,technology:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
-    ,health:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
-    ,travel:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}],
+    ,tech:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}],
     entertainment:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
     ,sport:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}],
     politics:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
-    ,basketBall:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
-    ,football:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
-    ,tennis:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
-    ,fashion:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
-    ,news:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
-    ,food:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
-    ,music:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
-    ,car:[{score:{type:Number,default:0},date:{type:Date,default:new Date()}}]
 },
 photosUrl:[String],
 email:{
